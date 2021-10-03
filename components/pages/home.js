@@ -38,7 +38,7 @@ class Home extends Component{
                                 size={55}  
                             />
                         </View>
-                    </View>
+                    </View>  
                     <Text h5 style={{color:'grey', fontWeight:'bold'}}>DAILY TASKS</Text>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         <Card

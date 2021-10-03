@@ -20,7 +20,7 @@ class Login extends Component{
     validate = false;
     errorMsg = "";
 
-    login_validation(){
+    async login_validation(){
         const useremail = this.state.email;
         const pwd = this.state.passwd;
         if(useremail.length == 0 || pwd.length == 0){
@@ -33,7 +33,32 @@ class Login extends Component{
             this.validate = true;
             this.errorMsg = "";
             // send them to backend
-            //  ......
+            var loginURL='http://127.0.0.1:5000/';
+            var loginData = JSON.stringify({
+                "email":useremail,
+                "pwd":pwd
+            });
+
+            fetch(loginURL, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: loginData
+            }).catch((error) => {
+                throw error;
+            });
+
+            // const loginResponse = await fetch(loginURL,{
+            //     method: 'POST',
+            //     body: loginData
+            //     }).then((response) => response.json()).catch((error) => {
+            //         console.error(error);
+            //         alert(error);
+            // });
+
+
         }else{
             alert(this.errorMsg)
             // return(
@@ -83,7 +108,7 @@ class Login extends Component{
 
                         <TouchableOpacity onPress={()=> this.login_validation()}>
                             <LinearGradient colors={['#3AA8FE','#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
-                                <Text style={styles.login_button}>Fit for Life!</Text>
+                                <Text style={styles.login_button}>Login!</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                         <FlashMessage position="center" />
