@@ -2,7 +2,9 @@ import React, {Component} from "react";
 import {View, 
     ActivityIndicator, 
     ScrollView,
-    StatusBar} from "react-native";
+    StatusBar,
+    TouchableOpacity
+} from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
 import { Input, Image, Text } from 'react-native-elements';
@@ -15,9 +17,14 @@ class Signup extends Component{
         super(props);
         //Mount components
         this.state = {phone: '', passwd: ''};
+        this.navigation = props.navigation;
     }
 
-    render(){
+    toLogin(){
+        this.navigation.navigate('Login', {});
+    }
+
+    render = (props) => {
         return(
                 <LinearGradient colors={['#FA8072', '#F08080', '#CD5C5C']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />
@@ -38,7 +45,7 @@ class Signup extends Component{
 
                         <Input placeholder="Password" secureTextEntry={true} errorStyle={{ color: 'red' }} errorMessage='' onChangeText={pwd => this.setState({passwd: pwd})}/>
 
-                            <View style={styles.options}><Text style={styles.forgetPWD}>Already Our Member? Login here.</Text></View>
+                            <TouchableOpacity style={styles.options} onPress={this.toLogin()}><Text style={styles.forgetPWD}>Already Our Member? Login here.</Text></TouchableOpacity >
 
                             <LinearGradient colors={['#FA8072','#CD5C5C']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust}>
                                 <Text style={styles.login_button}>Join Us!</Text>
