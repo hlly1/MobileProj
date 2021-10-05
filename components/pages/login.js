@@ -23,6 +23,7 @@ class Login extends Component{
     async login_validation(){
         const useremail = this.state.email;
         const pwd = this.state.passwd;
+        // alert(useremail+"<br>"+pwd);
         if(useremail.length == 0 || pwd.length == 0){
             this.errorMsg = "Email and Password cannot be empty!";
         }else if(!Validator.email_validate(useremail)){
@@ -33,41 +34,27 @@ class Login extends Component{
             this.validate = true;
             this.errorMsg = "";
             // send them to backend
-            var loginURL='http://127.0.0.1:5000/';
+            var loginURL='http://81.68.76.219:80/login';
             var loginData = JSON.stringify({
-                "email":useremail,
-                "pwd":pwd
+                "email": useremail,
+                "password": pwd
             });
 
-            fetch(loginURL, {
+            const res = await fetch(loginURL, {
                 method: 'POST',
                 headers: {
-                    Accept: 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: loginData
-            }).catch((error) => {
-                throw error;
-            });
-
-            // const loginResponse = await fetch(loginURL,{
-            //     method: 'POST',
-            //     body: loginData
-            //     }).then((response) => response.json()).catch((error) => {
-            //         console.error(error);
-            //         alert(error);
-            // });
-
-
-        }else{
-            alert(this.errorMsg)
-            // return(
-            //     showMessage({ 
-            //         message: "Oops!",
-            //         description: this.errorMsg,
-            //         type: "danger",
-            //     })
-            // )
+            }).then(response => response.json())
+            .then(responseJson => {
+              // Showing response message coming from server after inserting records.
+              alert(JSON.stringify(responseJson));
+            })
+              .catch((error) => {
+                alert(error);
+              });
         }
     }
 
