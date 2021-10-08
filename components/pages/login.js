@@ -5,7 +5,9 @@ import {View,
     ActivityIndicator, 
     ScrollView,
     StatusBar,
-    TouchableOpacity} from "react-native";
+    TouchableOpacity,
+    AsyncStorage
+} from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
 import { SocialIcon, Image, Text, Input } from 'react-native-elements';
@@ -16,9 +18,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
 
 class Login extends Component{
-    state = {email: "", passwd: ""};
-    validate = false;
-    errorMsg = "";
+
+    constructor(props){
+        super(props)
+        this.state = {email: "", passwd: ""};
+        this.validate = false;
+        this.errorMsg = "";
+        this.navigation = props.navigation;
+    }
 
     async login_validation(){
         const useremail = this.state.email;
@@ -50,17 +57,32 @@ class Login extends Component{
             }).then(response => response.json())
             .then(responseJson => {
               // Showing response message coming from server after inserting records.
-              alert(JSON.stringify(responseJson));
+                //alert(JSON.stringify(responseJson));
+              if (responseJson["status"] == 1) {
+                    var storeData = async (sessionEmail) => {
+                        try {
+                            await AsyncStorage.setItem('@sessionEmail', sessionEmail);
+                        }catch (e) {
+                            console.error(e);
+                            alert(e);
+                        }
+                    }
+                    storeData(this.state.email);
+                    this.navigation.navigate("Home", {});
+              } else if (resonseJson["status"] == -1) {
+                alert("Invalid email and password! Please check it again!");
+              }else{
+                alert("Issue-[xxx]: Please contact admin!");
+              }
             })
               .catch((error) => {
-                alert(error);
+                alert("Issue-[xxx]:"+error+"Please contact admin!");
               });
         }
     }
 
-    signup(){
-        // window.location.href('signup.js');
-        // this.props.navigation.navigate('Signup')
+    goToSignup(){
+        this.navigation.navigate('Signup', {});
     }
 
     render(){
@@ -90,7 +112,7 @@ class Login extends Component{
 
                         <View style={styles.options}>
                             <Text style={styles.forgetPWD}>Forget Password?</Text>
-                            <Text style={styles.signup} onPress={this.signup}>Join Us to Be Healthy</Text>
+                            <Text style={styles.signup} onPress={() => this.goToSignup()}>Join Us to Be Healthy</Text>
                         </View>
 
                         <TouchableOpacity onPress={()=> this.login_validation()}>

@@ -5,4 +5,11 @@ export default {
         return email_regex.test(email);
     },
 
+    name_validate(name) {
+        if (name.length == 0){
+            return false;
+        }else{
+            return true;
+        }
+    },
 }
