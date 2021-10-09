@@ -3,9 +3,9 @@ import {View,
     ActivityIndicator, 
     ScrollView,
     StatusBar,
-    TouchableOpacity,
-    AsyncStorage
+    TouchableOpacity
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
 import { Input, Image, Text } from 'react-native-elements';

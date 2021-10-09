@@ -146,9 +146,44 @@ const styles = StyleSheet.create({
 
     //----------------------------------------------------------------profile
 
+    profile_card:{
+        backgroundColor: "#ffffff",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingVertical: 50,
+        paddingHorizontal: 30,
+        height: height * 0.8
+    },
 
-    
+    profile_title: {
+        fontSize: 25,
+        fontFamily: 'Gill Sans',
+        textAlign: 'center',
+        color: '#ffffff',
+        backgroundColor: 'transparent',
+        marginTop: 60,
+        marginBottom: 30
+    },
 
+    //----------------------------------------------------------------tabbar
+    tabbar_container:{
+        display: 'flex',
+        flexDirection:'row', 
+        backgroundColor:"#E8E8E8",
+        paddingTop:5,
+        justifyContent: 'space-between'
+    },
+
+    tabTextActived:{
+        color: '#3E67D6',
+        fontSize: 14,
+        marginTop:"5%"
+    },
+    tabText: {
+        color: '#8B8E95',
+        fontSize: 14,
+        marginTop:"5%"
+    }
 
 })
 
