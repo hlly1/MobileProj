@@ -5,7 +5,10 @@ import {View,
     ActivityIndicator, 
     ScrollView,
     StatusBar,
-    TouchableOpacity
+    TouchableOpacity,
+    Button,
+    ActionSheetIOS,
+    LayoutAnimation
 } from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,6 +17,9 @@ import Validator from '../tools/validator.js';
 import FlashMessage from "react-native-flash-message";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ImagePicker from 'react-native-image-picker';
+import { resolvePlugin } from "@babel/core";
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 // Login, Signup picture Reference URL:
 // https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.dc64b3430&cid=24099
@@ -22,11 +28,66 @@ class Profile extends Component{
 
     constructor(props){
         super(props)
-        this.state = {email: "", passwd: "", nickname:""};
+        this.state = {email: "", passwd: "", nickname:"", avatar:[]};
         this.validate = false;
         this.errorMsg = "";
     }
 
+    selectImage = () => {
+        // const BUTTONS = ['Take Photo', 'Choose Photo Library', 'Cancel'];
+        // ActionSheet.show({options:BUTTONS, cancelButtonIndex: 2, title:'Select a Photo'},
+        //     buttonIndex => {
+        //         switch (buttonIndex){
+        //             case 0:
+        //                 break;
+        //             case 1:
+        //                 break;
+        //             default:
+        //                 break;
+        //         }
+        //     }
+        // )
+
+        let options = {
+            storageOption:{
+                path: 'images',
+                mediaType: 'photo'
+            },
+            includeBase64: true
+        };
+
+        //开启摄像头，可用
+        // launchCamera(options, (response)=>{
+        //     console.log('response: ', response);
+        //     if (response.didCancel) {
+        //         console.log('cancelled image picker');
+        //     } else if(response.error){
+        //         console.log('imagePicker error: ', response.error);
+        //     }else if (response.customButton) {
+        //         console.log('imagePicker button tapped: ', response.customButton);
+        //     }else{
+        //         const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
+        //     }
+        // });
+
+        //打开图库，可用
+        launchImageLibrary(options, (response)=>{
+            console.log('response: ', response);
+            if (response.didCancel) {
+                console.log('cancelled image picker');
+            } else if(response.error){
+                console.log('imagePicker error: ', response.error);
+            }else if (response.customButton) {
+                console.log('imagePicker button tapped: ', response.customButton);
+            }else{
+                const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
+            }
+        });
+    }
+
+    uploadAvatar = async (uri) =>  {
+
+    }
 
     async editProfileRequest(){
         if(this.state.email.length == 0 || this.state.passwd.length == 0){
@@ -101,7 +162,10 @@ class Profile extends Component{
 
                         <Input placeholder='New Username' 
                         onChangeText={text => this.setState({nickname: text})}/>
+    
+                        <Button title="Select Avatar" onPress={() => this.selectImage()} />
 
+                        
                         <TouchableOpacity onPress={()=> this.editProfileRequest()} style={{ zIndex: 9999}}>
                             <LinearGradient colors={['#3AA8FE','#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
                                 <Text style={styles.login_button}>Confirm</Text>

@@ -21,6 +21,16 @@ class Home extends Component{
         this.navigation = props.navigation;
     }
 
+    async getSessionEmail(){
+        try {
+            sessionEmail = await AsyncStorage.getItem('@sessionEmail');
+            return sessionEmail;
+        }catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
     toEditProfile(){
         this.navigation.navigate('Profile', {});
     }
@@ -77,6 +87,8 @@ class Home extends Component{
                         <Text style={styles.login_button}>Edit Profile</Text>
                     </LinearGradient>
                 </TouchableOpacity>
+
+                
 
                 {/* <Tabbar /> */}
             </View>
