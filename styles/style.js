@@ -183,7 +183,36 @@ const styles = StyleSheet.create({
         color: '#8B8E95',
         fontSize: 14,
         marginTop:"5%"
-    }
+    },
+
+    //----------------------------------------------------------------post
+    post_title: {
+        display: 'flex',
+        fontSize: 25,
+        fontFamily: 'Gill Sans',
+        textAlign: 'center',
+        color: '#ffffff',
+        backgroundColor: 'transparent',
+        marginTop: 60,
+        marginBottom: 30
+    },
+
+    post_card: {
+        backgroundColor: "#ffffff",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingVertical: 50,
+        paddingHorizontal: 30,
+    },
+
+    post_header: {
+        display: 'flex',
+        fontSize: 15,
+        textAlign: 'left',
+        marginLeft: '3%',
+    },
+
+    //----------------------------------------------------------------
 
 })
 

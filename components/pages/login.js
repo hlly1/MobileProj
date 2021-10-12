@@ -58,11 +58,11 @@ class Login extends Component{
             }).then(response => response.json())
             .then(responseJson => {
               // Showing response message coming from server after inserting records.
-                //alert(JSON.stringify(responseJson));
+                alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
                     var storeData = async (sessionEmail) => {
                         try {
-                            await AsyncStorage.setItem('@sessionEmail', sessionEmail);
+                            await AsyncStorage.setItem('sessionEmail', sessionEmail);
                         }catch (e) {
                             console.error(e);
                             alert(e);
@@ -70,9 +70,9 @@ class Login extends Component{
                     }
                     storeData(this.state.email);
                     this.navigation.navigate("Home", {});
-              } else if (resonseJson["status"] == -1) {
+              } else if (responseJson["status"] == -1) {
                 alert("Invalid email and password! Please check it again!");
-              }else{
+              } else {
                 alert("Issue-[xxx]: Please contact admin!");
               }
             })
