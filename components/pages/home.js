@@ -35,6 +35,13 @@ class Home extends Component{
     async getUserInfo() {
         var getUserInfoURL = 'http://81.68.76.219:80/get_info_by_email';
         let sessionEmail = await this.getSessionEmail();
+        try{
+            // to solve an unknown format bug in different developing environment
+            sessionEmail = JSON.parse(sessionEmail);
+        }
+        catch(err){
+
+        }
         var getUserInfoData = JSON.stringify({
             "email": sessionEmail,
         });
@@ -114,16 +121,12 @@ class Home extends Component{
                         />
                     </ScrollView>
                     <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20}}>WORKOUT SUMMARY</Text>
+                    <TouchableOpacity onPress={() => this.toEditProfile()} style={{ zIndex: 9999 }}>
+                        <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
+                            <Text style={styles.login_button}>Edit Profile</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
                 </ScrollView>
-
-                <TouchableOpacity onPress={() => this.toEditProfile()} style={{ zIndex: 3 }}>
-                    <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
-                        <Text style={styles.login_button}>Edit Profile</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-
-                
-
                 {/* <Tabbar /> */}
             </View>
         )

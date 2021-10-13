@@ -8,7 +8,7 @@ import Login from './components/pages/login.js';
 import Signup from './components/pages/signup.js';
 import Home from './components/pages/home.js';
 import Profile from './components/pages/profile.js';
-import CreatePost from './components/pages/createpost.js'
+import TestFunc from './components/pages/testfunc.js'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -24,7 +24,7 @@ export default class App extends Component {
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="CreatePost" component={CreatePost} />
+          <Stack.Screen name="TestFunc" component={TestFunc} />
         </Stack.Navigator>
 
         {/* <Tab.Navigator>
