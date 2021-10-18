@@ -28,6 +28,20 @@ class Login extends Component{
         this.navigation = props.navigation;
     }
 
+    checkLogin(){
+        AsyncStorage.getItem('sessionEmail')
+        .then((item) => {
+            console.log("item: "+item);
+             if (item) {
+               this.toHomePage();
+             }
+        });
+    }
+
+    toHomePage(){
+        this.navigation.navigate("Home", {});
+    }
+
     async login_validation(){
         const useremail = this.state.email;
         const pwd = this.state.passwd;
@@ -63,6 +77,7 @@ class Login extends Component{
                     var storeData = async (sessionEmail) => {
                         try {
                             await AsyncStorage.setItem('sessionEmail', sessionEmail);
+                            console.log(sessionEmail);
                         }catch (e) {
                             console.error(e);
                             alert(e);
@@ -77,7 +92,7 @@ class Login extends Component{
               }
             })
               .catch((error) => {
-                alert("Issue-[xxx]:"+error+"Please contact admin!");
+                console.log("Issue-[xxx]:"+error+"Please contact admin!");
               });
         }
     }
@@ -86,6 +101,7 @@ class Login extends Component{
         this.navigation.navigate('Signup', {});
     }
 
+
     render(){
 
         return(
@@ -93,7 +109,7 @@ class Login extends Component{
                 <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />
                     <ScrollView showsVerticalScrollIndicator = {false}>
-                    <Text h1 style={styles.welcome}>Welcome to your execrise app!</Text>
+                    <Text h1 style={styles.welcome}>Welcome to your University app!{this.checkLogin()}</Text>
 
                 
                     <View style={styles.image_container}>
@@ -113,7 +129,7 @@ class Login extends Component{
 
                         <View style={styles.options}>
                             <Text style={styles.forgetPWD}>Forget Password?</Text>
-                            <Text style={styles.signup} onPress={() => this.goToSignup()}>Join Us to Be Healthy</Text>
+                            <Text style={styles.signup} onPress={() => this.goToSignup()}>Join Us!</Text>
                         </View>
 
                         <TouchableOpacity onPress={()=> this.login_validation()}>

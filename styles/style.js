@@ -165,6 +165,10 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
 
+    margin_bottom20:{
+        marginBottom: 20
+    },
+
     //----------------------------------------------------------------tabbar
     tabbar_container:{
         display: 'flex',

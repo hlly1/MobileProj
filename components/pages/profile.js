@@ -6,7 +6,6 @@ import {View,
     ScrollView,
     StatusBar,
     TouchableOpacity,
-    Button,
     ActionSheetIOS,
     LayoutAnimation
 } from "react-native";
@@ -20,6 +19,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImagePicker from 'react-native-image-picker';
 import { resolvePlugin } from "@babel/core";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {NativeBaseProvider, Icon, Button, AddIcon, Avatar} from 'native-base';
 
 // Login, Signup picture Reference URL:
 // https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.dc64b3430&cid=24099
@@ -28,26 +28,12 @@ class Profile extends Component{
 
     constructor(props){
         super(props)
-        this.state = {email: "", passwd: "", nickname:"", avatar:[]};
+        this.state = {email: "", passwd: "", nickname:"", avatar:''};
         this.validate = false;
         this.errorMsg = "";
     }
 
     selectImage = () => {
-        // const BUTTONS = ['Take Photo', 'Choose Photo Library', 'Cancel'];
-        // ActionSheet.show({options:BUTTONS, cancelButtonIndex: 2, title:'Select a Photo'},
-        //     buttonIndex => {
-        //         switch (buttonIndex){
-        //             case 0:
-        //                 break;
-        //             case 1:
-        //                 break;
-        //             default:
-        //                 break;
-        //         }
-        //     }
-        // )
-
         let options = {
             storageOption:{
                 path: 'images',
@@ -55,20 +41,6 @@ class Profile extends Component{
             },
             includeBase64: true
         };
-
-        //开启摄像头，可用
-        // launchCamera(options, (response)=>{
-        //     console.log('response: ', response);
-        //     if (response.didCancel) {
-        //         console.log('cancelled image picker');
-        //     } else if(response.error){
-        //         console.log('imagePicker error: ', response.error);
-        //     }else if (response.customButton) {
-        //         console.log('imagePicker button tapped: ', response.customButton);
-        //     }else{
-        //         const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
-        //     }
-        // });
 
         //打开图库，可用
         launchImageLibrary(options, (response)=>{
@@ -81,12 +53,34 @@ class Profile extends Component{
                 console.log('imagePicker button tapped: ', response.customButton);
             }else{
                 const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
+                this.setState({avatar: source});
             }
         });
     }
 
-    uploadAvatar = async (uri) =>  {
+    uploadByCamera = () => {
+        let options = {
+            storageOption:{
+                path: 'images',
+                mediaType: 'photo'
+            },
+            includeBase64: true
+        };
 
+        //开启摄像头，可用
+        launchCamera(options, (response)=>{
+            console.log('response: ', response);
+            if (response.didCancel) {
+                console.log('cancelled image picker');
+            } else if(response.error){
+                console.log('imagePicker error: ', response.error);
+            }else if (response.customButton) {
+                console.log('imagePicker button tapped: ', response.customButton);
+            }else{
+                const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
+                this.setState({avatar: source});
+            }
+        });
     }
 
     async editProfileRequest(){
@@ -116,7 +110,7 @@ class Profile extends Component{
                 body: registerData
             }).then(response => response.json())
             .then(responseJson => {
-              // Showing response message coming from server after inserting records.
+                // Showing response message coming from server after inserting records.
                 //alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
                     var storeData = async (sessionEmail) => {
@@ -162,16 +156,45 @@ class Profile extends Component{
 
                         <Input placeholder='New Username' 
                         onChangeText={text => this.setState({nickname: text})}/>
-    
-                        <Button title="Select Avatar" onPress={() => this.selectImage()} />
-
+                            
+                        <NativeBaseProvider>
+                            {this.avatar == '' ?<Avatar
+                            alignSelf="center"
+                            size="lg"
+                            style={styles.margin_bottom20}
+                            source={{
+                                uri: "../../assets/user-circle.png",
+                            }}
+                        >
+                        </Avatar>:<Avatar
+                            alignSelf="center"
+                            size="lg"
+                            style={styles.margin_bottom20}
+                            source={{
+                                uri: this.avatar,
+                            }}
+                        >
+                        </Avatar>
                         
-                        <TouchableOpacity onPress={()=> this.editProfileRequest()} style={{ zIndex: 9999}}>
-                            <LinearGradient colors={['#3AA8FE','#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
-                                <Text style={styles.login_button}>Confirm</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
+                        }
 
+                            <Button leftIcon={<AddIcon size="4" />} onPress={() => this.selectImage()} style={styles.margin_bottom20}>
+                                Upload by Gallery
+                            </Button>
+                            
+                            <Button leftIcon={<AddIcon size="4" />} onPress={() => this.uploadByCamera()} style={styles.margin_bottom20}>
+                                Upload by Camera
+                            </Button>
+
+                            <Button
+                                leftIcon={<Icon name="cog-outline" type="Ionicons" color="white" />}
+                                borderRadius={12} colorScheme="success"
+                                onPress={()=> this.editProfileRequest()}
+                                >
+                                Confirm My Updates
+                            </Button>   
+                        </NativeBaseProvider>
+                        
                     </View>
                     </ScrollView>
                 </LinearGradient>

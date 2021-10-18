@@ -8,12 +8,13 @@ import {View,
     TouchableOpacity} from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
-import { Text, Avatar } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import Utils from '../tools/utils.js';
 import Card from '../card';
 import Tabbar from '../tabbar.js';
 import { Overlay } from "react-native-elements/dist/overlay/Overlay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {NativeBaseProvider, Avatar} from 'native-base';
 
 class Home extends Component{
 
@@ -25,7 +26,7 @@ class Home extends Component{
 
     getSessionEmail = async () => {
         try {
-            return await AsyncStorage.getItem('@sessionEmail');
+            return await AsyncStorage.getItem('sessionEmail');
         }catch (err) {
             console.error(err);
             return null;
@@ -57,6 +58,9 @@ class Home extends Component{
             .then(responseJson => {
                 if (responseJson["status"] == 1) {
                     this.setState({ username: responseJson["username"] });
+                    if (responseJson["icon_data"]) {
+                        this.setState({icondata:responseJson["icon_data"]});
+                    }
                     // return responseJson;
                 } else if (responseJson["status"] == -1) {
                     alert("Failed to load user infomation");
@@ -77,6 +81,14 @@ class Home extends Component{
         this.getUserInfo();
     }
 
+    async logout(){
+        await AsyncStorage.getAllKeys().then(
+            keys => AsyncStorage.multiRemove(keys)
+        ).then(
+            () => this.navigation.navigate("Login", {})
+        );
+    }
+
     render(){
         return(
             <View style={styles.home_container}>
@@ -84,20 +96,33 @@ class Home extends Component{
                     <View style={styles.options}>
                         <View style={{alignItems:'flex-start'}}>
                             <Text style={{color:'grey'}}> {Utils.currentDate()} </Text>
-                            <Text h4 style={{ maxWidth: 250, overflow: 'scroll' }}>Hi {this.state.username}. Welcome to your fitness app!</Text>
+                            <Text h4 style={{ maxWidth: 250, overflow: 'scroll' }}>Hi {this.state.username}. Welcome to your university app!</Text>
                         </View>
                         <View style={{alignItems:'flex-end'}}>
-                            <Avatar
-                                rounded
-                                source={{
-                                    uri:
-                                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQEZrATmgHOi5ls0YCCQBTkocia_atSw0X-Q&usqp=CAU',
-                                }}
-                                size={55}  
-                            />
+                            <NativeBaseProvider>
+                                    {this.avatar == '' ?<Avatar
+                                    alignSelf="center"
+                                    size="lg"
+                                    style={styles.margin_bottom20}
+                                    source={{
+                                        uri: "../../assets/user-circle.png",
+                                    }}
+                                >
+                                </Avatar>:<Avatar
+                                    alignSelf="center"
+                                    size="lg"
+                                    style={styles.margin_bottom20}
+                                    source={{
+                                        uri: this.icondata,
+                                    }}
+                                >
+                                </Avatar>
+                                
+                                }
+                            </NativeBaseProvider>
                         </View>
                     </View>  
-                    <Text h5 style={{color:'grey', fontWeight:'bold'}}>DAILY TASKS</Text>
+                    <Text h5 style={{color:'grey', fontWeight:'bold'}}>FAVORITE SUBJECTS</Text>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         <Card
                             title={'Running'}
@@ -120,10 +145,15 @@ class Home extends Component{
                             content={'descriptions'}
                         />
                     </ScrollView>
-                    <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20}}>WORKOUT SUMMARY</Text>
+                    <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20}}>MY POSTS</Text>
                     <TouchableOpacity onPress={() => this.toEditProfile()} style={{ zIndex: 9999 }}>
                         <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
                             <Text style={styles.login_button}>Edit Profile</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.logout()} style={{ zIndex: 3 }}>
+                        <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
+                            <Text style={styles.login_button}>Logout</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </ScrollView>

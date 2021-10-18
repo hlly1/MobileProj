@@ -21,6 +21,20 @@ class Signup extends Component{
         this.navigation = props.navigation;
     }
 
+    checkLogin(){
+        AsyncStorage.getItem('sessionEmail')
+        .then((item) => {
+            console.log("item: "+item);
+             if (item) {
+               this.toHomePage();
+             }
+        });
+    }
+
+    toHomePage(){
+        this.navigation.navigate("Home", {});
+    }
+
     async sendRegister(){
         if(this.state.email.length == 0 || this.state.passwd.length == 0){
             this.errorMsg = "Email and Password cannot be empty!";
@@ -54,7 +68,7 @@ class Signup extends Component{
               if (responseJson["status"] == 1) {
                     var storeData = async (sessionEmail) => {
                         try {
-                            await AsyncStorage.setItem('@sessionEmail', sessionEmail);
+                            await AsyncStorage.setItem('sessionEmail', sessionEmail);
                         }catch (e) {
                             console.error(e);
                             alert(e);
@@ -123,7 +137,7 @@ class Signup extends Component{
                 <LinearGradient colors={['#FA8072', '#F08080', '#CD5C5C']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />
                     <ScrollView showsVerticalScrollIndicator = {false}>
-                        <Text h1 style={styles.welcome}>Join us to Start your Fitness!</Text>
+                        <Text h1 style={styles.welcome}>Join us to Start your University Life! {this.checkLogin()}</Text>
                         <View style={styles.image_container}>
                             <Image style={styles.pict2}
                                 source={require('../../assets/imgs/signup.png')}
