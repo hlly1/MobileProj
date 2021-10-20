@@ -158,25 +158,26 @@ class Profile extends Component{
                         onChangeText={text => this.setState({nickname: text})}/>
                             
                         <NativeBaseProvider>
-                            {this.avatar == '' ?<Avatar
-                            alignSelf="center"
-                            size="lg"
-                            style={styles.margin_bottom20}
-                            source={{
-                                uri: "../../assets/user-circle.png",
-                            }}
-                        >
-                        </Avatar>:<Avatar
-                            alignSelf="center"
-                            size="lg"
-                            style={styles.margin_bottom20}
-                            source={{
-                                uri: this.avatar,
-                            }}
-                        >
-                        </Avatar>
-                        
-                        }
+                            {this.avatar == null 
+                            ?
+                            <Avatar
+                                alignSelf="center"
+                                size="lg"
+                                style={styles.margin_bottom20}
+                                source={require("../../assets/imgs/user-circle-2.png")}
+                            >
+                            </Avatar>
+                            :
+                            <Avatar
+                                alignSelf="center"
+                                size="lg"
+                                style={styles.margin_bottom20}
+                                source={{
+                                    uri: this.avatar,
+                                }}
+                            >
+                            </Avatar>
+                            }
 
                             <Button leftIcon={<AddIcon size="4" />} onPress={() => this.selectImage()} style={styles.margin_bottom20}>
                                 Upload by Gallery

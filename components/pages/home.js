@@ -14,7 +14,7 @@ import Card from '../card';
 import Tabbar from '../tabbar.js';
 import { Overlay } from "react-native-elements/dist/overlay/Overlay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {NativeBaseProvider, Avatar} from 'native-base';
+import { NativeBaseProvider, Avatar } from 'native-base';
 
 class Home extends Component{
 
@@ -100,24 +100,21 @@ class Home extends Component{
                         </View>
                         <View style={{alignItems:'flex-end'}}>
                             <NativeBaseProvider>
-                                    {this.avatar == '' ?<Avatar
+                                {this.icondata == null 
+                                ? 
+                                <Avatar
                                     alignSelf="center"
                                     size="lg"
-                                    style={styles.margin_bottom20}
-                                    source={{
-                                        uri: "../../assets/user-circle.png",
-                                    }}
-                                >
-                                </Avatar>:<Avatar
-                                    alignSelf="center"
-                                    size="lg"
-                                    style={styles.margin_bottom20}
-                                    source={{
-                                        uri: this.icondata,
-                                    }}
+                                    source={require('../../assets/imgs/user-circle-2.png')}
                                 >
                                 </Avatar>
-                                
+                                :
+                                <Avatar
+                                    alignSelf="center"
+                                    size="lg"
+                                    source={this.icondata}
+                                >
+                                </Avatar>
                                 }
                             </NativeBaseProvider>
                         </View>
