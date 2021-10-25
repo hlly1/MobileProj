@@ -23,7 +23,7 @@ import {NativeBaseProvider, Icon, Button, AddIcon, Avatar} from 'native-base';
 
 // Login, Signup picture Reference URL:
 // https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.dc64b3430&cid=24099
-
+// Default user avatar: https://www.iconfont.cn/search/index?searchType=icon&q=user
 class Profile extends Component{
 
     constructor(props){
@@ -113,16 +113,7 @@ class Profile extends Component{
                 // Showing response message coming from server after inserting records.
                 //alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
-                    var storeData = async (sessionEmail) => {
-                        try {
-                            await AsyncStorage.setItem('@sessionEmail', sessionEmail);
-                        }catch (e) {
-                            console.error(e);
-                            alert(e);
-                        }
-                    }
-                    storeData(this.state.email);
-                    this.navigation.navigate("Home", {});
+
               } else if (resonseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["message"]+"Please check it again!");
               }else{
@@ -163,7 +154,7 @@ class Profile extends Component{
                             size="lg"
                             style={styles.margin_bottom20}
                             source={{
-                                uri: "../../assets/user-circle.png",
+                                uri: "../../assets/imgs/user-circle.png",
                             }}
                         >
                         </Avatar>:<Avatar
@@ -171,7 +162,7 @@ class Profile extends Component{
                             size="lg"
                             style={styles.margin_bottom20}
                             source={{
-                                uri: this.avatar,
+                                uri: "https://pbs.twimg.com/profile_images/1177303899243343872/B0sUJIH0_400x400.jpg",
                             }}
                         >
                         </Avatar>

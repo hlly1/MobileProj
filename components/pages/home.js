@@ -100,7 +100,7 @@ class Home extends Component{
                         </View>
                         <View style={{alignItems:'flex-end'}}>
                             <NativeBaseProvider>
-                                    {this.avatar == '' ?<Avatar
+                                    {this.icondata == '' ?<Avatar
                                     alignSelf="center"
                                     size="lg"
                                     style={styles.margin_bottom20}
