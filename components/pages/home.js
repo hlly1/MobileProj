@@ -145,7 +145,6 @@ class Home extends Component{
                             <Text style={styles.login_button}>Logout</Text>
                         </LinearGradient>
                     </TouchableOpacity>
-                    <Tabbar />
                 </ScrollView>
             </View>
             </NativeBaseProvider>

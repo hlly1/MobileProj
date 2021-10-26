@@ -2,6 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Component } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import Login from './components/pages/login.js';
 import Signup from './components/pages/signup.js';
