@@ -31,6 +31,7 @@ class Profile extends Component{
         this.state = {email: "", passwd: "", nickname:"", avatar:''};
         this.validate = false;
         this.errorMsg = "";
+        this.navigation = props.navigation;
     }
 
     selectImage = () => {
@@ -94,26 +95,28 @@ class Profile extends Component{
             this.validate = true;
             this.errorMsg = "";
             // send them to backend
-            var registerURL='http://81.68.76.219:80/xxx';
-            var registerData = JSON.stringify({
+            var editProileURL='http://81.68.76.219:80/xxx';
+            var editProileData = JSON.stringify({
                 "email": this.state.email,
                 "username": this.state.nickname,
                 "password": this.state.passwd,
+                "icon_data": this.avatar
             });
 
-            const res = await fetch(registerURL, {
+            const res = await fetch(editProileURL, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: registerData
+                body: editProileData
             }).then(response => response.json())
             .then(responseJson => {
-                // Showing response message coming from server after inserting records.
-                //alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
 
+                
+                alert("Profile Edited Successfully!");
+                this.navigation.navigate("Home",{});
               } else if (resonseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["message"]+"Please check it again!");
               }else{
@@ -127,10 +130,63 @@ class Profile extends Component{
 
     }
 
+    getSessionEmail = async () => {
+        try {
+            return await AsyncStorage.getItem('sessionEmail');
+        }catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
+    async getUserInfo() {
+        var getUserInfoURL = 'http://81.68.76.219:80/get_info_by_email';
+        let sessionEmail = await this.getSessionEmail();
+        try{
+            // to solve an unknown format bug in different developing environment
+            sessionEmail = JSON.parse(sessionEmail);
+        }
+        catch(err){
+
+        }
+        var getUserInfoData = JSON.stringify({
+            "email": sessionEmail,
+        });
+        console.log("email:" + sessionEmail);
+        const res = await fetch(getUserInfoURL, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: getUserInfoData
+        }).then(response => response.json())
+            .then(responseJson => {
+                if (responseJson["status"] == 1) {
+                    this.setState({ username: responseJson["username"] });
+                    if (responseJson["icon_data"]) {
+                        this.setState({icondata:responseJson["icon_data"]});
+                    }
+                    // return responseJson;
+                } else if (responseJson["status"] == -1) {
+                    alert("Failed to load user infomation");
+                } else {
+                    alert("Issue-[xxx]: Please contact admin!");
+                }
+            })
+            .catch((error) => {
+                alert("Issue-[xxx]:" + error + "| " + sessionEmail);
+            });
+    }
+
+    componentDidMount(){
+        this.getUserInfo();
+    }
+
 
     render(){
         return(
-                
+            <NativeBaseProvider>
                 <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />
                     <ScrollView showsVerticalScrollIndicator = {false}>
@@ -138,23 +194,24 @@ class Profile extends Component{
                     
 
                     <View style={styles.profile_card}>
-                        <Input placeholder='Email' 
-                        onChangeText={text => this.setState({email: text})}/>
+                        <Input placeholder={this.state.email+'Email: (confirmed)'}
+                        disabled={true}
+                        disabledInputStyle={{opacity: 1}}
+                        />
 
-                        <Input placeholder="New Password" 
+                        <Input placeholder="New Password(optional)" 
                         secureTextEntry={true} 
                         onChangeText={text => this.setState({passwd: text})}/>
 
                         <Input placeholder='New Username' 
                         onChangeText={text => this.setState({nickname: text})}/>
                             
-                        <NativeBaseProvider>
+                        
                             {this.avatar == null 
                             ?
                             <Avatar
                                 alignSelf="center"
                                 size="lg"
-                                style={styles.margin_bottom20}
                                 source={require("../../assets/imgs/user-circle-2.png")}
                             >
                             </Avatar>
@@ -162,7 +219,6 @@ class Profile extends Component{
                             <Avatar
                                 alignSelf="center"
                                 size="lg"
-                                style={styles.margin_bottom20}
                                 source={{
                                     uri: this.avatar,
                                 }}
@@ -170,7 +226,7 @@ class Profile extends Component{
                             </Avatar>
                             }
 
-                            <Button leftIcon={<AddIcon size="4" />} onPress={() => this.selectImage()} style={styles.margin_bottom20}>
+                            <Button leftIcon={<AddIcon size="4" />} onPress={() => this.selectImage()} style={styles.margin_upbottom20}>
                                 Upload by Gallery
                             </Button>
                             
@@ -185,12 +241,12 @@ class Profile extends Component{
                                 >
                                 Confirm My Updates
                             </Button>   
-                        </NativeBaseProvider>
+                        
                         
                     </View>
                     </ScrollView>
                 </LinearGradient>
-
+                </NativeBaseProvider>
 
 
 

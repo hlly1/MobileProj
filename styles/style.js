@@ -140,10 +140,6 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start'
     },
 
-
-
-
-
     //----------------------------------------------------------------profile
 
     profile_card:{
@@ -167,6 +163,11 @@ const styles = StyleSheet.create({
 
     margin_bottom20:{
         marginBottom: 20
+    },
+
+    margin_upbottom20: {
+        marginBottom: 20,
+        marginTop: 20
     },
 
     //----------------------------------------------------------------tabbar

@@ -12,7 +12,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { SocialIcon, Image, Text, Input } from 'react-native-elements';
 import Validator from '../tools/validator.js';
 import FlashMessage from "react-native-flash-message";
-import { createStackNavigator } from "@react-navigation/stack";
+import Utils from '../tools/utils.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Login, Signup picture Reference URL:
@@ -71,28 +71,17 @@ class Login extends Component{
                 body: loginData
             }).then(response => response.json())
             .then(responseJson => {
-              // Showing response message coming from server after inserting records.
-                alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
-                    var storeData = async (sessionEmail) => {
-                        try {
-                            await AsyncStorage.setItem('sessionEmail', sessionEmail);
-                            console.log(sessionEmail);
-                        }catch (e) {
-                            console.error(e);
-                            alert(e);
-                        }
-                    }
-                    storeData(this.state.email);
+                    Utils.storeData(this.state.email);
                     this.navigation.navigate("Home", {});
               } else if (responseJson["status"] == -1) {
                 alert("Invalid email and password! Please check it again!");
               } else {
-                alert("Issue-[xxx]: Please contact admin!");
+                alert("Database Connection Error!");
               }
             })
               .catch((error) => {
-                console.log("Issue-[xxx]:"+error+"Please contact admin!");
+                console.log("login_validation(): "+error);
               });
         }
     }
@@ -100,7 +89,6 @@ class Login extends Component{
     goToSignup(){
         this.navigation.navigate('Signup', {});
     }
-
 
     render(){
 

@@ -15,27 +15,18 @@ import Tabbar from '../tabbar.js';
 import { Overlay } from "react-native-elements/dist/overlay/Overlay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeBaseProvider, Avatar } from 'native-base';
-
+import { useNavigation } from '@react-navigation/native';
 class Home extends Component{
-
     constructor(props) {
         super(props);
         this.navigation = props.navigation;
-        this.state = {username: "", icondata: ""}
-    }
-
-    getSessionEmail = async () => {
-        try {
-            return await AsyncStorage.getItem('sessionEmail');
-        }catch (err) {
-            console.error(err);
-            return null;
-        }
+        this.state = {username: "", icondata: ""};
     }
 
     async getUserInfo() {
         var getUserInfoURL = 'http://81.68.76.219:80/get_info_by_email';
-        let sessionEmail = await this.getSessionEmail();
+
+        let sessionEmail = await Utils.getSessionEmail();
         try{
             // to solve an unknown format bug in different developing environment
             sessionEmail = JSON.parse(sessionEmail);
@@ -91,6 +82,7 @@ class Home extends Component{
 
     render(){
         return(
+            <NativeBaseProvider>
             <View style={styles.home_container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={styles.options}>
@@ -99,7 +91,7 @@ class Home extends Component{
                             <Text h4 style={{ maxWidth: 250, overflow: 'scroll' }}>Hi {this.state.username}. Welcome to your university app!</Text>
                         </View>
                         <View style={{alignItems:'flex-end'}}>
-                            <NativeBaseProvider>
+                            
                                 {this.icondata == null 
                                 ? 
                                 <Avatar
@@ -116,7 +108,7 @@ class Home extends Component{
                                 >
                                 </Avatar>
                                 }
-                            </NativeBaseProvider>
+                            
                         </View>
                     </View>  
                     <Text h5 style={{color:'grey', fontWeight:'bold'}}>FAVORITE SUBJECTS</Text>
@@ -153,9 +145,11 @@ class Home extends Component{
                             <Text style={styles.login_button}>Logout</Text>
                         </LinearGradient>
                     </TouchableOpacity>
+                    <Tabbar />
                 </ScrollView>
-                {/* <Tabbar /> */}
+                
             </View>
+            </NativeBaseProvider>
         )
     }
 

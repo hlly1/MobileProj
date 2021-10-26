@@ -2,16 +2,18 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Component } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Login from './components/pages/login.js';
 import Signup from './components/pages/signup.js';
 import Home from './components/pages/home.js';
 import Profile from './components/pages/profile.js';
-import TestFunc from './components/pages/testfunc.js'
+import TestFunc from './components/pages/testfunc.js';
+import Tabbar from './components/tabbar.js';
+import { Drawer } from 'native-base';
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+// const Drawer = createDrawerNavigator();
+
 export default class App extends Component {
 
   render() {
@@ -26,12 +28,6 @@ export default class App extends Component {
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="TestFunc" component={TestFunc} />
         </Stack.Navigator>
-
-        {/* <Tab.Navigator>
-          <Tab.Screen name="Home" component={Home} />
-          <Tab.Screen name="Profile" component={Profile} />
-        </Tab.Navigator> */}
-
       </NavigationContainer>
       
     );
