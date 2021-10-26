@@ -39,7 +39,7 @@ class Login extends Component{
     }
 
     toHomePage(){
-        this.navigation.navigate("Home", {});
+        this.navigation.navigate("HomeTabs", {});
     }
 
     async login_validation(){
@@ -84,7 +84,8 @@ class Login extends Component{
                         }
                     }
                     storeData(this.state.email);
-                    this.navigation.navigate("Home", {});
+                    // this.navigation.navigate("Home", {});
+                    this.toHomePage();
               } else if (responseJson["status"] == -1) {
                 alert("Invalid email and password! Please check it again!");
               } else {

@@ -9,31 +9,33 @@ import Signup from './components/pages/signup.js';
 import Home from './components/pages/home.js';
 import Profile from './components/pages/profile.js';
 import TestFunc from './components/pages/testfunc.js'
+import Tabbar from './components/tabbar.js'
+import { View } from 'native-base';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-export default class App extends Component {
 
-  render() {
+function HomeTabs() {
+  return(
+    <Tab.Navigator initialRouteName="" screenOptions={{ headerShown: false }}>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
+}
 
+export default class App extends Component {    
+
+  render = () => {
     return (
-    
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="HomePage" headerMode='none'>
+        <Stack.Navigator initialRouteName="HomePage" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="HomeTabs" component={HomeTabs}/>
           <Stack.Screen name="TestFunc" component={TestFunc} />
         </Stack.Navigator>
-
-        {/* <Tab.Navigator>
-          <Tab.Screen name="Home" component={Home} />
-          <Tab.Screen name="Profile" component={Profile} />
-        </Tab.Navigator> */}
-
       </NavigationContainer>
-      
     );
   }
 }

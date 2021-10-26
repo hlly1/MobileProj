@@ -154,10 +154,10 @@ class Home extends Component{
                         </LinearGradient>
                     </TouchableOpacity>
                 </ScrollView>
-                {/* <Tabbar /> */}
             </View>
         )
     }
 
 }
+
 export default Home;
