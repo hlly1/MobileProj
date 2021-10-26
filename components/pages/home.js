@@ -147,11 +147,11 @@ class Home extends Component{
                     </TouchableOpacity>
                     <Tabbar />
                 </ScrollView>
-                
             </View>
             </NativeBaseProvider>
         )
     }
 
 }
+
 export default Home;

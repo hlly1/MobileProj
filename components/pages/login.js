@@ -39,7 +39,7 @@ class Login extends Component{
     }
 
     toHomePage(){
-        this.navigation.navigate("Home", {});
+        this.navigation.navigate("HomeTabs", {});
     }
 
     async login_validation(){
@@ -72,8 +72,18 @@ class Login extends Component{
             }).then(response => response.json())
             .then(responseJson => {
               if (responseJson["status"] == 1) {
-                    Utils.storeData(this.state.email);
-                    this.navigation.navigate("Home", {});
+                    var storeData = async (sessionEmail) => {
+                        try {
+                            await AsyncStorage.setItem('sessionEmail', sessionEmail);
+                            console.log(sessionEmail);
+                        }catch (e) {
+                            console.error(e);
+                            alert(e);
+                        }
+                    }
+                    storeData(this.state.email);
+                    // this.navigation.navigate("Home", {});
+                    this.toHomePage();
               } else if (responseJson["status"] == -1) {
                 alert("Invalid email and password! Please check it again!");
               } else {
