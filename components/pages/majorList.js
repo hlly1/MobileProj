@@ -32,27 +32,27 @@ export default class MajorList extends Component {
             categories: [{
                 "id": "1",
                 "name": "Master of Information Technology",
-                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
+                "imgUrl": "../../assets/imgs/unimelb-logo.png"
             }, {
                 "id": "2",
                 "name": "Master of Computer Science",
-                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
+                "imgUrl": "../../assets/imgs/unimelb-logo.png"
             }, {
                 "id": "3",
                 "name": "Master of Accounting",
-                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
+                "imgUrl": "../../assets/imgs/unimelb-logo.png"
             }, {
                 "id": "4",
                 "name": "Master of Language",
-                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
+                "imgUrl": "../../assets/imgs/unimelb-logo.png"
             }, {
                 "id": "5",
                 "name": "Master of Data Science",
-                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
+                "imgUrl": "../../assets/imgs/unimelb-logo.png"
             }, {
                 "id": "6",
                 "name": "Master of Mechanical Engineering",
-                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
+                "imgUrl": "../../assets/imgs/unimelb-logo.png"
             }],
             new_categories: [],
             text: '',
@@ -129,7 +129,7 @@ export default class MajorList extends Component {
                             <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.id)}>
                                 <View key={item.id} style={[styles.item, {width: pictWidth}]}>
                                     <Image 
-                                        source={{uri:"https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"}} 
+                                        source={require("../../assets/imgs/unimelb-logo.png")} 
                                         style={styles.itemImg}
                                     />
                                     <View style={styles.info}> 
@@ -205,7 +205,8 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         width:80,
         height:80,
-        zIndex:-1
+        zIndex:-1,
+        borderRadius:12
     },
     info: {
         flex:1,
