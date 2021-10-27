@@ -38,11 +38,18 @@ class Post extends Component{
         {/* 2.0 ISBN start */}
         <View>
         <Text style = {{fontSize:20,color:"#666",fontWeight:"bold"}}>ISBN(optinal)</Text>
-        <Input 
-        value = {ISBN}
-        placeholder = "Enter the ISBN"
-        onChangeText={(ISBN)=>this.setState({ISBN})}
-        />
+        <View style = {{flexDirection:'row'}}>      
+          <View style = {{width:150}}>
+            <Input 
+            value = {ISBN}
+            placeholder = "Enter ISBN"
+            onChangeText={(ISBN)=>this.setState({ISBN})}
+            />
+          </View>
+          <View style = {{width:100, height:80}}>
+            <Button colorScheme="teal" title={"ISBN Submit"}/>
+          </View>
+        </View>
         </View> 
         {/* 2.0 ISBN end */}
         {/* 3.0 bookname start */}
