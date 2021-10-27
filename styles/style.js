@@ -9,6 +9,30 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 12
     },
+    post_box_column:{
+        display:'flex',
+        flexDirection:'column',
+        justifyContent: 'flex-start',
+    },
+    post_box_row:{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent: 'flex-start',
+    },        
+    post_title:{
+        color:"white", 
+        marginLeft:5,
+        fontSize:15, 
+        fontWeight:'bold',
+        overflow:'scroll'
+    },
+    post_title:{
+        color:"white", 
+        fontSize:15, 
+        fontWeight:'bold',
+        overflow:'scroll',
+        marginBottom: 10
+    },
     //-----------------------------------------------------------------login
     welcome: {
         fontSize: 25,

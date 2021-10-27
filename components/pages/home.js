@@ -6,8 +6,9 @@ import {View,
 import {styles} from "../../styles/style";
 import { Text } from 'react-native-elements';
 import Utils from '../tools/utils.js';
+import Card from '../card';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeBaseProvider, Box, Center} from 'native-base';
+import { NativeBaseProvider, Box, Center, Avatar} from 'native-base';
 class Home extends Component{
     constructor(props) {
         super(props);
@@ -33,7 +34,25 @@ class Home extends Component{
                             textAlign: 'center',
                         }}
                         >
-                        This is a Sample Post
+                            <View style={styles.post_box_column}>
+                                <View style={{alignItems:'center'}}>
+                                    <Text style={styles.post_title}>COMP900xx Sample Major Name</Text>
+                                </View>
+                                <View style={styles.post_box_row}>
+                                    <Avatar
+                                        alignSelf="center"
+                                        size="sm"
+                                        source={require("../../assets/imgs/user-circle-2.png")}
+                                    >
+                                    </Avatar>
+                                    <Text style={{color:"white", marginLeft:7,marginTop:5,fontSize:15}}>Username:</Text>
+                                </View>
+
+                                <View style={{marginTop:7}}>
+                                    <Text style={styles.post_title}>This is a title of this post and this is very long asda asfaf gdasga dfafs adsadasd sedgvsf </Text>
+                                </View>
+                                
+                            </View>
                     </Box>
                 </View>
             )
@@ -48,9 +67,35 @@ class Home extends Component{
                         <View style={{alignItems:'center'}}>
                             <Text style={{color:'grey'}}> {Utils.currentDate()} </Text>
                             <Text h4 style={{ maxWidth: 250, overflow: 'scroll' }}>Postera crescam laude</Text>
-                            <Text h4 style={{ maxWidth: 250, overflow: 'scroll', textAlign:'center'}}>We shall grow in the esteem of future generations</Text>
                         </View>
                     </View>
+                    <Text h5 style={{color:'grey', fontWeight:'bold', marginBottom:20}}>MAJORS WITH MOST POSTS:</Text>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.margin_bottom20}>
+                        <Card
+                            title={''}
+                            image={require('../../assets/imgs/unimelb-logo.png')}
+                            content={'descriptions'}
+                            Size="sm"
+                        />
+                        <Card
+                            title={''}
+                            image={require('../../assets/imgs/unimelb-logo.png')}
+                            content={'descriptions'}
+                            Size="sm"
+                        />
+                        <Card
+                            title={''}
+                            image={require('../../assets/imgs/unimelb-logo.png')}
+                            content={'descriptions'}
+                            Size="sm"
+                        />
+                        <Card
+                            title={''}
+                            image={require('../../assets/imgs/unimelb-logo.png')}
+                            content={'descriptions'}
+                            Size="sm"
+                        />
+                    </ScrollView>
                     <Text h5 style={{color:'grey', fontWeight:'bold', marginBottom:20}}>RECENT POSTS:</Text>
                     <View>
                         {posts}

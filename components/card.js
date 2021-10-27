@@ -5,8 +5,12 @@ import {comps} from "../styles/comp.js";
 
 
 const Card = props => {
+    let card_size = comps.card_container;
+    if (props.Size=="sm") {
+        card_size = comps.card_container_sm;
+    }
     return (
-        <View style={comps.card_container}>
+        <View style={card_size}>
             <View style={comps.card_content}>
                 <Text h1 style={comps.card_title}>{props.title}</Text>
                 <Image style={comps.backpict}
