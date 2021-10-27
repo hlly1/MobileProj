@@ -32,27 +32,27 @@ export default class MajorList extends Component {
             categories: [{
                 "id": "1",
                 "name": "Master of Information Technology",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
+                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
             }, {
                 "id": "2",
                 "name": "Master of Computer Science",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
+                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
             }, {
                 "id": "3",
                 "name": "Master of Accounting",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
+                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
             }, {
                 "id": "4",
                 "name": "Master of Language",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
+                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
             }, {
                 "id": "5",
                 "name": "Master of Data Science",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
+                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
             }, {
                 "id": "6",
                 "name": "Master of Mechanical Engineering",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
+                "imgUrl": "https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"
             }],
             new_categories: [],
             text: '',
@@ -129,7 +129,7 @@ export default class MajorList extends Component {
                             <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.id)}>
                                 <View key={item.id} style={[styles.item, {width: pictWidth}]}>
                                     <Image 
-                                        source={require("../../resource/imgs/unimelb_logo.png")} 
+                                        source={{uri:"https://production.listennotes.com/podcasts/the-brave-new-world-of-work-the-university-eoAcx1PEGm6.1400x1400.jpg"}} 
                                         style={styles.itemImg}
                                     />
                                     <View style={styles.info}> 

@@ -126,9 +126,6 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
 
-
-
-
     //----------------------------------------------------------------home
     home_container:{
         display: 'flex',
@@ -136,7 +133,9 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: 'white',
         position:'absolute',
-        padding: '7%',
+        paddingTop: '7%',
+        paddingLeft: '7%',
+        paddingRight: '7%',
         justifyContent:'flex-start'
     },
 

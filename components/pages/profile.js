@@ -149,10 +149,11 @@ class Profile extends Component{
         catch(err){
 
         }
+        this.setState({email: sessionEmail});
         var getUserInfoData = JSON.stringify({
             "email": sessionEmail,
         });
-        console.log("email:" + sessionEmail);
+        // console.log("email:" + sessionEmail);
         const res = await fetch(getUserInfoURL, {
             method: 'POST',
             headers: {
@@ -194,16 +195,21 @@ class Profile extends Component{
                     
 
                     <View style={styles.profile_card}>
-                        <Input placeholder={this.state.email+'Email: (confirmed)'}
+                        <Input placeholder={this.state.email}
+                        style={{backgroundColor:"#DEDEDE", color: "white", borderRadius:8}}
+                        label="Email(Confirmed)"
                         disabled={true}
                         disabledInputStyle={{opacity: 1}}
                         />
 
-                        <Input placeholder="New Password(optional)" 
+                        <Input placeholder="Empty for NO changes" 
                         secureTextEntry={true} 
-                        onChangeText={text => this.setState({passwd: text})}/>
+                        label="New Password(optional)"
+                        onChangeText={text => this.setState({passwd: text})}
+                        />
 
-                        <Input placeholder='New Username' 
+                        <Input placeholder='Empty for NO changes' 
+                        label="New Username"
                         onChangeText={text => this.setState({nickname: text})}/>
                             
                         
