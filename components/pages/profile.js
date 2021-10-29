@@ -11,7 +11,7 @@ import {View,
 } from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
-import { SocialIcon, Image, Text, Input } from 'react-native-elements';
+import { SocialIcon, Image, Text, Input, Avatar } from 'react-native-elements';
 import Validator from '../tools/validator.js';
 import FlashMessage from "react-native-flash-message";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -19,7 +19,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImagePicker from 'react-native-image-picker';
 import { resolvePlugin } from "@babel/core";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {NativeBaseProvider, Icon, Button, AddIcon, Avatar} from 'native-base';
+import {NativeBaseProvider, Icon, Button, AddIcon, //Avatar
+} from 'native-base';
 
 // Login, Signup picture Reference URL:
 // https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.dc64b3430&cid=24099
@@ -28,7 +29,7 @@ class Profile extends Component{
 
     constructor(props){
         super(props)
-        this.state = {email: "", passwd: "", nickname:"", avatar:''};
+        this.state = { email: "", passwd: "", nickname: "", avatar: ""};
         this.validate = false;
         this.errorMsg = "";
         this.navigation = props.navigation;
@@ -166,7 +167,10 @@ class Profile extends Component{
                 if (responseJson["status"] == 1) {
                     this.setState({ username: responseJson["username"] });
                     if (responseJson["icon_data"]) {
-                        this.setState({icondata:responseJson["icon_data"]});
+                        console.log(this.state.avatar);
+                        this.setState({ avatar: 'data:image/jpeg;base64,' + responseJson["icon_data"] + '}' });
+                        // this.setState({ avatar: require("../../assets/imgs/user-circle-1.png") });
+                        console.log(this.state.avatar);
                     }
                     // return responseJson;
                 } else if (responseJson["status"] == -1) {
@@ -212,21 +216,20 @@ class Profile extends Component{
                         label="New Username"
                         onChangeText={text => this.setState({nickname: text})}/>
                             
-                        
-                            {this.avatar == null 
+                            {this.state.avatar == '' 
                             ?
                             <Avatar
-                                alignSelf="center"
-                                size="lg"
-                                source={require("../../assets/imgs/user-circle-2.png")}
+                                containerStyle={{ alignSelf: "center" }}
+                                size="large"
+                                source={require("../../assets/imgs/user-circle-1.png")}
                             >
                             </Avatar>
                             :
                             <Avatar
-                                alignSelf="center"
-                                size="lg"
+                                containerStyle={{ alignSelf: "center" }}
+                                size="large"
                                 source={{
-                                    uri: this.avatar,
+                                    uri: this.state.avatar,
                                 }}
                             >
                             </Avatar>
