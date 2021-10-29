@@ -1,6 +1,5 @@
 # API
-*This file demonstrates each API intuitively from the perspective of data flow.*
-*For the API deployment details, (Port, Route, POST or GET ...), you may refer to services/main.py*
+
 
 
 ## 81.68.76.219:80/sendcode
