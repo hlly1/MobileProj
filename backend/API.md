@@ -8,6 +8,7 @@ POST:
 {
     "email": "xinze.huang2008@gmail.com"
 }
+
 RETURN:
 {
     "msg": "success",
@@ -22,6 +23,7 @@ POST:
     "username": "hahaha",
     "validation_code": "123456"
 }
+
 RETURN:
 {
     "msg": "success",
@@ -35,6 +37,7 @@ POST:
     "email": "test1@gmail.com",
     "password": "123456"
 }
+
 RETURN:
 {
     "msg": "success",
@@ -47,7 +50,8 @@ POST:
 {   
     "email":"test2@gmail.com"
 }
-RETURNl=:
+
+RETURN:
 {
     "icon_data": Byte64string
     "mark_id": [
@@ -65,6 +69,7 @@ RETURNl=:
 
 ## 81.68.76.219:80/subjectlist
 GET:
+
 RETURN:
 {
     "data": [
@@ -91,6 +96,7 @@ POST:
 {   
     "subject_code":"COMP90042"
 }
+
 RETURN:
 {
     "data": [
@@ -130,6 +136,7 @@ POST:
 {   
     "book_id": 1
 }
+
 RETURN:
 {
     "data": {
@@ -159,6 +166,7 @@ POST:
     "comment_content": "This is new add comment content",
     "email": "test1@gmail.com"
 }
+
 RETURN:
 {
     "status": 1,
@@ -176,6 +184,7 @@ POST:
     "picture_base64": BASE64STRING
     "subject_code": "COMP90054"
 }
+
 RETURN:
 {
     "status": 1,
@@ -187,6 +196,7 @@ POST:
 {   
     "ISBN":"1064215495"
 }
+
 RETURN:
 {
     "picture_base64": BASE64STRING
