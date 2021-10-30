@@ -67,8 +67,10 @@ RETURN:
 }
 
 ## 81.68.76.219:80/subjectlist
-GET:
-
+POST:
+{
+“major_name”: “Information Technology”
+}
 RETURN:
 {
     "data": [
