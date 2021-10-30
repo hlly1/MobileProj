@@ -67,8 +67,10 @@ RETURN:
 }
 
 ## 81.68.76.219:80/subjectlist
-GET:
-
+POST:
+{
+“major_name”: “Information Technology”
+}
 RETURN:
 {
     "data": [
@@ -204,6 +206,17 @@ RETURN:
     "msg": "test"
 }
 
+## 81.68.76.219:80/forget/sendcode
+POST:
+{   
+    "email": "test1@gmail.com"
+    
+}
+RETURN:
+{
+    "msg": " success",
+    "status": 1
+}
 
 
 
