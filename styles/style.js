@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 50,
         paddingHorizontal: 30,
-        height: height * 0.8
+        height: height * 0.9
     },
 
     profile_title: {
