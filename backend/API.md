@@ -218,5 +218,23 @@ RETURN:
     "status": 1
 }
 
+## 81.68.76.219:80/forget/sendcode
+POST:
+{   
+    "email": "test1@gmail.com"
+    
+}
+RETURN:
+{
+    "msg": " success",
+    "status": 1
+}
+
+邮箱不存在：
+RETURN:
+{
+"msg": " validate failed, email not exists"",
+    "status": -1
+}
 
 
