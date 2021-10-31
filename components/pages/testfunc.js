@@ -23,6 +23,7 @@ import { flexDirection, marginRight, padding } from "styled-system";
 
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import Sound from "react-native-sound";
+import RNFS from "react-native-fs";
 
 class TestFunc extends Component{
     constructor(props){
@@ -72,7 +73,7 @@ class TestFunc extends Component{
         }
         else{
             if (this.state.recorded == true) {
-                return 'Long Press to Play Record';
+                return 'Press to Play Record';
             }
             else {
                 return 'Long Press to Record';
@@ -130,6 +131,7 @@ class TestFunc extends Component{
                         if (success) {
                             console.log(this.state.audioPath);
                             console.log('play success');
+                            RNFS.readFile(this.state.audioPath, "base64").then(res => {console.log(res)});
                         }
                         else {
                             console.log('play failed');

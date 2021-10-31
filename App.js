@@ -11,7 +11,11 @@ import Profile from './components/pages/profile.js';
 import Home from './components/pages/home.js';
 import Subjects from './components/pages/majorList.js';
 import ForgetPWD from './components/pages/forgetPwd.js';
+import NewPost from './components/pages/newpost.js';
+import PostDetails from './components/pages/postdetails.js';
 import {Image, NativeBaseProvider } from 'native-base';
+
+import Testpage from './components/pages/testpage.js';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +50,8 @@ function HomeTabs() {
       tabBarInactiveTintColor: 'gray',
     })}
     >
+      <Tab.Screen name="TestPage" component={Testpage} />
+
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Subjects" component={Subjects} />
       <Tab.Screen name="Profile" component={MyHome} />
@@ -64,6 +70,8 @@ export default class App extends Component {
           <Stack.Screen name="HomeTabs" component={HomeTabs}/>
           <Stack.Screen name="ProfileTab" component={Profile} />
           <Stack.Screen name="ForgetPWD" component={ForgetPWD} />
+          <Stack.Screen name="NewPost" component={NewPost} />
+          <Stack.Screen name="PostDetails" component={PostDetails} />
         </Stack.Navigator>
       </NavigationContainer>
     );
