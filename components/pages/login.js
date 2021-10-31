@@ -103,6 +103,11 @@ class Login extends Component{
     goToForgetPWD(){
         this.navigation.navigate("ForgetPWD", {});
     }
+    
+    //回退进入前一页面的时候不好使
+    // componentDidUpdate(){
+    //     this.checkLogin();
+    // }
 
     render(){
 

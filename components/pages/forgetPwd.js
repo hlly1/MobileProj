@@ -100,7 +100,7 @@ class ForgetPWD extends Component{
               // Showing response message coming from server after inserting records.
                 // alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
-                  alert("Code is sent, please check your email!");
+                  alert("Validated Successfully!");
                   var storeData = async (sessionEmail) => {
                         try {
                             await AsyncStorage.setItem('sessionEmail', sessionEmail);
@@ -111,7 +111,7 @@ class ForgetPWD extends Component{
                         }
                     }
                     storeData(this.state.email);
-                  this.navigation.navigate("Profile",{});
+                  this.navigation.navigate("ProfileTab",{});
               } else{
                 alert(responseJson["msg"]);
               }
@@ -124,13 +124,10 @@ class ForgetPWD extends Component{
             alert("Email cannot be empty!");
         }else if(!Validator.email_validate(this.state.email)){
             alert("Invalid Email format!");
+        }else if(this.state.pin.length == 0){
+            alert("PIN code cannot be empty!");
         }
     }
-
-
-
-
-
 
 
     render(){

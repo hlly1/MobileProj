@@ -75,7 +75,7 @@ class Signup extends Component{
                         }
                     }
                     storeData(this.state.email);
-                    this.navigation.navigate("HomeTab", {});
+                    this.navigation.navigate("HomeTabs", {});
               } else if (responseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["message"]+"Please check it again!");
               }else{
