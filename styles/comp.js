@@ -70,7 +70,34 @@ const comps = StyleSheet.create({
 
     des_small:{
         padding: 7, fontSize:15, alignContent:'center',fontWeight:'bold'
-    }
+    },
+    
+    post_card:{
+        width: "100%",
+        height: "auto",
+        marginTop: 20,
+        marginBottom:50,
+        paddingTop: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 20,
+        borderRadius: 12,
+        backgroundColor: "#e0e0e0",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+        elevation: 10,
+    },
+
+    post_btn:{
+        width:"100%",
+        height:"100%",
+    },
+
     
 })
 export {comps}

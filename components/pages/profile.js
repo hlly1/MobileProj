@@ -174,7 +174,7 @@ class Profile extends Component{
     render(){
         return(
             <NativeBaseProvider>
-                <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
+                <LinearGradient colors={['#094183', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />
                     <ScrollView showsVerticalScrollIndicator = {false}>
                     <Text h3 style={styles.profile_title}>Edit My Profile</Text>

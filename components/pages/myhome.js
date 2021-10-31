@@ -15,7 +15,8 @@ import Tabbar from '../tabbar.js';
 import { Overlay } from "react-native-elements/dist/overlay/Overlay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeBaseProvider, Button, Icon, Box } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
+import {comps} from "../../styles/comp.js";
+
 class MyHome extends Component{
     constructor(props) {
         super(props);
@@ -58,7 +59,7 @@ class MyHome extends Component{
         }).then(response => response.json())
             .then(responseJson => {
                 if (responseJson["status"] == 1) {
-                    console.log(responseJson);
+                    // console.log(responseJson);
                     this.setState({ username: responseJson["username"] });
                     if (responseJson["icon_data"]) {
                         // console.log(this.state.icondata);
@@ -67,6 +68,7 @@ class MyHome extends Component{
                         // console.log(this.state.icondata);
                     }
                     this.setState({ posts: responseJson["post_info"] });
+                    console.log("MyHome.js Num of Posts: "+responseJson["post_info"].length)
                     this.setState({ subjects: responseJson["subscribe_info"] });
                     // return responseJson;
                 } else if (responseJson["status"] == -1) {
@@ -91,7 +93,7 @@ class MyHome extends Component{
     componentDidUpdate(nextProps){
         if (this.props != nextProps) {
             this.getUserInfo();
-            console.log(2);
+            // console.log(2);
         }
     }
 
@@ -103,9 +105,9 @@ class MyHome extends Component{
         );
     }
 
-    // openPost = (postID) =>{
-    //     this.navigation.navigate("Post", {post_id: postID});
-    // }
+    openPost = (postID, subject_code) =>{
+        this.navigation.navigate('PostDetails', { id: postID, subject: subject_code});
+    }
 
     // openSubj = (subjID) =>{
     //     this.navigation.navigate("Subjects", {subject_id: subjID});
@@ -133,25 +135,24 @@ class MyHome extends Component{
 
         let myPosts = [];
         for (let i = 0; i < this.state.posts.length; i++) {
-            myPosts.push(
-                <TouchableOpacity key = {i} onPress = {() => openPost(this.state.posts[i]["book_id"])}>
-                <View style={styles.margin_bottom20}>
-                    <Box
-                        bg='violet.800'
-                        p="12"
-                        rounded="xl"
-                        _text={{
-                            fontSize: 'md',
-                            fontWeight: 'bold',
-                            color: 'warmGray.50',
-                            textAlign: 'center',
-                        }}
-                        >
-                            <View style={styles.post_box_column}>
-                                <View style={{alignItems:'center'}}>
-                                    <Text style={styles.post_title}>{this.state.posts[i]["subject_code"] + " "+this.state.posts[i]["subject_name"]}</Text>
-                                </View>
-                                <View style={styles.post_box_row}>
+            
+                    myPosts.push(
+                    <TouchableOpacity key={i} style={comps.post_card} onPress = {() => this.openPost(this.state.posts[i]["book_id"], this.state.posts[i]["subject_code"])}>
+                    <View style={styles.post_box_column}>
+                        <View style={{alignItems:'center'}}>
+                            <Text style={styles.post_title}>{this.state.posts[i]["subject_code"]+"\n"+this.state.posts[i]["subject_name"]}</Text>
+                        </View>
+                        <View style={styles.post_box_row}>
+                            {this.state.icondata == '' 
+                                ?
+                                <Avatar
+                                    containerStyle={{ alignSelf: "center" }}
+                                    rounded
+                                    size="small"
+                                    source={require("../../assets/imgs/user-circle-1.png")}
+                                >
+                                </Avatar>
+                                :
                                 <Avatar
                                     containerStyle={{ alignSelf: "center" }}
                                     rounded
@@ -161,18 +162,17 @@ class MyHome extends Component{
                                     }}
                                 >
                                 </Avatar>
-                                    <Text style={{color:"white", marginLeft:7,marginTop:5,fontSize:15}}>Me</Text>
-                                </View>
+                            }
+                            <Text style={{marginLeft:7,marginTop:6}}>Me</Text>
+                        </View>
 
-                                <View style={{marginTop:7}}>
-                                    <Text style={styles.post_title}>{this.state.posts[i]["topic"]}</Text>
-                                </View>
-                                
-                            </View>
-                    </Box>
-                </View>
+                        <View style={{marginTop:7}}>
+                            <Text style={styles.post_title}>{this.state.posts[i]["topic"]}</Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
-                )
+                );
+            
         }
 
         return(
@@ -215,9 +215,9 @@ class MyHome extends Component{
                     </ScrollView>
                     <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20, marginBottom: 20}}>MY POSTS</Text>
 
-                    <ScrollView vertical={true} showsVerticalScrollIndicator={true}>
-                        {myPosts}
-                    </ScrollView>
+
+                    {myPosts}
+                    
 
                     <TouchableOpacity onPress={() => this.toEditProfile()} style={{ zIndex: 3 }}>
                         <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
@@ -230,6 +230,7 @@ class MyHome extends Component{
                             <Text style={styles.login_button}>Logout</Text>
                         </LinearGradient>
                     </TouchableOpacity>
+
                 </ScrollView>
                 </NativeBaseProvider>
             </View>

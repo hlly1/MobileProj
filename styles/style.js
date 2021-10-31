@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native"
+import { marginLeft } from "styled-system"
 
 const {width, height}=Dimensions.get("screen")
 
@@ -19,19 +20,12 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent: 'flex-start',
     },        
-    post_title:{
-        color:"white", 
+    post_title:{ 
         marginLeft:5,
         fontSize:15, 
         fontWeight:'bold',
-        overflow:'scroll'
-    },
-    post_title:{
-        color:"white", 
-        fontSize:15, 
-        fontWeight:'bold',
         overflow:'scroll',
-        marginBottom: 10
+        textAlign: 'center',
     },
     //-----------------------------------------------------------------login
     welcome: {
@@ -171,7 +165,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 50,
         paddingHorizontal: 30,
-        height: height * 0.9
+        height: height
     },
 
     profile_title: {
@@ -181,7 +175,9 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         backgroundColor: 'transparent',
         marginTop: 60,
-        marginBottom: 30
+        marginBottom: 30,
+        marginLeft:10,
+        marginRight:10
     },
 
     margin_bottom20:{
@@ -193,27 +189,15 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
 
-    //----------------------------------------------------------------tabbar
-    tabbar_container:{
-        display: 'flex',
-        flexDirection:'row', 
-        backgroundColor:"#E8E8E8",
-        paddingTop:5,
-        justifyContent: 'space-between'
-    },
-
-    tabTextActived:{
-        color: '#3E67D6',
-        fontSize: 14,
-        marginTop:"5%"
-    },
-    tabText: {
-        color: '#8B8E95',
-        fontSize: 14,
-        marginTop:"5%"
-    },
-
     //----------------------------------------------------------------post
+    postlist_card:{
+        backgroundColor: "#ffffff",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingVertical: 20,
+        paddingHorizontal: 30,
+        height: height * 0.9,
+    },
     
     container: {
         paddingTop: 20

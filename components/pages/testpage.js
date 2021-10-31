@@ -11,8 +11,12 @@ import {
     ScrollView,
 } from 'react-native';
 import { styles } from "../../styles/style";
+import {Avatar} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import { alignItems } from "styled-system";
+import { alignItems, marginTop } from "styled-system";
+import {comps} from "../../styles/comp.js";
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 class Testpage extends Component{
 
@@ -23,6 +27,7 @@ class Testpage extends Component{
             // subject: props.route.params.subject,
             subject: "COMP90042",
             postlist: [],
+            subject_name:""
         }
     }
 
@@ -50,6 +55,7 @@ class Testpage extends Component{
             console.log(responseJson);
             if(responseJson["status"] == 1){
                 this.setState({ postlist: responseJson["data"] });
+                this.setState({subject_name: responseJson["data"][0]["subject_name"]})
             }
             else if(responseJson["status"] == -1){
                 alert("Failed to submit. Please try later!");
@@ -63,13 +69,14 @@ class Testpage extends Component{
     }
 
     toPostDetails(id){
-        // console.log(id);
+        console.log(id);
         this.navigation.navigate('PostDetails', { id: id, subject: this.state.subject });
     }
 
     componentDidMount(){
+        
         if(this.state.subject == ''){
-            this.setState({ subject: "COMP90042" });
+            this.setState({ subject: "COMP90042"});
         }
         this.getPostListNBySubjectCode();
     }
@@ -84,26 +91,58 @@ class Testpage extends Component{
         let listView = [];
         for(let i = 0; i < this.state.postlist.length; i++){
             listView.push(
-                <View key={i} style={{ marginTop: 10, marginLeft: 10, marginRight: 10, borderWidth: 1 }}>
-                    <Button key={i} title={this.state.postlist[i].topic} color="#000000" onPress={() => this.toPostDetails(this.state.postlist[i].id)} />
-                    <Text>{this.state.postlist[i].post_date}</Text>
-                </View>
+                <TouchableOpacity key={i} style={comps.post_card} onPress={() => this.toPostDetails(this.state.postlist[i].id)}>
+                    <View style={styles.post_box_column}>
+                        <View style={styles.post_box_row}>
+                        <Avatar
+                            containerStyle={{ alignSelf: "center" }}
+                            size="small"
+                            source={require("../../assets/imgs/user-circle-1.png")}
+                        >
+                        </Avatar>
+                            <Text style={{marginLeft:7,marginTop:6}}>Username</Text>
+                        </View>
+
+                        <View style={{marginTop:7}}>
+                            <Text style={styles.post_title}>{this.state.postlist[i].topic}</Text>
+                        </View>
+                        
+                    </View>
+                </TouchableOpacity>
             );
         }
 
         return(
-            <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
+            <LinearGradient colors={['#094183', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={{height: 50}}>
-
+                    <Text h3 style={styles.profile_title}>{this.state.subject+"\n"+this.state.subject_name}</Text>
+                    <View style={styles.postlist_card}>
+                        <Avatar
+                            containerStyle={{ alignSelf: "center" }}
+                            rounded
+                            size="large"
+                            source={require("../../assets/imgs/unimelb-logo.png")}
+                        >
+                        </Avatar>
+                                 
+                        {listView}
                     </View>
-                    {listView}
+                    
                 </ScrollView>
+
+                {/* 二选一 */}
+                <ActionButton
+                    buttonColor="#094183"
+                    onPress={() => {this.navigation.navigate('NewPost', { subject: this.state.subject })}}
+                    size={60}
+                />
+
                 <TouchableOpacity style={{ position: "absolute", alignSelf: "center", bottom: 0 }} onPress={() => { this.navigation.navigate('NewPost', { subject: this.state.subject }) }} >
                     <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
                         <Text style={styles.login_button}>Create New Post</Text>
                     </LinearGradient>
                 </TouchableOpacity>
+            
             </LinearGradient>
         );
     }
