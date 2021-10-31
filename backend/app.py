@@ -61,16 +61,22 @@ db.app = app
 db.init_app(app)
 
 def get_list(a):
-    result = []
-    for i in a.strip().split(" "):
-        result.append(int(i))
-    return result
+    if a:
+        result = []
+        for i in a.strip().split(" "):
+            result.append(int(i))
+        return result
+    else:
+        return []
 
 def get_list_str(a):
-    result = []
-    for i in a.strip().split(" "):
-        result.append((i))
-    return result
+    if a:
+        result = []
+        for i in a.strip().split(" "):
+            result.append((i))
+        return result
+    else:
+        return []
 
 
 class Blocks(db.Model):
@@ -485,6 +491,7 @@ def ISBN_query():
         return jsonify(title="Steven Jobs",
                        pic=[base64_data.decode('utf-8')],
                        status=1,
+                       ISBN=ISBN,
                        msg="success")
 
     except Exception as e:
@@ -579,13 +586,14 @@ def postdetails():
         # get comment
         comment_result = []
         comments_id = bookInstance.comments_id
-        for i in comments_id.strip().split(" "):
-            comment_instance= Comment.query.filter_by(id=int(i)).first()
-            comment_result.append({
-                "comment_content": comment_instance.comment_content,
-                "email": comment_instance.email,
-                "post_date": comment_instance.post_date
-            })
+        if comments_id:
+            for i in comments_id.strip().split(" "):
+                comment_instance= Comment.query.filter_by(id=int(i)).first()
+                comment_result.append({
+                    "comment_content": comment_instance.comment_content,
+                    "email": comment_instance.email,
+                    "post_date": comment_instance.post_date
+                })
 
         file_name_pic = bookInstance.picture_name
         pic_b64_list = []
@@ -658,9 +666,9 @@ def addbook():
         topic = request.json["topic"]
         book_name = request.json["book_name"]
         book_description = request.json["book_description"]
-        audio_b64 = request.json["audio_b64"]
+        audio_b64 = request.json["audio_base64"]
         ISBN = request.json["ISBN"]
-        picture_b64 = request.json["picture_b64"]
+        picture_b64 = request.json["picture_base64"]
         subject_code = request.json["subject_code"]
 
         audio_name = get32() + '.mp3'
@@ -672,6 +680,7 @@ def addbook():
         picture_name_concate = ""
         for i in picture_b64:
             picture_name = get32() + '.jpg'
+            # picture_name = get32() + '.png'
             full_path = os.path.join("./static/", picture_name)
             file = open(full_path, 'wb')
             file.write(base64.b64decode(i.encode('utf-8')))
@@ -682,7 +691,7 @@ def addbook():
                                book_name=book_name,
                                book_description=book_description,
                                audio_name=audio_name,
-                               comments_id=" ",
+                               comments_id="",
                                mark_count=0,
                                ISBN=ISBN,
                                picture_name=picture_name_concate,
@@ -772,7 +781,7 @@ def validation_code():
 
 
 @app.route('/forget/sendcode', methods=['POST'])
-def validation_code():
+def forgetsendcode():
     email = request.json["email"]
 
     userInstance = User.query.filter_by(email=email).first()
