@@ -75,8 +75,8 @@ class Signup extends Component{
                         }
                     }
                     storeData(this.state.email);
-                    this.navigation.navigate("Home", {});
-              } else if (resonseJson["status"] == -1) {
+                    this.navigation.navigate("HomeTabs", {});
+              } else if (responseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["message"]+"Please check it again!");
               }else{
                 alert("Issue-[xxx]: Please contact admin!");
@@ -115,7 +115,7 @@ class Signup extends Component{
                 alert(JSON.stringify(responseJson));
               if (responseJson["status"] == 1) {
                   alert("Code is sent, please check your email!")
-              } else if (resonseJson["status"] == -1) {
+              } else if (responseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["errormsg"]+"Please click again!");
               }else{
                 alert("Issue-[xxx]: Please contact admin!");

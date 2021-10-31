@@ -8,8 +8,9 @@ import Login from './components/pages/login.js';
 import Signup from './components/pages/signup.js';
 import MyHome from './components/pages/myhome';
 import Profile from './components/pages/profile.js';
-import Home from './components/pages/home.js'
-import Subjects from './components/pages/majorList.js'
+import Home from './components/pages/home.js';
+import Subjects from './components/pages/majorList.js';
+import ForgetPWD from './components/pages/forgetPwd.js';
 import {Image, NativeBaseProvider } from 'native-base';
 
 const Stack = createStackNavigator();
@@ -62,6 +63,7 @@ export default class App extends Component {
           <Stack.Screen name="Signup" component={Signup} />
           <Stack.Screen name="HomeTabs" component={HomeTabs}/>
           <Stack.Screen name="ProfileTab" component={Profile} />
+          <Stack.Screen name="ForgetPWD" component={ForgetPWD} />
         </Stack.Navigator>
       </NavigationContainer>
     );

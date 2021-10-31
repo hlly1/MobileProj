@@ -6,8 +6,10 @@ import {comps} from "../styles/comp.js";
 
 const Card = props => {
     let card_size = comps.card_container;
+    let des_size = comps.des_large;
     if (props.Size=="sm") {
         card_size = comps.card_container_sm;
+        des_size = comps.des_small;
     }
     return (
         <View style={card_size}>
@@ -17,7 +19,7 @@ const Card = props => {
                 source={props.image}
                 />
             </View>
-            <Text h4 style={{padding: 7}}>{props.content}</Text>
+            <Text h4 style={des_size}>{props.content}</Text>
         </View>
 
     );

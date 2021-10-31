@@ -9,6 +9,9 @@ import base64
 import string
 import random
 import datetime
+import urllib.parse
+import urllib.request
+import json
 # wtf
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
@@ -50,9 +53,25 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
 # tables
 
+app.config['SQLALCHEMY_POOL_SIZE'] = 200
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 36
+
 db = SQLAlchemy(use_native_unicode='utf8')
 db.app = app
 db.init_app(app)
+
+def get_list(a):
+    result = []
+    for i in a.strip().split(" "):
+        result.append(int(i))
+    return result
+
+def get_list_str(a):
+    result = []
+    for i in a.strip().split(" "):
+        result.append((i))
+    return result
+
 
 class Blocks(db.Model):
     # table name
@@ -77,6 +96,9 @@ class User(db.Model):
     validation_code = db.Column(db.String(500))
     icon_name = db.Column(db.String(500))
     mark_id = db.Column(db.String(500))
+    post_id = db.Column(db.String(500))
+    subscribe_code = db.Column(db.String(500))
+
 
 class Subject(db.Model):
     # table name
@@ -94,32 +116,18 @@ class Post_book(db.Model):
     __table_args__ = {'mysql_collate': 'utf8_general_ci'}
 
     # fields
-    book_id = db.Column(db.String(500), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    topic = db.Column(db.String(500))
     book_name = db.Column(db.String(500))
     book_description = db.Column(db.String(500))
-    audio_id = db.Column(db.String(500))
+    audio_name = db.Column(db.String(500))
     comments_id = db.Column(db.String(500))
-    mark_count = db.Column(db.String(500))
+    mark_count = db.Column(db.Integer)
     ISBN = db.Column(db.String(500))
-    picture_id = db.Column(db.String(500))
+    picture_name = db.Column(db.String(500))
     post_date = db.Column(db.String(500))
     subject_code = db.Column(db.String(500))
 
-class Post_url(db.Model):
-    # table name
-    __tablename__ = 'Post_url'
-    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
-
-    # fields
-    url_id = db.Column(db.String(500), primary_key=True)
-    url_name = db.Column(db.String(500))
-    url_description = db.Column(db.String(500))
-    audio_id = db.Column(db.String(500))
-    comments_id = db.Column(db.String(500))
-    mark_count = db.Column(db.String(500))
-    picture_id = db.Column(db.String(500))
-    post_date = db.Column(db.String(500))
-    subject_code = db.Column(db.String(500))
 
 class Comment(db.Model):
     # table name
@@ -127,7 +135,8 @@ class Comment(db.Model):
     __table_args__ = {'mysql_collate': 'utf8_general_ci'}
 
     # fields
-    comment_id = db.Column(db.String(500), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+
     comment_content = db.Column(db.String(500))
     email = db.Column(db.String(500))
     post_date = db.Column(db.String(500))
@@ -154,7 +163,38 @@ def index():
 
 
 # upload ============================================================================================================ #
+UPLOAD_FOLDER = 'static'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # 设置文件上传的目标文件夹
+basedir = os.path.abspath(os.path.dirname(__file__))  # 获取当前项目的绝对路径
 
+
+
+# 具有上传功能的页面
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
+
+@app.route('/api/upload', methods=['POST'], strict_slashes=False)
+def api_upload():
+    file_dir = os.path.join(basedir, app.config['UPLOAD_FOLDER'])  # 拼接成合法文件夹地址
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)  # 文件夹不存在就创建
+    f = request.files['myfile']  # 从表单的file字段获取文件，myfile为该表单的name值
+    filename = f.filename
+    ext = filename.rsplit('.', 1)[1]  # 获取文件后缀
+    filename_pre = filename.rsplit('.', 1)[0]  # 获取文件后缀
+
+    if  os.path.exists(os.path.join(file_dir, filename)):
+        unix_time = int(time.time())
+        new_filename = str(filename_pre) + str(unix_time) + '.' + ext  # 修改文件名
+
+        f.save(os.path.join(file_dir, new_filename))  #保存文件到upload目录
+        flash("成功上传至: "+str("http://81.68.76.219/static/" + new_filename))
+        return redirect(url_for("display"))
+    else:
+        f.save(os.path.join(file_dir, filename))  #保存文件到upload目录
+        flash("成功上传至: "+str("http://81.68.76.219/static/" + filename))
+        return redirect(url_for("display"))
 
 # end upload =========================================================================================================#
 
@@ -201,205 +241,646 @@ def textblock():
     return render_template('textblocks.html',  textDict=textDict, timeDict=timeDict)
 
 
+# text blocks post
+@app.route('/textshare/update', methods=['POST'])
+def textBlockUpdate():
+    text = request.form.get('text')
+    id = request.form.get('id')
+    textInstance = Blocks.query.filter_by(id=id).first()
+    textInstance.text = text
+    textInstance.time = datetime.datetime.now()
+
+    db.session.commit()
+    flash("成功提交 success upload，框框已经更新 small blockblock updated\n")
+    return redirect(url_for("textblock"))
+
+
+@app.route('/joke', methods=['GET'])
+def joke():
+    return render_template("joke.html")
+
+@app.route('/log', methods=['GET'])
+def log():
+    with open('./Logs/uwsgi.log', 'r') as f:
+        content = f.readlines()
+    return Response(content, mimetype='text/plain')
+
 @app.route('/login', methods=['POST'])
 def login():
-    # email = request.form.get('email')
-    # password = request.form.get('password')
-    email = request.json["email"]
-    password = request.json["password"]
-    userInstance = User.query.filter_by(email=email).first()
-    if userInstance:
-        # match
-        if userInstance.password == password:
-            return jsonify(status=1,
-                           msg="login success")
-        # not match
+    try:
+        # email = request.form.get('email')
+        # password = request.form.get('password')
+        email = request.json["email"]
+        password = request.json["password"]
+        userInstance = User.query.filter_by(email=email).first()
+        if userInstance:
+            # match
+            if userInstance.password == password:
+                return jsonify(status=1,
+                               msg="login success")
+            # not match
+            else:
+                return jsonify(status=-1,
+                               msg="password and email not match")
         else:
             return jsonify(status=-1,
-                           msg="password and email not match")
-    else:
+                           msg="the requested email does not exist")
+
+    except Exception as e:
         return jsonify(status=-1,
-                       msg="the requested email does not exist")
-
-
-
+                       msg=e)
 
 @app.route('/sendcode', methods=['POST'])
 def sendcode():
-    validation_code = get6()
-    # email = request.form.get('email')
-    email = request.json["email"]
+    try:
+        validation_code = get6()
+        # email = request.form.get('email')
+        email = request.json["email"]
 
-    print("email is:")
-    print(email)
-    userInstance = User.query.filter_by(email=email).first()
-    if not userInstance:
-        user1 = User(email=email, password=str(get32()), username='user_' + str(get8()), validation_code=validation_code)
-        db.session.add_all([user1])
-    else:
-        userInstance.validation_code = validation_code
+        print("email is:")
+        print(email)
+        userInstance = User.query.filter_by(email=email).first()
+        if not userInstance:
+            user1 = User(email=email, password=str(get32()), username='user_' + str(get8()), validation_code=validation_code)
+            db.session.add_all([user1])
+        else:
+            userInstance.validation_code = validation_code
 
-    db.session.commit()
+        db.session.commit()
 
-    mail = Mail(app)
+        mail = Mail(app)
 
-    msg = Message('[validation code]', sender='no-reply443@outlook.com', recipients=[str(email)])
-    msg.body = 'Your validation code is: ' + str(validation_code)
-    with app.app_context():
-        mail.send(msg)
-    return jsonify(status=1)
+        msg = Message('[validation code]', sender='no-reply443@outlook.com', recipients=[str(email)])
+        msg.body = 'Your validation code is: ' + str(validation_code)
+        with app.app_context():
+            mail.send(msg)
+        return jsonify(status=1,
+                       msg="success")
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
 
 @app.route('/register', methods=['POST'])
 def register():
-    # email = request.form.get('email')
-    # password = request.form.get('password')
-    # validation_code = request.form.get('validation_code')
+    try:
+        # email = request.form.get('email')
+        # password = request.form.get('password')
+        # validation_code = request.form.get('validation_code')
 
-    email = request.json["email"]
-    password = request.json["password"]
-    username = request.json["username"]
-    validation_code = request.json["validation_code"]
+        email = request.json["email"]
+        password = request.json["password"]
+        username = request.json["username"]
+        validation_code = request.json["validation_code"]
 
 
-    userInstance = User.query.filter_by(email=email).first()
-    if userInstance:
-        if userInstance.validation_code == validation_code:
-            userInstance.password = password
-            userInstance.username = username
+        userInstance = User.query.filter_by(email=email).first()
+        if userInstance:
+            if userInstance.validation_code == validation_code:
+                userInstance.password = password
+                userInstance.username = username
+            else:
+                return jsonify(status=-1,
+                               msg="The validation code is incorrect.")
         else:
             return jsonify(status=-1,
-                           msg="The validation code is incorrect.")
-    else:
+                           msg="The email dose not exist.")
+
+        db.session.commit()
+
+        return jsonify(status=1,
+                       msg="success")
+    except Exception as e:
         return jsonify(status=-1,
-                       msg="The email dose not exist.")
-
-    db.session.commit()
-
-    return jsonify(status=1,
-                   msg="success")
-
+                       msg=e)
 
 
 @app.route('/get_info_by_email', methods=['POST'])
 def get_info_by_email():
-    # email = request.form.get('email')
-    # password = request.form.get('password')
-    # validation_code = request.form.get('validation_code')
+    try:
+        # email = request.form.get('email')
+        # password = request.form.get('password')
+        # validation_code = request.form.get('validation_code')
 
-    email = request.json["email"]
-    print("the email is")
-    print(email)
-    userInstance = User.query.filter_by(email=email).first()
-    file_name = userInstance.icon_name
-    if file_name:
-        with open(os.path.join("./static/", file_name), 'rb') as f:
-            base64_data = base64.b64encode(f.read())
-            print(base64_data)
-            print(base64_data.decode('utf8'))
+        email = request.json["email"]
 
-        return jsonify(status=1,
-                       username=userInstance.username,
-                       icon_data=base64_data.decode('utf8'))
-    else:
-        return jsonify(status=1,
-                       username=userInstance.username,
-                       icon_data=None)
+        userInstance = User.query.filter_by(email=email).first()
 
-@app.route('/upload/icon', methods=['POST'], strict_slashes=False)
+        mark_result = []
+        post_result = []
+        subscribe_result = []
+
+        # fill mark result
+        for i in get_list(userInstance.mark_id):
+            bookInstance = Post_book.query.filter_by(id=i).first()
+            subjectInstance = Subject.query.filter_by(subject_code=bookInstance.subject_code).first()
+
+            mark_result.append({
+                "book_id":bookInstance.id,
+                "topic": bookInstance.topic,
+                "book_name": bookInstance.book_name,
+                "date": bookInstance.post_date,
+                "subject_code": subjectInstance.subject_code,
+                "subject_name": subjectInstance.subject_name,
+                "subject_major": subjectInstance.subject_major,
+            })
+        # fill post_result
+        for i in get_list(userInstance.post_id):
+            bookInstance = Post_book.query.filter_by(id=i).first()
+            post_result.append({
+                "book_id": bookInstance.id,
+                "topic": bookInstance.topic,
+                "book_name": bookInstance.book_name,
+                "date": bookInstance.post_date,
+                "subject_code": subjectInstance.subject_code,
+                "subject_name": subjectInstance.subject_name,
+                "subject_major": subjectInstance.subject_major,
+            })
+        # fill subscribe_result
+        for i in get_list_str(userInstance.subscribe_code):
+            subjectInstance = Subject.query.filter_by(subject_code=i).first()
+            subscribe_result.append({
+                "subject_code": subjectInstance.subject_code,
+                "subject_name": subjectInstance.subject_name,
+                "subject_major": subjectInstance.subject_major
+            })
+        file_name = userInstance.icon_name
+        if file_name:
+            with open(os.path.join("./static/", file_name), 'rb') as f:
+                base64_data = base64.b64encode(f.read())
+                # print(base64.b64decode(base64_data))
+
+            return jsonify(status=1,
+                           username=userInstance.username,
+                           mark_id=get_list(userInstance.mark_id),
+                           post_id=get_list(userInstance.post_id),
+                           subscribe_code=get_list_str(userInstance.subscribe_code),
+                           post_info=post_result,
+                           mark_info=mark_result,
+                           subscribe_info=subscribe_result,
+                           icon_data=base64_data.decode('utf8'),
+                           msg="success")
+        else:
+            return jsonify(status=1,
+                           username=userInstance.username,
+                           mark_id=get_list(userInstance.mark_id),
+                           post_id=get_list(userInstance.post_id),
+                           subscribe_code=get_list_str(userInstance.subscribe_code),
+                           post_info=post_result,
+                           mark_info=mark_result,
+                           subscribe_info=subscribe_result,
+                           icon_data=None,
+                           msg="success")
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+@app.route('/upload/icon', methods=['POST'])
 def upload_icon():
-    file_dir = os.path.join(basedir, app.config['UPLOAD_FOLDER'])  # 拼接成合法文件夹地址
-    file_dir = os.path.join(file_dir, '/icon') # 拼接成合法文件夹地址
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir)  # 文件夹不存在就创建
-    f = request.files['myfile']  # 从表单的file字段获取文件，myfile为该表单的name值
-    filename = f.filename
-    ext = filename.rsplit('.', 1)[1]  # 获取文件后缀
-    filename_pre = filename.rsplit('.', 1)[0]  # 获取文件后缀
+    try:
+        email = request.json["email"]
+        userInstance = User.query.filter_by(email=email).first()
+        icon_b64 = request.json["icon"]
+        icon_name = get32() + '.jpg'
+        full_path = os.path.join("./static/", icon_name)
+        file = open(full_path, 'wb')
+        file.write(base64.b64decode(icon_b64.encode('utf-8')))
+        file.close()
 
-    if  os.path.exists(os.path.join(file_dir, filename)):
-        unix_time = int(time.time())
-        new_filename = str(filename_pre) + str(unix_time) + '.' + ext  # 修改文件名
+        userInstance.icon_name = icon_name
+        db.session.commit()
 
-        f.save(os.path.join(file_dir, new_filename))  #保存文件到upload目录
-        flash("成功上传至: "+str("http://81.68.76.219/static/" + new_filename))
-        return redirect(url_for("display"))
+        return jsonify(status=1,
+                       msg="success")
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+
+@app.route('/ISBN', methods=['POST'])
+def ISBN_query():
+    try:
+        ISBN = request.json["ISBN"]
+        print(type(ISBN))
+        # data = {}
+        # data["appkey"] = "2438c9d38e381792"
+        # # data["isbn"] = "1451648537"
+        # data["isbn"] = "1402894627"
+        #
+        # data = urllib.parse.urlencode(data).encode('utf-8')
+        # url = "https://api.jisuapi.com/isbn/query"
+        # result = urllib.request.urlopen(url, data)
+        # jsonarr = json.loads(result.read())
+        #
+        # if jsonarr["status"] != 0:
+        #     print(jsonarr["msg"])
+        #     exit()
+        # result = jsonarr["result"]
+        # print(result["title"], result["pic"])
+        with open(os.path.join("./static/", "stevenjobs.jpg"), 'rb') as f:
+            base64_data = base64.b64encode(f.read())
+
+        return jsonify(title="Steven Jobs",
+                       pic=[base64_data.decode('utf-8')],
+                       status=1,
+                       msg="success")
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+@app.route('/subjectlist', methods=['POST'])
+def subjectlist_query():
+    try:
+        subject_major = request.json["major_name"]
+        result = []
+        for subject in Subject.query.filter_by(subject_major=subject_major).all():
+            count = 0
+            for book in Post_book.query.all():
+                if book.subject_code == subject.subject_code:
+                    count += 1
+            result.append({
+                "subject_code": subject.subject_code,
+                "subject_name": subject.subject_name,
+                "subject_major": subject.subject_major,
+                "book_count": count
+            })
+        return jsonify(status=1,
+                       msg="success",
+                       data=result)
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+@app.route('/postlist', methods=['POST'])
+def postlist_query():
+    try:
+        subject_code = request.json["subject_code"]
+
+        result = []
+        for subject in Post_book.query.filter_by(subject_code=subject_code).all():
+            subject_name = Subject.query.filter_by(subject_code=subject.subject_code).first().subject_name
+
+            result.append({
+                "id": subject.id,
+                "topic": subject.topic,
+                "book_name": subject.book_name,
+                "book_description": subject.book_description,
+                "comments_id": subject.comments_id,
+                "mark_count": subject.mark_count,
+                "ISBN": subject.ISBN,
+                "picture_name": subject.picture_name,
+                "post_date": subject.post_date,
+                "subject_code": subject.subject_code,
+                "subject_name": subject_name,
+            })
+
+        return jsonify(status=1,
+                       msg="success",
+                       data=result)
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+
+@app.route('/mark', methods=['POST'])
+def mark():
+    try:
+        email = request.json["email"]
+        book_id = request.json["book_id"]
+        bookInstance = Post_book.query.filter_by(id=book_id).first()
+        userInstance = User.query.filter_by(email=email).first()
+        if str(book_id) in str(userInstance.mark_id):
+            return jsonify(status=-1,
+                           msg="Failed, book_id already be marked")
+        userInstance.mark_id = userInstance.mark_id + " " + str(book_id)
+        bookInstance.mark_count = bookInstance.mark_count + 1
+
+        db.session.commit()
+
+        return jsonify(status=1,
+                       msg="success")
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+@app.route('/postdetails', methods=['POST'])
+def postdetails():
+    try:
+        book_id = request.json["book_id"]
+        bookInstance = Post_book.query.filter_by(id=book_id).first()
+
+        # get comment
+        comment_result = []
+        comments_id = bookInstance.comments_id
+        for i in comments_id.strip().split(" "):
+            comment_instance= Comment.query.filter_by(id=int(i)).first()
+            comment_result.append({
+                "comment_content": comment_instance.comment_content,
+                "email": comment_instance.email,
+                "post_date": comment_instance.post_date
+            })
+
+        file_name_pic = bookInstance.picture_name
+        pic_b64_list = []
+        for file_name_pic1 in get_list_str(file_name_pic):
+            if file_name_pic1:
+                with open(os.path.join("./static/", file_name_pic1), 'rb') as f:
+                    base64_data = base64.b64encode(f.read())
+                    pic_b64 = base64_data.decode('utf8')
+                    pic_b64_list.append(pic_b64)
+                    # print(base64.b64decode(base64_data))
+        file_name_audio = bookInstance.audio_name
+        if file_name_audio:
+            with open(os.path.join("./static/", file_name_audio), 'rb') as f:
+                base64_data = base64.b64encode(f.read())
+                audio_base64 = base64_data.decode('utf8')
+                # print(base64.b64decode(base64_data))
+        result = {
+            "topic": bookInstance.topic,
+            "book_name": bookInstance.book_name,
+            "book_description": bookInstance.book_description,
+            "audio_base64": audio_base64,
+            "comments_id": comment_result,
+            "mark_count": bookInstance.mark_count,
+            "picture_base64": pic_b64_list,
+            "post_date": bookInstance.post_date,
+            "subject_code": bookInstance.subject_code,
+        }
+
+
+        db.session.commit()
+
+        return jsonify(status=1,
+                       msg="success",
+                       data=result)
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+@app.route('/add/comment', methods=['POST'])
+def addcomment():
+    try:
+        email = request.json["email"]
+        book_id = request.json["book_id"]
+        comment_content = request.json["comment_content"]
+        comment_temp = Comment(comment_content=comment_content,
+                           email=email,
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'))
+        db.session.add(comment_temp)
+        db.session.commit()
+
+        bookInstance = Post_book.query.filter_by(id=book_id).first()
+        bookInstance.comments_id = bookInstance.comments_id + " " + str(comment_temp.id)
+
+        db.session.commit()
+
+        return jsonify(status=1,
+                       msg="success")
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+
+@app.route('/add/book', methods=['POST'])
+def addbook():
+    try:
+        email = request.json["email"]
+        topic = request.json["topic"]
+        book_name = request.json["book_name"]
+        book_description = request.json["book_description"]
+        audio_b64 = request.json["audio_b64"]
+        ISBN = request.json["ISBN"]
+        picture_b64 = request.json["picture_b64"]
+        subject_code = request.json["subject_code"]
+
+        audio_name = get32() + '.mp3'
+        full_path = os.path.join("./static/", audio_name)
+        file = open(full_path, 'wb')
+        file.write(base64.b64decode(audio_b64.encode('utf-8')))
+        file.close()
+
+        picture_name_concate = ""
+        for i in picture_b64:
+            picture_name = get32() + '.jpg'
+            full_path = os.path.join("./static/", picture_name)
+            file = open(full_path, 'wb')
+            file.write(base64.b64decode(i.encode('utf-8')))
+            file.close()
+            picture_name_concate += (" " + str(picture_name))
+
+        post_book1 = Post_book(topic=topic,
+                               book_name=book_name,
+                               book_description=book_description,
+                               audio_name=audio_name,
+                               comments_id=" ",
+                               mark_count=0,
+                               ISBN=ISBN,
+                               picture_name=picture_name_concate,
+                               post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                               subject_code=subject_code
+                               )
+
+        db.session.add(post_book1)
+        db.session.commit()
+
+        userInstance = User.query.filter_by(email=email).first()
+        userInstance.post_id = userInstance.post_id + " " + str(post_book1.id)
+
+        db.session.commit()
+
+        return jsonify(status=1,
+                       msg="success")
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    try:
+        email = request.json["email"]
+        subject_code = request.json["subject_code"]
+        userInstance = User.query.filter_by(email=email).first()
+        if str(subject_code) in str(userInstance.subscribe_code):
+            return jsonify(status=-1,
+                           msg="subject is already being subscribed")
+        userInstance.subscribe_code = userInstance.subscribe_code + " " + str(subject_code)
+        db.session.commit()
+        return jsonify(status=1,
+                       msg="success")
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
+@app.route('/update/user', methods=['POST'])
+def updateuser():
+    try:
+        email = request.json["email"]
+        password = request.json["password"]
+        username = request.json["username"]
+        icon_b64 = request.json["icon"]
+        userInstance = User.query.filter_by(email=email).first()
+
+        if icon_b64:
+            icon_name = get32() + '.jpg'
+            full_path = os.path.join("./static/", icon_name)
+            file = open(full_path, 'wb')
+            file.write(base64.b64decode(icon_b64.encode('utf-8')))
+            file.close()
+            userInstance.icon_name = icon_name
+        if username:
+            userInstance.username = username
+        if password:
+            userInstance.password = password
+
+        db.session.commit()
+
+        return jsonify(status=1,
+                       msg="update success")
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+@app.route('/validate/validation_code', methods=['POST'])
+def validation_code():
+    email = request.json["email"]
+    validation_code = request.json["validation_code"]
+
+    userInstance = User.query.filter_by(email=email).first()
+    if userInstance:
+        if userInstance.validation_code == validation_code:
+            return jsonify(status=1,
+                           msg="validate success")
+        else:
+            return jsonify(status=-1,
+                           msg="validate failed, wrong validate code")
+
+    return jsonify(status=-1,
+                   msg="validate failed, email not exists")
+
+
+@app.route('/forget/sendcode', methods=['POST'])
+def validation_code():
+    email = request.json["email"]
+
+    userInstance = User.query.filter_by(email=email).first()
+    if userInstance:
+        validation_code = get6()
+        # email = request.form.get('email')
+        print("email is:")
+        print(email)
+
+        userInstance.validation_code = validation_code
+        db.session.commit()
+
+        mail = Mail(app)
+
+        msg = Message('[validation code]', sender='no-reply443@outlook.com', recipients=[str(email)])
+        msg.body = 'Your validation code is: ' + str(validation_code)
+        with app.app_context():
+            mail.send(msg)
+        return jsonify(status=1,
+                       msg="success")
     else:
-        f.save(os.path.join(file_dir, filename))  #保存文件到upload目录
-        flash("成功上传至: "+str("http://81.68.76.219/static/" + filename))
-        return redirect(url_for("display"))
+        return jsonify(status=-1,
+                       msg="validate failed, email not exists")
 
 
 
 def write_test_users():
-    user1 = User(email="test1@gmail.com", password="123456", username='user_' + str(get8()), validation_code="123456", icon_name="test1.jpg", mark_id="1")
-    user2 = User(email="test2@gmail.com", password="123456", username='user_' + str(get8()), validation_code="123456", icon_name="test1.jpg", mark_id="2")
+    user1 = User(email="test1@gmail.com", password="123456", username='user_' + str(get8()),
+                 validation_code="123456", icon_name="test1.jpg", mark_id="1 2", post_id="2 3", subscribe_code="COMP90054")
+    user2 = User(email="test2@gmail.com", password="123456", username='user_' + str(get8()),
+                 validation_code="123456", icon_name="test1.jpg", mark_id="3 4", post_id="1 4", subscribe_code="COMP90042")
+
     subject1 = Subject(subject_code="COMP90042", subject_name="Natural Language Processing", subject_major="Information Technology")
     subject2 = Subject(subject_code="COMP90054", subject_name="Artificial Intelligence", subject_major="Information Technology")
+    subject3 = Subject(subject_code="MAN30082", subject_name="Business Law", subject_major="Business")
+    subject4 = Subject(subject_code="MAN30046", subject_name="Management Accounting", subject_major="Business")
 
-    post_book1 = Post_book(book_id="1",
-                           book_name="How to get 90 marks in 90042 NLP",
+    post_book1 = Post_book(id=1,
+                           topic="How to get 90 marks in 90042 NLP",
+                           book_name="Introduction to NLP",
                            book_description="Drop your fucking phone and go to the fucking library!",
-                           audio_id="1",
-                           comments_id="1",
-                           mark_count="1",
+                           audio_name="1.mp3",
+                           comments_id=1,
+                           mark_count=1,
                            ISBN="1-123-456-789",
-                           picture_id="1",
-                           post_date="2021-10-16",
+                           picture_name="1.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
                            subject_code="COMP90042"
                            )
 
-    post_book2 = Post_book(book_id="2",
-                           book_name="What is AI and how we gonna make use of it.",
+    post_book2 = Post_book(id=2,
+                           topic="What is AI and how we gonna make use of it.",
+                           book_name="Introduction to AI",
                            book_description="STFW+RTFM! Search the fucking web and read the fucking manual!",
-                           audio_id="2",
-                           comments_id="2",
-                           mark_count="1",
+                           audio_name="1.mp3",
+                           comments_id=2,
+                           mark_count=1,
                            ISBN="2-123-456-789",
-                           picture_id="2",
-                           post_date="2021-10-17",
+                           picture_name="2.jpg 3.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
                            subject_code="COMP90054"
                            )
 
-    post_url1 = Post_url(url_id="1",
-                         url_name="I found a useful URL to pass the AI course!",
-                         url_description="www.google.com",
-                         audio_id="3",
-                         comments_id="3",
-                         mark_count="1",
-                         picture_id="3",
-                         subject_code="COMP90054")
+    post_book3 = Post_book(id=3,
+                           topic="I found a useful URL to pass the AI course!",
+                           book_name=None,
+                           book_description="it is www.google.com",
+                           audio_name="1.mp3",
+                           comments_id=3,
+                           ISBN=None,
+                           mark_count=1,
+                           picture_name="3.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="COMP90054")
 
-    post_url2 = Post_url(url_id="2",
-                         url_name="I found another useful website to pass the NLP!",
-                         url_description="www.baidu.com",
-                         audio_id="4",
-                         comments_id="4",
-                         mark_count="1",
-                         picture_id="4",
-                         subject_code="COMP90042")
+    post_book4 = Post_book(id=4,
+                           topic="I found another useful website to pass the NLP!",
+                           book_name=None,
+                           book_description="It is www.baidu.com",
+                           audio_name="1.mp3",
+                           comments_id=4,
+                           ISBN=None,
+                           mark_count=1,
+                           picture_name="4.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="COMP90042")
 
-    comment1 = Comment(comment_id="1",
+    comment1 = Comment(id=1,
                        comment_content="1: Yeah, that is very helpful!",
                        email="test1@gmail.com",
-                       post_date="2021-10-16")
-    comment2 = Comment(comment_id="2",
+                       post_date=time.strftime('%Y-%m-%d %H:%M:%S'))
+    comment2 = Comment(id=2,
                        comment_content="2: Yeah, that is very helpful!",
                        email="test1@gmail.com",
-                       post_date="2021-10-16")
-    comment3 = Comment(comment_id="3",
+                       post_date=time.strftime('%Y-%m-%d %H:%M:%S'))
+    comment3 = Comment(id=3,
                        comment_content="3: Yeah, that is very helpful!",
                        email="test1@gmail.com",
-                       post_date="2021-10-16")
-    comment4 = Comment(comment_id="4",
+                       post_date=time.strftime('%Y-%m-%d %H:%M:%S'))
+    comment4 = Comment(id=4,
                        comment_content="4: Yeah, that is very helpful!",
                        email="test1@gmail.com",
-                       post_date="2021-10-16")
+                       post_date=time.strftime('%Y-%m-%d %H:%M:%S'))
 
 
     db.session.add_all([user1, user2,
-                        subject1, subject2,
-                        post_book1, post_book2,
-                        post_url1, post_url2,
+                        subject1, subject2, subject3, subject4,
+                        post_book1, post_book2, post_book3, post_book4,
                         comment1, comment2, comment3, comment4])
     db.session.commit()
 
@@ -411,5 +892,3 @@ write_test_users()
 #     db.create_all()
 #
 #     app.run(debug=True, threaded=True, port=5001, host='127.0.0.1')
-
-

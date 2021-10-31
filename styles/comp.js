@@ -3,13 +3,13 @@ const comps = StyleSheet.create({
 
     card_container:{
         backgroundColor: 'white',
-        width: 300,
-        height: 260,
+        width: 230,
+        height: 180,
         borderRadius: 30,
         marginTop: 20,
         marginRight: 25,
         marginLeft: 10,
-        marginBottom:10,
+        marginBottom:35,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -63,6 +63,14 @@ const comps = StyleSheet.create({
         shadowRadius: 4.65,
         elevation: 7
     },
+
+    des_large:{
+        padding: 7, fontSize:17, alignContent:'center',fontWeight:'bold'
+    },
+
+    des_small:{
+        padding: 7, fontSize:15, alignContent:'center',fontWeight:'bold'
+    }
     
 })
 export {comps}

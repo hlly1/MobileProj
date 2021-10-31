@@ -45,13 +45,13 @@ class Login extends Component{
     async login_validation(){
         const useremail = this.state.email;
         const pwd = this.state.passwd;
-        // alert(useremail+"<br>"+pwd);
+        
         if(useremail.length == 0 || pwd.length == 0){
             this.errorMsg = "Email and Password cannot be empty!";
         }else if(!Validator.email_validate(useremail)){
             this.errorMsg = "Invalid Email format!";
         }
-
+        
         if (Validator.email_validate(useremail) && !pwd.length == 0){
             this.validate = true;
             this.errorMsg = "";
@@ -61,7 +61,7 @@ class Login extends Component{
                 "email": useremail,
                 "password": pwd
             });
-
+            console.log(loginData);
             const res = await fetch(loginURL, {
                 method: 'POST',
                 headers: {
@@ -99,6 +99,15 @@ class Login extends Component{
     goToSignup(){
         this.navigation.navigate('Signup', {});
     }
+    
+    goToForgetPWD(){
+        this.navigation.navigate("ForgetPWD", {});
+    }
+    
+    //回退进入前一页面的时候不好使
+    // componentDidUpdate(){
+    //     this.checkLogin();
+    // }
 
     render(){
 
@@ -126,7 +135,7 @@ class Login extends Component{
                         onChangeText={text => this.setState({passwd: text})}/>
 
                         <View style={styles.options}>
-                            <Text style={styles.forgetPWD}>Forget Password?</Text>
+                            <Text style={styles.forgetPWD} onPress={() => this.goToForgetPWD()}>Forget Password?</Text>
                             <Text style={styles.signup} onPress={() => this.goToSignup()}>Join Us!</Text>
                         </View>
 

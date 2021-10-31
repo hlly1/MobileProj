@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 50,
         paddingHorizontal: 30,
-        height: height * 0.8
+        height: height * 0.9
     },
 
     profile_title: {
@@ -213,7 +213,44 @@ const styles = StyleSheet.create({
         marginTop:"5%"
     },
 
-    //----------------------------------------------------------------
+    //----------------------------------------------------------------post
+    
+    container: {
+        paddingTop: 20
+    },
+    text: {
+        textAlign: "center",
+    },
+    wrapperCustom: {
+        borderRadius: 8,
+        padding: 6,
+        borderColor: "grey",
+        borderWidth: 1
+    },
+    post_submit_button_adjust:{
+        marginLeft: "10%",
+        marginRight: "10%",
+        justifyContent: 'space-evenly', 
+        alignItems: 'center', 
+        marginVertical: 24,
+        height: 50,
+        borderRadius: 30,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        elevation: 7,
+    },
+    profile_card_post:{
+        backgroundColor: "#ffffff",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingVertical: 50,
+        paddingHorizontal: 30
+    },
 
 })
 

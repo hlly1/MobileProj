@@ -46,7 +46,6 @@ class Profile extends Component{
 
         //打开图库，可用
         launchImageLibrary(options, (response)=>{
-            console.log('response: ', response);
             if (response.didCancel) {
                 console.log('cancelled image picker');
             } else if(response.error){
@@ -54,8 +53,7 @@ class Profile extends Component{
             }else if (response.customButton) {
                 console.log('imagePicker button tapped: ', response.customButton);
             }else{
-                const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
-                this.setState({avatar: source});
+                this.setState({avatar: response["assets"][0]["base64"]});
             }
         });
     }
@@ -71,7 +69,6 @@ class Profile extends Component{
 
         //开启摄像头，可用
         launchCamera(options, (response)=>{
-            console.log('response: ', response);
             if (response.didCancel) {
                 console.log('cancelled image picker');
             } else if(response.error){
@@ -79,56 +76,42 @@ class Profile extends Component{
             }else if (response.customButton) {
                 console.log('imagePicker button tapped: ', response.customButton);
             }else{
-                const source = {uri: 'data:image/jpeg;base64 '+ response.base64};
-                this.setState({avatar: source});
+                this.setState({avatar: response["assets"][0]["base64"]});
             }
         });
     }
 
     async editProfileRequest(){
-        if(this.state.email.length == 0 || this.state.passwd.length == 0){
-            this.errorMsg = "Email and Password cannot be empty!";
-        }else if(!Validator.email_validate(this.state.email)){
-            this.errorMsg = "Invalid Email format!";
-        }
-
-        if (Validator.email_validate(this.state.email) && this.state.passwd.length != 0 && this.state.nickname.length != 0){
-            this.validate = true;
-            this.errorMsg = "";
-            // send them to backend
-            var editProileURL='http://81.68.76.219:80/xxx';
-            var editProileData = JSON.stringify({
-                "email": this.state.email,
-                "username": this.state.nickname,
-                "password": this.state.passwd,
-                "icon_data": this.avatar
-            });
-
-            const res = await fetch(editProileURL, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: editProileData
-            }).then(response => response.json())
-            .then(responseJson => {
-              if (responseJson["status"] == 1) {
-
-                
+        console.log(this.state.email);
+        // send them to backend
+        var editProileURL='http://81.68.76.219:80/update/user';
+        var editProileData = JSON.stringify({
+            "email": this.state.email,
+            "username": this.state.nickname,
+            "password": this.state.passwd,
+            "icon": this.state.avatar
+        });
+        // console.log("edited: "+ editProileData);
+        const res = await fetch(editProileURL, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: editProileData
+        }).then(response => response.json())
+        .then(responseJson => {
+            if (responseJson["status"] == 1) {
                 alert("Profile Edited Successfully!");
-                this.navigation.navigate("Home",{});
-              } else if (resonseJson["status"] == -1) {
+                this.navigation.navigate("Profile", {});
+            } else if (responseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["message"]+"Please check it again!");
-              }else{
+            }else{
                 alert("Issue-[xxx]: Please contact admin!");
-              }
-            })
-              .catch((error) => {
-                alert("Issue-[xxx]:"+error);
-              });
-        }
-
+            }
+        }).catch((error) => {
+            alert("Issue-[xxx]:"+error);
+        });
     }
 
     getSessionEmail = async () => {
@@ -167,10 +150,9 @@ class Profile extends Component{
                 if (responseJson["status"] == 1) {
                     this.setState({ username: responseJson["username"] });
                     if (responseJson["icon_data"]) {
-                        console.log(this.state.avatar);
-                        this.setState({ avatar: 'data:image/jpeg;base64,' + responseJson["icon_data"] + '}' });
+                        this.setState({ avatar:responseJson["icon_data"]});
                         // this.setState({ avatar: require("../../assets/imgs/user-circle-1.png") });
-                        console.log(this.state.avatar);
+                        // console.log(this.state.avatar);
                     }
                     // return responseJson;
                 } else if (responseJson["status"] == -1) {
@@ -229,7 +211,7 @@ class Profile extends Component{
                                 containerStyle={{ alignSelf: "center" }}
                                 size="large"
                                 source={{
-                                    uri: this.state.avatar,
+                                    uri: 'data:image/jpeg;base64,' + this.state.avatar,
                                 }}
                             >
                             </Avatar>
@@ -249,7 +231,7 @@ class Profile extends Component{
                                 onPress={()=> this.editProfileRequest()}
                                 >
                                 Confirm My Updates
-                            </Button>   
+                            </Button>
                         
                         
                     </View>
