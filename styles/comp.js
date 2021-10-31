@@ -76,7 +76,7 @@ const comps = StyleSheet.create({
         width: "100%",
         height: "auto",
         marginTop: 20,
-        marginBottom:50,
+        // marginBottom:50,
         paddingTop: 20,
         paddingLeft: 20,
         paddingRight: 20,
