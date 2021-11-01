@@ -30,95 +30,42 @@ export default class CourseList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            categories: [{
-                "id": "0001",
-                "title": "COMP90001",
-                "cname:": "Mobile Computing 1",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0002",
-                "title": "COMP90002",
-                "cname:": "Mobile Computing 2",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            },{
-                "id": "0003",
-                "title": "COMP90003",
-                "cname:": "Mobile Computing 3",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0004",
-                "title": "COMP90004",
-                "cname:": "Mobile Computing 4",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0005",
-                "title": "COMP90005",
-                "cname:": "Mobile Computing 5",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0006",
-                "title": "COMP90006",
-                "cname:": "Mobile Computing 6",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0007",
-                "title": "COMP90007",
-                "cname:": "Mobile Computing 7",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0008",
-                "title": "COMP90008",
-                "cname:": "Mobile Computing 8",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0009",
-                "title": "COMP90009",
-                "cname:": "Mobile Computing 9",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0010",
-                "title": "COMP90010",
-                "cname:": "Mobile Computing 10",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0011",
-                "title": "COMP90011",
-                "cname:": "Mobile Computing 11",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }, {
-                "id": "0012",
-                "title": "COMP90012",
-                "cname:": "Mobile Computing 12",
-                "imgUrl": "../../resource/imgs/unimelb_logo.png"
-            }],
+            categories: [],
             new_categories: [],
             text: '',
             originList: [],
             list: []
         }
-        // this.handleGetListSucc = this.handleGetListSucc.bind(this)
+        this.handleGetListSucc = this.handleGetListSucc.bind(this)
     }
 
     componentDidMount() {
-        alert("提取有关 major:" + this.props.route.params.id + "的相关帖子")
-        // alert(this.props.navigation.state.params.id)
-        // fetch('192.168.0.5/courseList')
-        // .then((res) => res.json())
+        // alert("提取有关 major:" + this.props.route.params.subject + "的相关帖子")
+        var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
+        fetch("http://81.68.76.219:80/subjectlist", 
+            {method: 'POST', 
+            headers:{'Accept': 'application/json', 'Content-Type': 'application/json'},
+            body: majorData}
+            )
+        .then(res => res.json())
+        .then(this.handleGetListSucc)
         // .then(this.handleGetListSucc)
-        // .catch(() => {alert('请求异常')})
+        .catch(() => {alert('请求异常')})
     }
 
-    // handleGetListSucc(res) {
-    //     if (res.ret && res.data) {
-    //         this.setState({
-    //             categories: res.data.categories
-    //         })
-    //     }
-    // }
+    handleGetListSucc(res) {
+        console.log(res.data)
+        if (res.status && res.data) {
+            this.setState({
+                categories: res.data
+            })
+        }
+    }
 
     handleItemClick(courseId) {
-        const {navigate} = this.props.navigation;
-        navigate('MajorList', {courseId: courseId})
+        // const {navigate} = this.props.navigation;
+        // navigate('MajorList', {courseId: courseId})
+        this.props.navigation.navigate('TestPage', {subject_code: subject_code})
     }
 
     onChangeText = (text) => {
@@ -132,7 +79,7 @@ export default class CourseList extends Component {
         let data = this.state.categories
         if (text) {
             return data.filter((v) => {
-                return v.id.toLowerCase().includes(text.toLowerCase()) | v.title.toLowerCase().includes(text.toLowerCase()) | v["cname:"].toLowerCase().includes(text.toLowerCase())
+                return v["subject_major"].toLowerCase().includes(text.toLowerCase()) | v["subject_code"].toLowerCase().includes(text.toLowerCase()) | v["subject_name"].toLowerCase().includes(text.toLowerCase())
                 // return Object.keys(v).some((key) => {
                 //     return String(v[key]).toLowerCase().includes(text.toLowerCase())
                 // })
@@ -167,12 +114,12 @@ export default class CourseList extends Component {
                     
                     <FlatList style={styles.searchItem}
                         data={this.state.list}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item["subject_name"]}
                         renderItem={({item}) => {
                             return (
-                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.id)}>
+                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.subject_code)}>
                                     <View style={{paddingTop:8}}>
-                                        <Text>{item.title} {item["cname:"]}</Text>
+                                        <Text>{item["subject_code"]} {item["subject_name"]}</Text>
                                     </View>
                                 </TouchableWithoutFeedback >
                                 
@@ -187,13 +134,13 @@ export default class CourseList extends Component {
                         {
                             this.state.categories.map((item) => {
                                 return (
-                                    <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.id)}>
+                                    <TouchableWithoutFeedback key={item.subject_code} onPress={this.handleItemClick.bind(this, item["subject_code"])}>
                                         <View style={[styles.cardStyle, {width: pictWidth}]}> 
                                         {/* source={{uri: item.imgUrl}} */}
-                                            <Image source={require("../../resource/imgs/unimelb_logo.png")} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
+                                            <Image source={require("../../assets/imgs/unimelb-logo.png")} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
                             
-                                            <Text style={styles.itemTitle}>{item.title}</Text>
-                                            <Text style={styles.itemTitle}>{item["cname:"]}</Text>
+                                            <Text style={styles.itemTitle}>{item["subject_code"]}</Text>
+                                            <Text style={styles.itemTitle}>{item["subject_name"]}</Text>
                                         </View>
                                     </TouchableWithoutFeedback>
                                     
@@ -216,7 +163,7 @@ const styles = StyleSheet.create({
         position: "absolute"
     },
     headerStyle: {
-        height: '12%',
+        height: 120,
         backgroundColor: 'blue'
     },
     headerTextStyle: {
@@ -251,7 +198,7 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        marginTop: 5,
+        marginTop: 10,
         marginLeft: 10,
         marginRight: 10,
         borderRadius: 5,

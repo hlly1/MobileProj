@@ -31,28 +31,28 @@ export default class MajorList extends Component {
         this.state = {
             categories: [{
                 "id": "1",
-                "name": "Master of Information Technology",
-                "imgUrl": "../../assets/imgs/unimelb-logo.png"
+                "name": "Information Technology",
+                "imgUrl": require("../../assets/imgs/IT.jpeg")
             }, {
                 "id": "2",
-                "name": "Master of Computer Science",
-                "imgUrl": "../../assets/imgs/unimelb-logo.png"
+                "name": "Business",
+                "imgUrl": require("../../assets/imgs/business.jpeg")
             }, {
                 "id": "3",
                 "name": "Master of Accounting",
-                "imgUrl": "../../assets/imgs/unimelb-logo.png"
+                "imgUrl": require("../../assets/imgs/unimelb-logo.png")
             }, {
                 "id": "4",
                 "name": "Master of Language",
-                "imgUrl": "../../assets/imgs/unimelb-logo.png"
+                "imgUrl": require("../../assets/imgs/unimelb-logo.png")
             }, {
                 "id": "5",
                 "name": "Master of Data Science",
-                "imgUrl": "../../assets/imgs/unimelb-logo.png"
+                "imgUrl": require("../../assets/imgs/unimelb-logo.png")
             }, {
                 "id": "6",
                 "name": "Master of Mechanical Engineering",
-                "imgUrl": "../../assets/imgs/unimelb-logo.png"
+                "imgUrl": require("../../assets/imgs/unimelb-logo.png")
             }],
             new_categories: [],
             text: '',
@@ -63,8 +63,8 @@ export default class MajorList extends Component {
 
     }
 
-    handleItemClick(majorId) {
-        this.props.navigation.navigate('CourseList', {id: majorId})
+    handleItemClick(majorName) {
+        this.props.navigation.navigate('Subject', {majorName: majorName})
     }
 
     onChangeText = (text) => {
@@ -111,7 +111,7 @@ export default class MajorList extends Component {
                         keyExtractor={(item) => item.id}
                         renderItem={({item}) => {
                             return (
-                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.id)}>
+                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.name)}>
                                     <View style={{paddingTop:8}}>
                                         <Text>{item.name}</Text>
                                     </View>
@@ -126,10 +126,10 @@ export default class MajorList extends Component {
                 {
                     this.state.categories.map((item, value) => {
                         return (
-                            <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.id)}>
+                            <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.name)}>
                                 <View key={item.id} style={[styles.item, {width: pictWidth}]}>
                                     <Image 
-                                        source={require("../../assets/imgs/unimelb-logo.png")} 
+                                        source={item.imgUrl} 
                                         style={styles.itemImg}
                                     />
                                     <View style={styles.info}> 
