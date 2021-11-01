@@ -133,6 +133,7 @@ class Post_book(db.Model):
     picture_name = db.Column(db.String(500))
     post_date = db.Column(db.String(500))
     subject_code = db.Column(db.String(500))
+    email = db.Column(db.String(500))
 
 
 class Comment(db.Model):
@@ -531,21 +532,31 @@ def postlist_query():
         subject_code = request.json["subject_code"]
 
         result = []
-        for subject in Post_book.query.filter_by(subject_code=subject_code).all():
-            subject_name = Subject.query.filter_by(subject_code=subject.subject_code).first().subject_name
+        for bookInstance in Post_book.query.filter_by(subject_code=subject_code).all():
+            subject_name = Subject.query.filter_by(subject_code=bookInstance.subject_code).first().subject_name
+            userInstance = User.query.filter_by(email=bookInstance.email).first()
+
+            file_name = userInstance.icon_name
+            base64_data = ""
+            if file_name:
+                with open(os.path.join("./static/", file_name), 'rb') as f:
+                    base64_data = base64.b64encode(f.read())
 
             result.append({
-                "id": subject.id,
-                "topic": subject.topic,
-                "book_name": subject.book_name,
-                "book_description": subject.book_description,
-                "comments_id": subject.comments_id,
-                "mark_count": subject.mark_count,
-                "ISBN": subject.ISBN,
-                "picture_name": subject.picture_name,
-                "post_date": subject.post_date,
-                "subject_code": subject.subject_code,
+                "id": bookInstance.id,
+                "topic": bookInstance.topic,
+                "book_name": bookInstance.book_name,
+                "book_description": bookInstance.book_description,
+                "comments_id": bookInstance.comments_id,
+                "mark_count": bookInstance.mark_count,
+                "ISBN": bookInstance.ISBN,
+                "picture_name": bookInstance.picture_name,
+                "post_date": bookInstance.post_date,
+                "subject_code": bookInstance.subject_code,
                 "subject_name": subject_name,
+                "email": bookInstance.email,
+                "username": userInstance.username,
+                "icon_data": base64_data.decode('utf8')
             })
 
         return jsonify(status=1,
@@ -616,52 +627,56 @@ def postdetails():
     try:
         book_id = request.json["book_id"]
         bookInstance = Post_book.query.filter_by(id=book_id).first()
+        if bookInstance:
+            # get comment
+            comment_result = []
+            comments_id = bookInstance.comments_id
+            if comments_id:
+                for i in comments_id.strip().split(" "):
+                    comment_instance= Comment.query.filter_by(id=int(i)).first()
+                    comment_result.append({
+                        "comment_content": comment_instance.comment_content,
+                        "email": comment_instance.email,
+                        "post_date": comment_instance.post_date
+                    })
 
-        # get comment
-        comment_result = []
-        comments_id = bookInstance.comments_id
-        if comments_id:
-            for i in comments_id.strip().split(" "):
-                comment_instance= Comment.query.filter_by(id=int(i)).first()
-                comment_result.append({
-                    "comment_content": comment_instance.comment_content,
-                    "email": comment_instance.email,
-                    "post_date": comment_instance.post_date
-                })
-
-        file_name_pic = bookInstance.picture_name
-        pic_b64_list = []
-        for file_name_pic1 in get_list_str(file_name_pic):
-            if file_name_pic1:
-                with open(os.path.join("./static/", file_name_pic1), 'rb') as f:
+            file_name_pic = bookInstance.picture_name
+            pic_b64_list = []
+            for file_name_pic1 in get_list_str(file_name_pic):
+                if file_name_pic1:
+                    with open(os.path.join("./static/", file_name_pic1), 'rb') as f:
+                        base64_data = base64.b64encode(f.read())
+                        pic_b64 = base64_data.decode('utf8')
+                        pic_b64_list.append(pic_b64)
+                        # print(base64.b64decode(base64_data))
+            file_name_audio = bookInstance.audio_name
+            if file_name_audio:
+                with open(os.path.join("./static/", file_name_audio), 'rb') as f:
                     base64_data = base64.b64encode(f.read())
-                    pic_b64 = base64_data.decode('utf8')
-                    pic_b64_list.append(pic_b64)
+                    audio_base64 = base64_data.decode('utf8')
                     # print(base64.b64decode(base64_data))
-        file_name_audio = bookInstance.audio_name
-        if file_name_audio:
-            with open(os.path.join("./static/", file_name_audio), 'rb') as f:
-                base64_data = base64.b64encode(f.read())
-                audio_base64 = base64_data.decode('utf8')
-                # print(base64.b64decode(base64_data))
-        result = {
-            "topic": bookInstance.topic,
-            "book_name": bookInstance.book_name,
-            "book_description": bookInstance.book_description,
-            "audio_base64": audio_base64,
-            "comments_id": comment_result,
-            "mark_count": bookInstance.mark_count,
-            "picture_base64": pic_b64_list,
-            "post_date": bookInstance.post_date,
-            "subject_code": bookInstance.subject_code,
-        }
+            result = {
+                "topic": bookInstance.topic,
+                "book_name": bookInstance.book_name,
+                "book_description": bookInstance.book_description,
+                "audio_base64": audio_base64,
+                "comments_id": comment_result,
+                "mark_count": bookInstance.mark_count,
+                "picture_base64": pic_b64_list,
+                "post_date": bookInstance.post_date,
+                "subject_code": bookInstance.subject_code,
+                "ISBN": bookInstance.ISBN
+            }
 
 
-        db.session.commit()
+            db.session.commit()
 
-        return jsonify(status=1,
-                       msg="success",
-                       data=result)
+            return jsonify(status=1,
+                           msg="success",
+                           data=result)
+        else:
+            return jsonify(status=-1,
+                           msg="Book not exist")
     except Exception as e:
         return jsonify(status=-1,
                        msg=e)
@@ -730,7 +745,8 @@ def addbook():
                                ISBN=ISBN,
                                picture_name=picture_name_concate,
                                post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
-                               subject_code=subject_code
+                               subject_code=subject_code,
+                               email=email
                                )
 
         db.session.add(post_book1)
@@ -874,6 +890,30 @@ def forgetsendcode():
         return jsonify(status=-1,
                        msg="validate failed, email not exists")
 
+@app.route('/hot/subject', methods=['GET'])
+def hotsubject():
+
+    try:
+        result1 = []
+        for subject in Subject.query.all():
+            count = 0
+            for book in Post_book.query.all():
+                if book.subject_code == subject.subject_code:
+                    count += 1
+            result1.append({
+                "subject_code": subject.subject_code,
+                "subject_name": subject.subject_name,
+                "subject_major": subject.subject_major,
+                "book_count": count
+            })
+        result = sorted(result1, key=lambda x: x["book_count"], reverse=True)
+        return jsonify(status=1,
+                       msg="success",
+                       data=result)
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
 
 
 def write_test_users():
@@ -883,9 +923,19 @@ def write_test_users():
                  validation_code="123456", icon_name="test1.jpg", mark_id="3 4", post_id="1 4", subscribe_code="COMP90042")
 
     subject1 = Subject(subject_code="COMP90042", subject_name="Natural Language Processing", subject_major="Information Technology")
-    subject2 = Subject(subject_code="COMP90054", subject_name="Artificial Intelligence", subject_major="Information Technology")
-    subject3 = Subject(subject_code="MAN30082", subject_name="Business Law", subject_major="Business")
-    subject4 = Subject(subject_code="MAN30046", subject_name="Management Accounting", subject_major="Business")
+    subject2 = Subject(subject_code="COMP90054", subject_name="AI Planning for Autonomy", subject_major="Information Technology")
+    subject3 = Subject(subject_code="COMP90038", subject_name="Algorithms and Complexity", subject_major="Information Technology")
+    subject4 = Subject(subject_code="COMP90007", subject_name="Internet Technologies", subject_major="Information Technology")
+    subject5 = Subject(subject_code="INFO90002", subject_name="Database System & Information Modelling", subject_major="Information Technology")
+    subject6 = Subject(subject_code="COMP90051", subject_name="Statistical Machine Learning", subject_major="Information Technology")
+    subject7 = Subject(subject_code="GEOM90007", subject_name="Information Visualisation", subject_major="Information Technology")
+    subject8 = Subject(subject_code="COMP90074", subject_name="Web Security", subject_major="Information Technology")
+    subject9 = Subject(subject_code="ELEN90055", subject_name="Control Systems", subject_major="Mechanical Engineering")
+    subject10 = Subject(subject_code="MCEN90028", subject_name="Robotics Systems", subject_major="Mechanical Engineering")
+    subject11 = Subject(subject_code="MAN90020", subject_name="Business Law", subject_major="Accounting")
+    subject12 = Subject(subject_code="MAN90021", subject_name="Management Accounting", subject_major="Accounting")
+
+
 
     post_book1 = Post_book(id=1,
                            topic="How to get 90 marks in 90042 NLP",
@@ -897,7 +947,8 @@ def write_test_users():
                            ISBN="1-123-456-789",
                            picture_name="1.jpg 2.jpg",
                            post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
-                           subject_code="COMP90042"
+                           subject_code="COMP90042",
+                           email="test2@gmail.com"
                            )
 
     post_book2 = Post_book(id=2,
@@ -910,7 +961,9 @@ def write_test_users():
                            ISBN="2-123-456-789",
                            picture_name="2.jpg 3.jpg",
                            post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
-                           subject_code="COMP90054"
+                           subject_code="COMP90054",
+                           email="test1@gmail.com"
+
                            )
 
     post_book3 = Post_book(id=3,
@@ -923,7 +976,9 @@ def write_test_users():
                            mark_count=1,
                            picture_name="3.jpg 2.jpg",
                            post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
-                           subject_code="COMP90054")
+                           subject_code="COMP90054",
+                           email="test1@gmail.com"
+                           )
 
     post_book4 = Post_book(id=4,
                            topic="I found another useful website to pass the NLP!",
@@ -935,7 +990,10 @@ def write_test_users():
                            mark_count=1,
                            picture_name="4.jpg 2.jpg",
                            post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
-                           subject_code="COMP90042")
+                           subject_code="COMP90042",
+                           email="test2@gmail.com"
+                           )
+
 
     comment1 = Comment(id=1,
                        comment_content="1: Yeah, that is very helpful!",
@@ -957,6 +1015,8 @@ def write_test_users():
 
     db.session.add_all([user1, user2,
                         subject1, subject2, subject3, subject4,
+                        subject5, subject6, subject7, subject8,
+                        subject9, subject10, subject11, subject12,
                         post_book1, post_book2, post_book3, post_book4,
                         comment1, comment2, comment3, comment4])
     db.session.commit()
