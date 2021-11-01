@@ -8,7 +8,8 @@ import {
     Button,
     Image,
     StyleSheet,
-    ScrollView
+    ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import { Input } from "react-native-elements";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -44,6 +45,8 @@ class postDetails extends Component{
             hasPermission: undefined,
             audioPath: AudioUtils.DocumentDirectoryPath + '/Audio' + props.route.params.id + '.acc',
             audio_base64: "",
+
+            loaded: 0,
         };
         this.errorMsg = "";
     }
@@ -123,7 +126,7 @@ class postDetails extends Component{
                 console.log(responseJson);
                 if(responseJson["status"] == 1){
                     this.setState({ topic: responseJson["data"].topic });
-                    // this.setState({ ISBN: responseJson["data"].ISBN });
+                    this.setState({ ISBN: responseJson["data"].ISBN });
                     this.setState({ bookname: responseJson["data"].book_name });
                     this.setState({ description: responseJson["data"].book_description });
                     this.setState({ audio_base64: responseJson["data"].audio_base64 });
@@ -132,6 +135,7 @@ class postDetails extends Component{
                     this.setState({ commentList: responseJson["data"].comments_id });
                     this.setState({ postdate: responseJson["data"].post_date });
                     this.setState({ markcount: responseJson["data"].mark_count });
+                    this.setState({ loaded: 1 });
                 }
                 else if(responseJson["status"] == -1){
                     alert("Failed to submit. Please try later!");
@@ -189,6 +193,7 @@ class postDetails extends Component{
             .then(responseJson => {
                 if (responseJson["status"] == 1) {
                     alert("Submit Successfully!");
+                    this.setState({ comment: "" });
                     this.navigation.navigate('PostDetails', {id: this.state.id, subject: this.state.subject});
                 } else if (responseJson["status"] == -1) {
                     alert("Failed to submit. Please try later!");
@@ -224,7 +229,7 @@ class postDetails extends Component{
 
         let commentsList = [];
         for(let i = 0; i < this.state.commentList.length; i++){
-            _comment = this.state.commentList[i];
+            var _comment = this.state.commentList[i];
             commentsList.push(
                 <View key={"com_view" + i} style={{ borderWidth: 1, marginTop: 5 }}>
                     <Text style={{ marginLeft: 5 }}>
@@ -237,134 +242,140 @@ class postDetails extends Component{
         }
 
         return (
-            <ScrollView>
-                <View style={{ backgroundColor: "#fff", flex: 1, padding: 10 }}>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Topic</Text>
-                        <Text
-                            placeholder="Enter the topic"
-                            onChangeText={(topic) => this.setState({ topic: topic })}
-                        >
-                            {this.state.topic}
-                        </Text>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Subject</Text>
-                        <Text>{this.state.subject}</Text>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Post Date</Text>
-                        <Text>{this.state.postdate}</Text>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Mark Count</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <Icon size={20} name="star-o" color="orange" />
-                            <Text>{this.state.markcount}</Text>
-                        </View>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>ISBN (optinal)</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <View style={{ width: 150 }}>
-                                <Text>{this.state.ISBN}</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Book Name (optinal)</Text>
-                        <Text>{this.state.bookname}</Text>
-                    </View>
-                    <View>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Description</Text>
-                        <Text
-                            textAlignVertical="top"
-                            multiline
-                            style={{ borderColor: 'grey', borderWidth: 1, height: 120 }}
-                            maxLength={100}
-                        >
-                            {this.state.description}
-                        </Text>
-                    </View>
-                    <View style={styles.container}>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Audio (optional)</Text>
-                        {this.state.audio_base64 == ''
-                        ?
-                            <Pressable
-                            disabled='true'
-                                style={({ pressed }) => [
-                                    {
-                                        backgroundColor: pressed
-                                            ? 'rgb(210, 230, 255)'
-                                            : 'grey'
-                                    },
-                                    styles.wrapperCustom
-                                ]}>
-                                {({ pressed }) => (
-                                    <Text style={styles.text}>
-                                        <Icon name='microphone' size={20} color="#666" />
-                                        {this.isPressed(pressed)}
-                                    </Text>
-                                )}
-                            </Pressable>
-                        :
-                            <Pressable
-                                onPress={() => this.playRecording()}
-                                style={({ pressed }) => [
-                                    {
-                                        backgroundColor: pressed
-                                            ? 'rgb(210, 230, 255)'
-                                            : '#FFED97'
-                                    },
-                                    styles.wrapperCustom
-                                ]}>
-                                {({ pressed }) => (
-                                    <Text style={styles.text}>
-                                        <Icon name='microphone' size={20} color="#666" />
-                                        {this.isPressed(pressed)}
-                                    </Text>
-                                )}
-                            </Pressable>
-                        }
-                    </View>
-                    <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold", paddingTop: 20 }}>Pictures</Text>
-                    <View style={{ flexDirection: "row" }}>
-                        <ScrollView>
-                            {picList}
-                        </ScrollView>
-                    </View>
-                    <View style={{ paddingTop: 20 }}>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Location</Text>
-                        <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }}>
-                            {this.state.location == ''
-                            ?
-                                <Icon name='map-marker' size={20} color="grey" />
-                            :
-                                <Icon name='map-marker' size={20} color="#FF0000" />
-                            }
-                            <Text> {this.state.location == '' ? "not provided" : this.state.location}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ paddingTop: 20 }}>
-                        <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Comments</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <TextInput 
-                                value={this.state.comment}
-                                textAlignVertical="top"
-                                placeholder="Add your comment here (100 words limited)"
-                                multiline
-                                style={{ flex: 4, marginTop: 5, marginBottom: 10, marginEnd: 10, borderColor: 'grey', borderWidth: 1, height: 60 }}
-                                onChangeText={(comment) => this.setState({ comment: comment })}
-                                maxLength={100}
-                            />
-                            <View style={{ flex: 1, marginTop: 15 }}>
-                                <Button title='submit' onPress={() => this.addNewComment()} />
-                            </View>
-                        </View>
-                        {commentsList}
-                    </View>
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                    <ActivityIndicator color="blue" size={50} />
                 </View>
-            </ScrollView>
+            : 
+                    <ScrollView>
+                        <View style={{ backgroundColor: "#fff", flex: 1, padding: 10 }}>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Topic</Text>
+                                <Text
+                                    placeholder="Enter the topic"
+                                    onChangeText={(topic) => this.setState({ topic: topic })}
+                                >
+                                    {this.state.topic}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Subject</Text>
+                                <Text>{this.state.subject}</Text>
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Post Date</Text>
+                                <Text>{this.state.postdate}</Text>
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Mark Count</Text>
+                                <View style={{ flexDirection: "row" }}>
+                                    <Icon size={20} name="star-o" color="orange" />
+                                    <Text> {this.state.markcount}</Text>
+                                </View>
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>ISBN (optinal)</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ width: 150 }}>
+                                        <Text>{this.state.ISBN}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Book Name (optinal)</Text>
+                                <Text>{this.state.bookname}</Text>
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Description</Text>
+                                <Text
+                                    textAlignVertical="top"
+                                    multiline
+                                    style={{ borderColor: 'grey', borderWidth: 1, height: 120 }}
+                                    maxLength={100}
+                                >
+                                    {this.state.description}
+                                </Text>
+                            </View>
+                            <View style={styles.container}>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Audio (optional)</Text>
+                                {this.state.audio_base64 == ''
+                                    ?
+                                    <Pressable
+                                        disabled='true'
+                                        style={({ pressed }) => [
+                                            {
+                                                backgroundColor: pressed
+                                                    ? 'rgb(210, 230, 255)'
+                                                    : 'grey'
+                                            },
+                                            styles.wrapperCustom
+                                        ]}>
+                                        {({ pressed }) => (
+                                            <Text style={styles.text}>
+                                                <Icon name='microphone' size={20} color="#666" />
+                                                {this.isPressed(pressed)}
+                                            </Text>
+                                        )}
+                                    </Pressable>
+                                    :
+                                    <Pressable
+                                        onPress={() => this.playRecording()}
+                                        style={({ pressed }) => [
+                                            {
+                                                backgroundColor: pressed
+                                                    ? 'rgb(210, 230, 255)'
+                                                    : '#FFED97'
+                                            },
+                                            styles.wrapperCustom
+                                        ]}>
+                                        {({ pressed }) => (
+                                            <Text style={styles.text}>
+                                                <Icon name='microphone' size={20} color="#666" />
+                                                {this.isPressed(pressed)}
+                                            </Text>
+                                        )}
+                                    </Pressable>
+                                }
+                            </View>
+                            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold", paddingTop: 20 }}>Pictures</Text>
+                            <View style={{ flexDirection: "row" }}>
+                                <ScrollView>
+                                    {picList}
+                                </ScrollView>
+                            </View>
+                            <View style={{ paddingTop: 20 }}>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Location</Text>
+                                <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }}>
+                                    {this.state.location == ''
+                                        ?
+                                        <Icon name='map-marker' size={20} color="grey" />
+                                        :
+                                        <Icon name='map-marker' size={20} color="#FF0000" />
+                                    }
+                                    <Text> {this.state.location == '' ? "not provided" : this.state.location}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ paddingTop: 20 }}>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Comments</Text>
+                                <View style={{ flexDirection: "row" }}>
+                                    <TextInput
+                                        value={this.state.comment}
+                                        textAlignVertical="top"
+                                        placeholder="Add your comment here (100 words limited)"
+                                        multiline
+                                        style={{ flex: 4, marginTop: 5, marginBottom: 10, marginEnd: 10, borderColor: 'grey', borderWidth: 1, height: 60 }}
+                                        onChangeText={(comment) => this.setState({ comment: comment })}
+                                        maxLength={100}
+                                    />
+                                    <View style={{ flex: 1, marginTop: 15 }}>
+                                        <Button title='submit' onPress={() => this.addNewComment()} />
+                                    </View>
+                                </View>
+                                {commentsList}
+                            </View>
+                        </View>
+                    </ScrollView>
         )
     }
 }
