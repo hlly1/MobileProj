@@ -249,6 +249,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30
     },
 
+    
+    //----------------------------------------------------------------postDetails
+    container: {
+        paddingTop: 20
+    },
+    text: {
+        textAlign: "center",
+    },
+    wrapperCustom: {
+        borderRadius: 8,
+        padding: 6,
+        borderColor: "grey",
+        borderWidth: 1
+    },
 })
 
 export {styles}

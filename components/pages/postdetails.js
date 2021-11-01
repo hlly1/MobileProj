@@ -10,6 +10,7 @@ import {
     StyleSheet,
     ScrollView,
     ActivityIndicator,
+    StatusBar,
 } from 'react-native';
 import { Input } from "react-native-elements";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,6 +23,10 @@ import RNFS from "react-native-fs";
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LinearGradient from 'react-native-linear-gradient';
+import {styles} from "../../styles/style";
+import {NativeBaseProvider} from 'native-base';
+
 
 class postDetails extends Component{
     constructor(props) {
@@ -242,15 +247,20 @@ class postDetails extends Component{
         }
 
         return (
-            this.state.loaded == 0 
-            ? 
-                <View style={{ marginTop: 400 }}>
-                    <ActivityIndicator color="blue" size={50} />
-                    <Text style={{textAlign:'center'}}>Loading</Text>
-                </View>
-            : 
-                    <ScrollView>
-                        <View style={{ backgroundColor: "#fff", flex: 1, padding: 10 }}>
+            // this.state.loaded == 0 
+            // ? 
+            //     <View style={{ marginTop: 400 }}>
+            //         <ActivityIndicator color="blue" size={50} />
+            //         <Text style={{textAlign:'center'}}>Loading</Text>
+            //     </View>
+            // : 
+            <NativeBaseProvider>
+                <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
+                    <StatusBar backgroundColor='transparent' translucent={true} />
+                    <ScrollView showsVerticalScrollIndicator = {false}>
+                    <Text h3 style={styles.profile_title}>Post Details</Text>
+
+                        <View style={styles.profile_card_post}>
                             <View>
                                 <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Topic</Text>
                                 <Text
@@ -376,24 +386,12 @@ class postDetails extends Component{
                                 {commentsList}
                             </View>
                         </View>
-                    </ScrollView>
+                        </ScrollView>
+                </LinearGradient>
+        </NativeBaseProvider>
         )
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        paddingTop: 20
-    },
-    text: {
-        textAlign: "center",
-    },
-    wrapperCustom: {
-        borderRadius: 8,
-        padding: 6,
-        borderColor: "grey",
-        borderWidth: 1
-    },
-});
 
 export default postDetails;
