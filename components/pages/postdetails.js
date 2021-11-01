@@ -246,6 +246,7 @@ class postDetails extends Component{
             ? 
                 <View style={{ marginTop: 400 }}>
                     <ActivityIndicator color="blue" size={50} />
+                    <Text style={{textAlign:'center'}}>Loading</Text>
                 </View>
             : 
                     <ScrollView>

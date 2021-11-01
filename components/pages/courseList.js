@@ -74,7 +74,8 @@ export default class CourseList extends Component {
             new_categories: [],
             text: '',
             originList: [],
-            list: []
+            list: [],
+            load:0
         }
         this.handleGetListSucc = this.handleGetListSucc.bind(this)
     }
@@ -105,7 +106,7 @@ export default class CourseList extends Component {
     handleItemClick(subject_code) {
         // const {navigate} = this.props.navigation;
         // navigate('MajorList', {courseId: courseId})
-        this.props.navigation.navigate('TestPage', {subject_code: subject_code})
+        this.props.navigation.navigate('PostList', {subject: subject_code})
     }
 
     onChangeText = (text) => {
@@ -123,6 +124,7 @@ export default class CourseList extends Component {
                 // return Object.keys(v).some((key) => {
                 //     return String(v[key]).toLowerCase().includes(text.toLowerCase())
                 // })
+                
             })
         }
         return []
@@ -140,6 +142,13 @@ export default class CourseList extends Component {
         const pictWidth = (width - 40) / columnNum - 10
         const textHeight = 30
         return (
+            this.state.load==1
+            ?
+            <View style={{ marginTop: 400 }}>
+                    <ActivityIndicator color="green" size={50} />
+                    <Text style={{textAlign:'center'}}>Loading</Text>
+            </View>
+            :
             <View style={styles.container}>
                 <LinearGradient colors={['#9b63cd', '#e0708c']} style={styles.headerStyle}>
                     

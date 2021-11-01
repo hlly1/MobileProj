@@ -24,7 +24,7 @@ import { Input } from "react-native-elements/dist/input/Input";
 import { backgroundColor, fontSize, justifyContent, left } from "styled-system";
 import { it } from "jest-circus";
 import {comps} from "../../styles/comp.js";
-import { NativeBaseProvider, Box } from 'native-base';
+import { NativeBaseProvider, Box, Center } from 'native-base';
 
 export default class MajorList extends Component {
     constructor(props) {
@@ -65,7 +65,7 @@ export default class MajorList extends Component {
     }
 
     handleItemClick(majorName) {
-        this.props.navigation.navigate('Subject', {majorName: majorName})
+        this.props.navigation.navigate('SubjectList', {majorName: majorName})
     }
 
     onChangeText = (text) => {
@@ -95,6 +95,7 @@ export default class MajorList extends Component {
         const pictWidth = (width - 20) 
         const textHeight = 30
         return (
+      
             <View style={styles.container}>
                 <LinearGradient colors={['#9b63cd', '#e0708c']} style={styles.headerStyle}>
                     
