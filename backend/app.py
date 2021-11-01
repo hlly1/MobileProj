@@ -307,7 +307,9 @@ def sendcode():
         print(email)
         userInstance = User.query.filter_by(email=email).first()
         if not userInstance:
-            user1 = User(email=email, password=str(get32()), username='user_' + str(get8()), validation_code=validation_code)
+            user1 = User(email=email, password=str(get32()), username='user_' + str(get8()), validation_code=validation_code,
+                         mark_id="", post_id="", subscribe_code="")
+
             db.session.add_all([user1])
         else:
             userInstance.validation_code = validation_code
@@ -577,6 +579,38 @@ def mark():
                        msg=e)
 
 
+@app.route('/unmark', methods=['POST'])
+def unmark():
+    try:
+        email = request.json["email"]
+        book_id = request.json["book_id"]
+        bookInstance = Post_book.query.filter_by(id=book_id).first()
+        userInstance = User.query.filter_by(email=email).first()
+
+        if userInstance.mark_id:
+            new_mark_code = ""
+            if str(book_id) in str(userInstance.mark_id):
+                temp_list = get_list_str(str(userInstance.mark_id))
+                temp_list.remove(str(book_id))
+                for item in temp_list:
+                    new_mark_code += (" " + str(item))
+                userInstance.mark_id = new_mark_code
+
+                bookInstance.mark_count -= 1
+                db.session.commit()
+                return jsonify(status=1,
+                               msg="success")
+            else:
+                return jsonify(status=-1,
+                               msg="The user did not mark the one you request")
+        else:
+            return jsonify(status=-1,
+                           msg="Nothing to unmark")
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+
 @app.route('/postdetails', methods=['POST'])
 def postdetails():
     try:
@@ -719,14 +753,48 @@ def subscribe():
         email = request.json["email"]
         subject_code = request.json["subject_code"]
         userInstance = User.query.filter_by(email=email).first()
-        if str(subject_code) in str(userInstance.subscribe_code):
-            return jsonify(status=-1,
-                           msg="subject is already being subscribed")
-        userInstance.subscribe_code = userInstance.subscribe_code + " " + str(subject_code)
-        db.session.commit()
-        return jsonify(status=1,
-                       msg="success")
+        if userInstance.subscribe_code:
+            if str(subject_code) in str(userInstance.subscribe_code):
+                return jsonify(status=-1,
+                               msg="subject is already being subscribed")
+            userInstance.subscribe_code = userInstance.subscribe_code + " " + str(subject_code)
+            db.session.commit()
+            return jsonify(status=1,
+                           msg="success")
+        else:
+            userInstance.subscribe_code = str(subject_code)
+            db.session.commit()
+            return jsonify(status=1,
+                           msg="success")
 
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
+@app.route('/unsubscribe', methods=['POST'])
+def unsubscribe():
+    try:
+        email = request.json["email"]
+        subject_code = request.json["subject_code"]
+        userInstance = User.query.filter_by(email=email).first()
+        if userInstance.subscribe_code:
+            new_subscribe_code = ""
+            if str(subject_code) in str(userInstance.subscribe_code):
+                temp_list = get_list_str(str(userInstance.subscribe_code))
+                temp_list.remove(str(subject_code))
+                for item in temp_list:
+                    new_subscribe_code += (" " + str(item))
+                userInstance.subscribe_code = new_subscribe_code
+
+                db.session.commit()
+                return jsonify(status=1,
+                               msg="success")
+            else:
+                return jsonify(status=-1,
+                               msg="The user did not subscribe the one you request")
+        else:
+            return jsonify(status=-1,
+                           msg="Nothing to unsubscribe")
     except Exception as e:
         return jsonify(status=-1,
                        msg=e)

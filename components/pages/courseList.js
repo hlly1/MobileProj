@@ -65,7 +65,7 @@ export default class CourseList extends Component {
     handleItemClick(courseId) {
         // const {navigate} = this.props.navigation;
         // navigate('MajorList', {courseId: courseId})
-        this.props.navigation.navigate('PostList', {subject: courseId});
+        this.props.navigation.navigate('TestPage', {subject_code: subject_code})
     }
 
     onChangeText = (text) => {

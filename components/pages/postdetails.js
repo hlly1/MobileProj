@@ -144,63 +144,6 @@ class postDetails extends Component{
             });
     }
 
-    getSession = async (element) => {
-        try {
-            return await AsyncStorage.getItem(element);
-        } catch (err) {
-            console.error(err);
-            return null;
-        }
-    }
-
-    async addNewComment(){
-        var addNewCommentURL = 'http://81.68.76.219:80/add/comment';
-        let sessionEmail = await this.getSession('sessionEmail');
-        try {
-            // to solve an unknown format bug in different developing environment
-            sessionEmail = JSON.parse(sessionEmail);
-        }
-        catch (err) {
-
-        }
-
-        if (sessionEmail == '') {
-            return alert("Invalid login state!");
-        }
-        if (this.state.comment == '') {
-            return alert("Please add the comment!");
-        }
-
-        var commentData = JSON.stringify({
-            "email": sessionEmail,
-            "book_id": this.state.id,
-            "comment_content": this.state.comment,
-        });
-        console.log(commentData);
-        const res = await fetch(addNewCommentURL, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: commentData
-        })
-            .then(response => response.json())
-            .then(responseJson => {
-                if (responseJson["status"] == 1) {
-                    alert("Submit Successfully!");
-                    this.navigation.navigate('PostDetails', {id: this.state.id, subject: this.state.subject});
-                } else if (responseJson["status"] == -1) {
-                    alert("Failed to submit. Please try later!");
-                } else {
-                    alert("Issue-[xxx]: Please contact admin!");
-                }
-            })
-            .catch((error) => {
-                alert("Issue-[xxx]:" + error);
-            });
-    }
-
     componentDidMount(){
         this.getPostDetailsById();
     }
@@ -347,20 +290,6 @@ class postDetails extends Component{
                     </View>
                     <View style={{ paddingTop: 20 }}>
                         <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Comments</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <TextInput 
-                                value={this.state.comment}
-                                textAlignVertical="top"
-                                placeholder="Add your comment here (100 words limited)"
-                                multiline
-                                style={{ flex: 4, marginTop: 5, marginBottom: 10, marginEnd: 10, borderColor: 'grey', borderWidth: 1, height: 60 }}
-                                onChangeText={(comment) => this.setState({ comment: comment })}
-                                maxLength={100}
-                            />
-                            <View style={{ flex: 1, marginTop: 15 }}>
-                                <Button title='submit' onPress={() => this.addNewComment()} />
-                            </View>
-                        </View>
                         {commentsList}
                     </View>
                 </View>
