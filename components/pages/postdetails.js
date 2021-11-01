@@ -247,13 +247,13 @@ class postDetails extends Component{
         }
 
         return (
-            // this.state.loaded == 0 
-            // ? 
-            //     <View style={{ marginTop: 400 }}>
-            //         <ActivityIndicator color="blue" size={50} />
-            //         <Text style={{textAlign:'center'}}>Loading</Text>
-            //     </View>
-            // : 
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                    <ActivityIndicator color="blue" size={50} />
+                    <Text style={{textAlign:'center'}}>Loading</Text>
+                </View>
+            : 
             <NativeBaseProvider>
                 <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />
