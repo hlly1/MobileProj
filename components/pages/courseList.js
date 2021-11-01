@@ -30,7 +30,47 @@ export default class CourseList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            categories: [],
+            categories: [{
+                "subject_code": "COMP90038",
+                "subject_name": "Algorithms and Complexity",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/algorithm.jpeg")
+            }, {
+                "subject_code": "COMP90007",
+                "subject_name": "Internet Technologies",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/internet.jpeg")
+            }, {
+                "subject_code": "INFO90002",
+                "subject_name": "Database System & Information Modelling",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/database.png")
+            }, {
+                "subject_code": "COMP90042",
+                "subject_name": "Natural Language Processing",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/nlp.jpeg")
+            }, {
+                "subject_code": "COMP90051",
+                "subject_name": "Statistical Machine Learning",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/sml.jpeg")
+            }, {
+                "subject_code": "COMP90054",
+                "subject_name": "AI Planning for Autonomy",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/ai.jpeg")
+            }, {
+                "subject_code": "GEOM90007",
+                "subject_name": "Information Visualisation",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/iv.jpeg")
+            }, {
+                "subject_code": "COMP90074",
+                "subject_name": "Web Security",
+                "subject_major": "Information Technology",
+                "imgUrl": require("../../assets/imgs/It_subject_icon/web_security.jpeg")
+            }],
             new_categories: [],
             text: '',
             originList: [],
@@ -41,16 +81,16 @@ export default class CourseList extends Component {
 
     componentDidMount() {
         // alert("提取有关 major:" + this.props.route.params.subject + "的相关帖子")
-        var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
-        fetch("http://81.68.76.219:80/subjectlist", 
-            {method: 'POST', 
-            headers:{'Accept': 'application/json', 'Content-Type': 'application/json'},
-            body: majorData}
-            )
-        .then(res => res.json())
-        .then(this.handleGetListSucc)
+        // var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
+        // fetch("http://81.68.76.219:80/subjectlist", 
+        //     {method: 'POST', 
+        //     headers:{'Accept': 'application/json', 'Content-Type': 'application/json'},
+        //     body: majorData}
+        //     )
+        // .then(res => res.json())
         // .then(this.handleGetListSucc)
-        .catch(() => {alert('请求异常')})
+        // // .then(this.handleGetListSucc)
+        // .catch(() => {alert('请求异常')})
     }
 
     handleGetListSucc(res) {
@@ -62,10 +102,10 @@ export default class CourseList extends Component {
         }
     }
 
-    handleItemClick(courseId) {
+    handleItemClick(subject_code) {
         // const {navigate} = this.props.navigation;
         // navigate('MajorList', {courseId: courseId})
-        this.props.navigation.navigate('PostList', {subject: courseId});
+        this.props.navigation.navigate('TestPage', {subject_code: subject_code})
     }
 
     onChangeText = (text) => {
@@ -101,34 +141,36 @@ export default class CourseList extends Component {
         const textHeight = 30
         return (
             <View style={styles.container}>
-                <View style={styles.headerStyle}>
+                <LinearGradient colors={['#9b63cd', '#e0708c']} style={styles.headerStyle}>
                     
-                    <Text style={styles.headerTextStyle}> Unimelb Course List </Text>
-                    <TextInput 
-                        style={styles.headerSearchStyle} 
-                        placeholder='Find your course'
+                    <View style={styles.headerSearchStyle}>
+                        <Image source={require("../../assets/imgs/search.png")} style={styles.headerSearchIcon}/>
+                        <TextInput 
+                        style={styles.headerInputText}
+                        placeholder='Find your subject'
                         onChangeText={(text) => this.onChangeText(text)}
                         value = {this.state.text}
                         /> 
-                    
+
+                    </View>
                     
                     <FlatList style={styles.searchItem}
                         data={this.state.list}
-                        keyExtractor={(item) => item["subject_name"]}
+                        keyExtractor={(item) => item["subject_code"]}
                         renderItem={({item}) => {
                             return (
-                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.subject_code)}>
+                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item["subject_code"])}>
                                     <View style={{paddingTop:8}}>
-                                        <Text>{item["subject_code"]} {item["subject_name"]}</Text>
+                                        <Text>{item["subject_name"]}</Text>
                                     </View>
                                 </TouchableWithoutFeedback >
                                 
                             )
                         }
                     }/>
-                </View>
+                </LinearGradient>
 
-                <ScrollView style={styles.content}>
+                <ScrollView style={styles.content} >
                 
                     <View style={styles.list}>
                         {
@@ -137,10 +179,10 @@ export default class CourseList extends Component {
                                     <TouchableWithoutFeedback key={item.subject_code} onPress={this.handleItemClick.bind(this, item["subject_code"])}>
                                         <View style={[styles.cardStyle, {width: pictWidth}]}> 
                                         {/* source={{uri: item.imgUrl}} */}
-                                            <Image source={require("../../assets/imgs/unimelb-logo.png")} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
+                                            <Image source={item.imgUrl} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
                             
-                                            <Text style={styles.itemTitle}>{item["subject_code"]}</Text>
-                                            <Text style={styles.itemTitle}>{item["subject_name"]}</Text>
+                                            <Text style={styles.itemCode}>{item["subject_code"]}</Text>
+                                            <Text style={styles.itemName}>{item["subject_name"]}</Text>
                                         </View>
                                     </TouchableWithoutFeedback>
                                     
@@ -160,49 +202,59 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#eee',
-        position: "absolute"
     },
     headerStyle: {
-        height: 120,
-        backgroundColor: 'blue'
+        height: 110,
+        zIndex: 1
     },
     headerTextStyle: {
         textAlign: 'center',
         marginTop: '5%',
-        color: 'white'
+        color: 'white',
+        zIndex: 1
     },
     headerSearchStyle: {
-        position: 'absolute',
-        marginTop: '5%',
-        backgroundColor: '#fff',
-        left: 20,
-        right: 20,
-        height: 40,
-        top: 40,
-        lineHeight: 5,
-        paddingLeft: 10,
-        paddingBottom:10,
-        borderRadius: 5,
-        zIndex:2
+        height:10,
+        flexDirection: 'row',   // 水平排布  
+        flex:1,
+        borderRadius: 5,  // 设置圆角边  
+        backgroundColor: 'white',
+        alignItems: 'center',
+        marginTop: 50,
+        marginLeft: 20,  
+        marginRight: 20,
+        marginBottom: 20    
+    },
+    headerSearchIcon: {
+        height: 15, 
+        width: 15, 
+        marginLeft: 15, 
+        resizeMode: 'stretch'
+    },
+    headerInputText: {
+        flex:1,
+        backgroundColor:'transparent',
+        fontSize:15,
+        marginLeft: 5
     },
     searchItem: {
         position: 'absolute', 
         marginTop: '10%', 
-        zIndex: 1,
         backgroundColor: '#fff',
-        top: 50,
+        top: 40,
         left: 20,
         right: 20,
-        zIndex:1,
+        zIndex: 2,
+        paddingLeft: 15
 
     },
     content: {
         flex: 1,
-        marginTop: 10,
         marginLeft: 10,
         marginRight: 10,
         borderRadius: 5,
-        zIndex:-1
+        zIndex:-1,
+
     },
     list: {
         display: 'flex',
@@ -219,10 +271,11 @@ const styles = StyleSheet.create({
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 3,
+            height: 5,
         },
-        shadowOpacity: 0.29,
-        shadowRadius: 4.65,
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+        elevation: 10, 
         borderRadius: 30,
         zIndex:-1
     },
@@ -231,11 +284,20 @@ const styles = StyleSheet.create({
         borderTopLeftRadius:30, 
         borderTopRightRadius:30,
     },
-    itemTitle: {
+    itemCode: {
         textAlign: 'center',
-        height: 30,
-        lineHeight: 30,
-        zIndex:-1
+        
+        height: 15,
+        lineHeight: 15,
+        zIndex:-1,
+        fontSize:10
+    },
+    itemName: {
+        textAlign: 'center',
+        height: 35,
+        lineHeight: 35,
+        zIndex:-1,
+        fontSize:10
     }
     
 })
