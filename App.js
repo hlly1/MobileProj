@@ -11,11 +11,14 @@ import Profile from './components/pages/profile.js';
 import Home from './components/pages/home.js';
 import Subjects from './components/pages/majorList.js';
 import ForgetPWD from './components/pages/forgetPwd.js';
+import MajorList from './components/pages/majorList.js';
+import CourseList from './components/pages/courseList.js';
+import PostList from './components/pages/postList.js'
 import NewPost from './components/pages/newpost.js';
 import PostDetails from './components/pages/postdetails.js';
 import {Image, NativeBaseProvider } from 'native-base';
 
-import Testpage from './components/pages/testpage.js';
+import Testpage from './components/pages/postList.js';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,11 +53,11 @@ function HomeTabs() {
       tabBarInactiveTintColor: 'gray',
     })}
     >
-      <Tab.Screen name="TestPage" component={Testpage} />
-
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Subjects" component={Subjects} />
+      <Tab.Screen name="Subjects" component={MajorList} />
       <Tab.Screen name="Profile" component={MyHome} />
+
+      {/* <Tab.Screen name="TestPage" component={Testpage} /> */}
     </Tab.Navigator>
   );
 }
@@ -70,6 +73,8 @@ export default class App extends Component {
           <Stack.Screen name="HomeTabs" component={HomeTabs}/>
           <Stack.Screen name="ProfileTab" component={Profile} />
           <Stack.Screen name="ForgetPWD" component={ForgetPWD} />
+          <Stack.Screen name="SubjectList" component={CourseList} />
+          <Stack.Screen name="PostList" component={PostList} />
           <Stack.Screen name="NewPost" component={NewPost} />
           <Stack.Screen name="PostDetails" component={PostDetails} />
         </Stack.Navigator>
