@@ -80,7 +80,7 @@ const comps = StyleSheet.create({
         paddingTop: 20,
         paddingLeft: 20,
         paddingRight: 20,
-        paddingBottom: 20,
+        paddingBottom: 10,
         borderRadius: 12,
         backgroundColor: "#e0e0e0",
         shadowColor: "#000",

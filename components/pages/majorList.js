@@ -154,7 +154,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#eee',
-        position: "absolute"
+        position: "absolute",
+        marginBottom: 20
     },
     headerStyle: {
         height: '20%',

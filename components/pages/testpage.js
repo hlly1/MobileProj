@@ -114,7 +114,7 @@ class Testpage extends Component{
 
         return(
             <LinearGradient colors={['#094183', '#3b5998', '#192f6a']} style={styles.linearGradient}>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                {/* <ScrollView showsVerticalScrollIndicator={false}> */}
                     <Text h3 style={styles.profile_title}>{this.state.subject+"\n"+this.state.subject_name}</Text>
                     <View style={styles.postlist_card}>
                         <Avatar
@@ -124,11 +124,10 @@ class Testpage extends Component{
                             source={require("../../assets/imgs/unimelb-logo.png")}
                         >
                         </Avatar>
-                                 
-                        {listView}
+                        <ScrollView>{listView}</ScrollView>
                     </View>
                     
-                </ScrollView>
+                {/* </ScrollView> */}
 
                 {/* 二选一 */}
                 <ActionButton

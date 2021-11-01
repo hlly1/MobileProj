@@ -1,8 +1,8 @@
 import {Dimensions, StyleSheet} from "react-native"
 import { marginLeft } from "styled-system"
 
-const {width, height}=Dimensions.get("screen")
-
+const {width, height}=Dimensions.get("window");
+// const {win_width, win_height}=Dimensions.get("window");
 const styles = StyleSheet.create({
 
     //common use
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flex:1,
         justifyContent: "space-between",
-        width: '100%'
+        width: '100%',
     },
 
     image_container:{
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 50,
         paddingHorizontal: 30,
-        height: height
+        height: "auto"
     },
 
     profile_title: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         marginTop: 60,
         marginBottom: 30,
-        marginLeft:10,
+        marginLeft: 10,
         marginRight:10
     },
 
@@ -196,9 +196,22 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 20,
         paddingHorizontal: 30,
-        height: height * 0.9,
+        height: height*0.9,
     },
-    
+    add_post:{ 
+        position: "absolute", 
+        alignSelf: "flex-end", 
+        bottom: 0, opacity:0.6,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 12,
+        },
+        shadowOpacity: 0.58,
+        shadowRadius: 16.00,
+        elevation: 24,
+        marginBottom:20
+    },
     container: {
         paddingTop: 20
     },
