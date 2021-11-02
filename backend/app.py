@@ -115,6 +115,17 @@ class Subject(db.Model):
     subject_code = db.Column(db.String(500), primary_key=True)
     subject_name = db.Column(db.String(500))
     subject_major = db.Column(db.String(500))
+    imgUrl = db.Column(db.String(500))
+
+class Major(db.Model):
+    # table name
+    __tablename__ = 'Major'
+    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
+
+    # fields
+    major_name = db.Column(db.String(500), primary_key=True)
+    imgUrl = db.Column(db.String(500))
+
 
 class Post_book(db.Model):
     # table name
@@ -516,8 +527,11 @@ def subjectlist_query():
                 "subject_code": subject.subject_code,
                 "subject_name": subject.subject_name,
                 "subject_major": subject.subject_major,
+                "imgUrl": subject.imgUrl,
                 "book_count": count
             })
+        result = sorted(result, key=lambda x: x["book_count"], reverse=True)
+
         return jsonify(status=1,
                        msg="success",
                        data=result)
@@ -525,6 +539,35 @@ def subjectlist_query():
     except Exception as e:
         return jsonify(status=-1,
                        msg=e)
+
+
+@app.route('/majorlist', methods=['GET'])
+def majorlist_query():
+    try:
+        result1 = []
+        for major in Major.query.all():
+            major_bookcount = 0
+            for subject in Subject.query.all():
+                count = 0
+                for book in Post_book.query.all():
+                    if book.subject_code == subject.subject_code:
+                        count += 1
+                if subject.subject_major==major.major_name:
+                    major_bookcount += count
+            result1.append({
+                "major_name": major.major_name,
+                "imgUrl": major.imgUrl,
+                "book_count": major_bookcount
+            })
+        result = sorted(result1, key=lambda x: x["book_count"], reverse=True)
+        return jsonify(status=1,
+                       msg="success",
+                       data=result)
+
+    except Exception as e:
+        return jsonify(status=-1,
+                       msg=e)
+
 
 @app.route('/postlist', methods=['POST'])
 def postlist_query():
@@ -890,6 +933,7 @@ def forgetsendcode():
         return jsonify(status=-1,
                        msg="validate failed, email not exists")
 
+
 @app.route('/hot/subject', methods=['GET'])
 def hotsubject():
 
@@ -904,6 +948,7 @@ def hotsubject():
                 "subject_code": subject.subject_code,
                 "subject_name": subject.subject_name,
                 "subject_major": subject.subject_major,
+                "imgUrl":subject.imgUrl,
                 "book_count": count
             })
         result = sorted(result1, key=lambda x: x["book_count"], reverse=True)
@@ -918,24 +963,41 @@ def hotsubject():
 
 def write_test_users():
     user1 = User(email="test1@gmail.com", password="123456", username='user_' + str(get8()),
-                 validation_code="123456", icon_name="test1.jpg", mark_id="1 2", post_id="2 3", subscribe_code="COMP90054")
+                 validation_code="123456", icon_name="test1.jpg", mark_id="1 2", post_id="2 3 5 6 7 8", subscribe_code="COMP90054")
     user2 = User(email="test2@gmail.com", password="123456", username='user_' + str(get8()),
                  validation_code="123456", icon_name="test1.jpg", mark_id="3 4", post_id="1 4", subscribe_code="COMP90042")
 
-    subject1 = Subject(subject_code="COMP90042", subject_name="Natural Language Processing", subject_major="Information Technology")
-    subject2 = Subject(subject_code="COMP90054", subject_name="AI Planning for Autonomy", subject_major="Information Technology")
-    subject3 = Subject(subject_code="COMP90038", subject_name="Algorithms and Complexity", subject_major="Information Technology")
-    subject4 = Subject(subject_code="COMP90007", subject_name="Internet Technologies", subject_major="Information Technology")
-    subject5 = Subject(subject_code="INFO90002", subject_name="Database System & Information Modelling", subject_major="Information Technology")
-    subject6 = Subject(subject_code="COMP90051", subject_name="Statistical Machine Learning", subject_major="Information Technology")
-    subject7 = Subject(subject_code="GEOM90007", subject_name="Information Visualisation", subject_major="Information Technology")
-    subject8 = Subject(subject_code="COMP90074", subject_name="Web Security", subject_major="Information Technology")
-    subject9 = Subject(subject_code="ELEN90055", subject_name="Control Systems", subject_major="Mechanical Engineering")
-    subject10 = Subject(subject_code="MCEN90028", subject_name="Robotics Systems", subject_major="Mechanical Engineering")
-    subject11 = Subject(subject_code="MAN90020", subject_name="Business Law", subject_major="Accounting")
-    subject12 = Subject(subject_code="MAN90021", subject_name="Management Accounting", subject_major="Accounting")
+    subject1 = Subject(subject_code="COMP90042", subject_name="Natural Language Processing",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/nlp.jpeg")
+    subject2 = Subject(subject_code="COMP90054", subject_name="AI Planning for Autonomy",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/ai.jpeg")
+    subject3 = Subject(subject_code="COMP90038", subject_name="Algorithms and Complexity",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/algorithm.jpeg")
+    subject4 = Subject(subject_code="COMP90007", subject_name="Internet Technologies",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/internet.jpeg")
+    subject5 = Subject(subject_code="INFO90002", subject_name="Database System & Information Modelling",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/database.jpeg")
+    subject6 = Subject(subject_code="COMP90051", subject_name="Statistical Machine Learning",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/sml.jpeg")
+    subject7 = Subject(subject_code="GEOM90007", subject_name="Information Visualisation",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/iv.jpeg")
+    subject8 = Subject(subject_code="COMP90074", subject_name="Web Security",
+                       subject_major="Information Technology", imgUrl="http://81.68.76.219/static/web_security.jpeg")
+    subject9 = Subject(subject_code="ELEN90055", subject_name="Control Systems",
+                       subject_major="Mechanical Engineering", imgUrl="http://81.68.76.219/static/control_system.jpeg")
+    subject10 = Subject(subject_code="MCEN90028", subject_name="Robotics Systems",
+                        subject_major="Mechanical Engineering", imgUrl="http://81.68.76.219/static/robots.jpeg")
+    # subject11 = Subject(subject_code="MAN90020", subject_name="Business Law",
+    #                     subject_major="Accounting")
+    # subject12 = Subject(subject_code="MAN90021", subject_name="Management Accounting",
+    #                     subject_major="Accounting")
 
-
+    major1 = Major(major_name="Information Technology", imgUrl="http://81.68.76.219/static/information.jpeg")
+    major2 = Major(major_name="Business", imgUrl="http://81.68.76.219/static/business.jpeg")
+    major3 = Major(major_name="Language", imgUrl="http://81.68.76.219/static/language.jpeg")
+    major4 = Major(major_name="Mechanical Engineering", imgUrl="http://81.68.76.219/static/mechanical.jpeg")
+    major5 = Major(major_name="Chemical Engineering", imgUrl="http://81.68.76.219/static/chemical.jpeg")
+    major6 = Major(major_name="Education", imgUrl="http://81.68.76.219/static/education.jpeg")
 
     post_book1 = Post_book(id=1,
                            topic="How to get 90 marks in 90042 NLP",
@@ -994,6 +1056,74 @@ def write_test_users():
                            email="test2@gmail.com"
                            )
 
+    post_book5 = Post_book(id=5,
+                           topic="This is tiezi 5",
+                           book_name=None,
+                           book_description="desccription 5",
+                           audio_name="1.mp3",
+                           comments_id=None,
+                           ISBN=None,
+                           mark_count=0,
+                           picture_name="4.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="COMP90051",
+                           email="test1@gmail.com"
+                           )
+    post_book6 = Post_book(id=6,
+                           topic="This is tiezi6",
+                           book_name=None,
+                           book_description="desccription 6",
+                           audio_name="1.mp3",
+                           comments_id=None,
+                           ISBN=None,
+                           mark_count=0,
+                           picture_name="4.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="COMP90051",
+                           email="test1@gmail.com"
+                           )
+    post_book7 = Post_book(id=7,
+                           topic="This is tiezi 7",
+                           book_name=None,
+                           book_description="desccription 7",
+                           audio_name="1.mp3",
+                           comments_id=None,
+                           ISBN=None,
+                           mark_count=0,
+                           picture_name="4.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="COMP90051",
+                           email="test1@gmail.com"
+                           )
+    post_book8 = Post_book(id=8,
+                           topic="This is tiezi 8",
+                           book_name=None,
+                           book_description="desccription 8",
+                           audio_name="1.mp3",
+                           comments_id=None,
+                           ISBN=None,
+                           mark_count=0,
+                           picture_name="4.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="COMP90051",
+                           email="test1@gmail.com"
+                           )
+
+    post_book9 = Post_book(id=9,
+                           topic="This is tiezi 9",
+                           book_name=None,
+                           book_description="desccription 9",
+                           audio_name="1.mp3",
+                           comments_id=None,
+                           ISBN=None,
+                           mark_count=0,
+                           picture_name="4.jpg 2.jpg",
+                           post_date=time.strftime('%Y-%m-%d %H:%M:%S'),
+                           subject_code="MCEN90028",
+                           email="test1@gmail.com"
+                           )
+
+
 
     comment1 = Comment(id=1,
                        comment_content="1: Yeah, that is very helpful!",
@@ -1014,10 +1144,12 @@ def write_test_users():
 
 
     db.session.add_all([user1, user2,
+                        major1, major2, major3, major4, major5, major6,
                         subject1, subject2, subject3, subject4,
                         subject5, subject6, subject7, subject8,
-                        subject9, subject10, subject11, subject12,
+                        subject9, subject10,
                         post_book1, post_book2, post_book3, post_book4,
+                        post_book5, post_book6, post_book7, post_book8, post_book9,
                         comment1, comment2, comment3, comment4])
     db.session.commit()
 
