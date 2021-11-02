@@ -161,10 +161,6 @@ class Comment(db.Model):
 
 
 
-class BlockForm(FlaskForm):
-    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
-    text = StringField()
-    submit = SubmitField('submit')
 
 # create db
 db.drop_all()
