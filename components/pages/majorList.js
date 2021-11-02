@@ -24,48 +24,45 @@ import { Input } from "react-native-elements/dist/input/Input";
 import { backgroundColor, fontSize, justifyContent, left } from "styled-system";
 import { it } from "jest-circus";
 import {comps} from "../../styles/comp.js";
-import { NativeBaseProvider, Box, Center } from 'native-base';
+import { NativeBaseProvider, Box } from 'native-base';
 
 export default class MajorList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            categories: [{
-                "id": "1",
-                "name": "Information Technology",
-                "imgUrl": "http://81.68.76.219/static/information.jpeg"
-            }, {
-                "id": "2",
-                "name": "Business",
-                "imgUrl": "http://81.68.76.219/static/business.jpeg"
-            }, {
-                "id": "3",
-                "name": "Language",
-                "imgUrl": "http://81.68.76.219/static/language.jpeg"
-            }, {
-                "id": "4",
-                "name": "Mechanical Engineering",
-                "imgUrl": "http://81.68.76.219/static/mechanical.jpeg"
-            }, {
-                "id": "5",
-                "name": "Chemical Engineering",
-                "imgUrl": "http://81.68.76.219/static/chemical.jpeg"
-            }, {
-                "id": "6",
-                "name": "Education",
-                "imgUrl": "http://81.68.76.219/static/education.jpeg"
-            }],
+            categories: [],
             new_categories: [],
             text: '',
             originList: [],
             list: []
         }
-        // this.handleGetListSucc = this.handleGetListSucc.bind(this)
+        this.handleGetListSucc = this.handleGetListSucc.bind(this)
 
     }
 
+    componentDidMount() {
+        // alert("提取有关 major:" + this.props.route.params.subject + "的相关帖子")
+        // var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
+        fetch("http://81.68.76.219:80/majorlist", 
+            {method: 'GET', 
+            headers:{'Accept': 'application/json', 'Content-Type': 'application/json'}}
+            )
+        .then(res => res.json())
+        .then(this.handleGetListSucc)
+        // .then(this.handleGetListSucc)
+        .catch(() => {alert('请求异常')})
+    }
+
+    handleGetListSucc(res) {
+        if (res.status && res.data) {
+            this.setState({
+                categories: res.data
+            })
+        }
+    }
+
     handleItemClick(majorName) {
-        this.props.navigation.navigate('SubjectList', {majorName: majorName})
+        this.props.navigation.navigate('Subject', {majorName: majorName})
     }
 
     onChangeText = (text) => {
@@ -79,7 +76,7 @@ export default class MajorList extends Component {
         let data = this.state.categories
         if (text) {
             return data.filter((v) => {
-                return v.id.toLowerCase().includes(text.toLowerCase()) | v.name.toLowerCase().includes(text.toLowerCase())
+                return v.major_name.toLowerCase().includes(text.toLowerCase())
                 // return Object.keys(v).some((key) => {
                 //     return String(v[key]).toLowerCase().includes(text.toLowerCase())
                 // })
@@ -95,7 +92,6 @@ export default class MajorList extends Component {
         const pictWidth = (width - 20) 
         const textHeight = 30
         return (
-      
             <View style={styles.container}>
                 <LinearGradient colors={['#9b63cd', '#e0708c']} style={styles.headerStyle}>
                     
@@ -115,12 +111,12 @@ export default class MajorList extends Component {
                     
                     <FlatList style={styles.searchItem}
                         data={this.state.list}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.major_name}
                         renderItem={({item}) => {
                             return (
-                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.name)}>
+                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item.major_name)}>
                                     <View style={{paddingTop:8}}>
-                                        <Text>{item.name}</Text>
+                                        <Text>{item.major_name}</Text>
                                     </View>
                                 </TouchableWithoutFeedback >
                                 
@@ -133,15 +129,15 @@ export default class MajorList extends Component {
                 {
                     this.state.categories.map((item, value) => {
                         return (
-                            <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.name)}>
-                                <View key={item.id} style={[styles.item, {width: pictWidth}]}>
+                            <TouchableWithoutFeedback key={item.major_name} onPress={this.handleItemClick.bind(this, item.major_name)}>
+                                <View key={item.imajor_name} style={[styles.item, {width: pictWidth}]}>
                                     <Image 
                                         source={{uri: item.imgUrl}} 
                                         style={styles.itemImg}
                                     />
                                     <View style={styles.info}>
-                                        <Text style={styles.desc}>Master of {item.name}</Text>
-                                        <Text style={styles.title}>Related Posts: {item.id}</Text>
+                                        <Text style={styles.desc}>Master of {item.major_name}</Text>
+                                        <Text style={styles.title}>Related Posts: {item.book_count}</Text>
                                     </View>
                                     
                                 </View>

@@ -30,72 +30,31 @@ export default class CourseList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            categories: [{
-                "subject_code": "COMP90038",
-                "subject_name": "Algorithms and Complexity",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/algorithm.jpeg")
-            }, {
-                "subject_code": "COMP90007",
-                "subject_name": "Internet Technologies",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/internet.jpeg")
-            }, {
-                "subject_code": "INFO90002",
-                "subject_name": "Database System & Information Modelling",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/database.png")
-            }, {
-                "subject_code": "COMP90042",
-                "subject_name": "Natural Language Processing",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/nlp.jpeg")
-            }, {
-                "subject_code": "COMP90051",
-                "subject_name": "Statistical Machine Learning",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/sml.jpeg")
-            }, {
-                "subject_code": "COMP90054",
-                "subject_name": "AI Planning for Autonomy",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/ai.jpeg")
-            }, {
-                "subject_code": "GEOM90007",
-                "subject_name": "Information Visualisation",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/iv.jpeg")
-            }, {
-                "subject_code": "COMP90074",
-                "subject_name": "Web Security",
-                "subject_major": "Information Technology",
-                "imgUrl": require("../../assets/imgs/It_subject_icon/web_security.jpeg")
-            }],
+            categories: [],
             new_categories: [],
             text: '',
             originList: [],
-            list: [],
-            load:0
+            list: []
         }
         this.handleGetListSucc = this.handleGetListSucc.bind(this)
     }
 
     componentDidMount() {
         // alert("提取有关 major:" + this.props.route.params.subject + "的相关帖子")
-        // var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
-        // fetch("http://81.68.76.219:80/subjectlist", 
-        //     {method: 'POST', 
-        //     headers:{'Accept': 'application/json', 'Content-Type': 'application/json'},
-        //     body: majorData}
-        //     )
-        // .then(res => res.json())
+        
+        var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
+        fetch("http://81.68.76.219:80/subjectlist", 
+            {method: 'POST', 
+            headers:{'Accept': 'application/json', 'Content-Type': 'application/json'},
+            body: majorData}
+            )
+        .then(res => res.json())
+        .then(this.handleGetListSucc)
         // .then(this.handleGetListSucc)
-        // // .then(this.handleGetListSucc)
-        // .catch(() => {alert('请求异常')})
+        .catch(() => {alert('请求异常')})
     }
 
     handleGetListSucc(res) {
-        console.log(res.data)
         if (res.status && res.data) {
             this.setState({
                 categories: res.data
@@ -106,7 +65,7 @@ export default class CourseList extends Component {
     handleItemClick(subject_code) {
         // const {navigate} = this.props.navigation;
         // navigate('MajorList', {courseId: courseId})
-        this.props.navigation.navigate('PostList', {subject: subject_code})
+        this.props.navigation.navigate('PostList', {subject_code: subject_code})
     }
 
     onChangeText = (text) => {
@@ -124,7 +83,6 @@ export default class CourseList extends Component {
                 // return Object.keys(v).some((key) => {
                 //     return String(v[key]).toLowerCase().includes(text.toLowerCase())
                 // })
-                
             })
         }
         return []
@@ -142,13 +100,6 @@ export default class CourseList extends Component {
         const pictWidth = (width - 40) / columnNum - 10
         const textHeight = 30
         return (
-            this.state.load==1
-            ?
-            <View style={{ marginTop: 400 }}>
-                    <ActivityIndicator color="green" size={50} />
-                    <Text style={{textAlign:'center'}}>Loading</Text>
-            </View>
-            :
             <View style={styles.container}>
                 <LinearGradient colors={['#9b63cd', '#e0708c']} style={styles.headerStyle}>
                     
@@ -188,7 +139,7 @@ export default class CourseList extends Component {
                                     <TouchableWithoutFeedback key={item.subject_code} onPress={this.handleItemClick.bind(this, item["subject_code"])}>
                                         <View style={[styles.cardStyle, {width: pictWidth}]}> 
                                         {/* source={{uri: item.imgUrl}} */}
-                                            <Image source={item.imgUrl} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
+                                            <Image source={{uri: item.imgUrl}} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
                             
                                             <Text style={styles.itemCode}>{item["subject_code"]}</Text>
                                             <Text style={styles.itemName}>{item["subject_name"]}</Text>
