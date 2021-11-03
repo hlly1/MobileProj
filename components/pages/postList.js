@@ -76,10 +76,8 @@ class postList extends Component{
             if(responseJson["status"] == 1){
                 if (responseJson["data"].length != 0) {
                     this.setState({ postlist: responseJson["data"] });
-                    this.setState({ loaded: 1 });
-                    
-                    
                 }
+                this.setState({ loaded: 1 });
                 console.log(responseJson["data"].length * 180 + (responseJson["data"].length-1)*20);
                 this.setState({screenHeight: responseJson["data"].length * 180 + (responseJson["data"].length-1)*20});
                 

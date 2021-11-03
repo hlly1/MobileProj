@@ -32,7 +32,7 @@ class Home extends Component{
                 })
             }
         })
-        .catch(() => {alert('Request Exception!')});
+        .catch((err) => {alert('Home Majors: '+err)});
     }
 
     async getHotPosts(){
@@ -48,7 +48,7 @@ class Home extends Component{
                 })
             }
         })
-        .catch(() => {alert('Home: Request Exception!')});
+        .catch((err) => {alert('Home Posts: '+err)});
     }
 
     toThisMajor(majorName){
@@ -61,7 +61,7 @@ class Home extends Component{
     }
 
     componentDidUpdate(){
-        this.getHotMajors();
+        // this.getHotMajors();
         // this.getHotPosts();
     }
 
