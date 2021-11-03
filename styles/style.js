@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
 
-    //----------------------------------------------------------------post
+    //----------------------------------------------------------------newpost
     postlist_card:{
         backgroundColor: "#ffffff",
         borderTopLeftRadius: 30,
@@ -222,7 +222,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 6,
         borderColor: "grey",
-        borderWidth: 1
+        borderWidth: 1,
+        width: width*0.6
     },
     post_submit_button_adjust:{
         marginLeft: "10%",
@@ -245,24 +246,83 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        paddingVertical: 50,
+        paddingVertical: 20,
         paddingHorizontal: 30
     },
+    inputContainer: {
+        flex: 1,
+        alignItems: 'center',
+        marginBottom: 10,
+        marginTop: 10
+    },
+    clickContainer: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginBottom: 10,
+        marginTop: 10,
+        alignSelf: "center"
+    },
+    txtBorder: {
+        height: 50,
+        width: 400,
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#51A7F9',
+        marginLeft: 50,
+        marginRight: 50,
+        borderRadius: 25,
+        flexDirection: 'row'
+    },
+    txtName: {
+        height: 20,
+        marginLeft: 20,
+        fontSize: 15,
+        marginTop: 15,
+        color: '#51A7F9',
+        marginRight: 10,
+        fontSize: 14
+    },
+    textInput: {
+        height: 50,
+        width: 200
+    },
+    inputBoxContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+        marginTop: 10
+    },
+    txtBorder_inputBox: {
+        height: 200,
+        width: 400,
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#51A7F9',
+        marginLeft: 50,
+        marginRight: 50,
+        borderRadius: 25,
+        flexDirection: 'column'
+    },
+    txtBorder_Box: {
+        width: 400,
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#51A7F9',
+        marginLeft: 50,
+        marginRight: 50,
+        borderRadius: 25,
+        flexDirection: 'column',
+        paddingBottom: 20
+    },
+    txtName_Box: {
+        marginLeft: 20,
+        fontSize: 15,
+        marginTop: 15,
+        color: '#51A7F9',
+        marginRight: 10,
+        fontSize: 14
+    }
 
-    
-    //----------------------------------------------------------------postDetails
-    container: {
-        paddingTop: 20
-    },
-    text: {
-        textAlign: "center",
-    },
-    wrapperCustom: {
-        borderRadius: 8,
-        padding: 6,
-        borderColor: "grey",
-        borderWidth: 1
-    },
 })
 
 export {styles}
