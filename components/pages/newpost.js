@@ -8,10 +8,16 @@ import {
   Button, 
   Image, 
   StyleSheet, 
-  ScrollView} from 'react-native';
+  ScrollView,
+  StatusBar
+} from 'react-native';
 import {Input} from "react-native-elements";
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import {NativeBaseProvider, Icon, Button, AddIcon} from 'native-base';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import LinearGradient from 'react-native-linear-gradient';
+import {styles} from "../../styles/style";
+import {NativeBaseProvider} from 'native-base';
 
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import Sound from "react-native-sound";
@@ -24,10 +30,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 class newPost extends Component{
   constructor(props) {
     super(props);
-    this.navigation = props.navigation;
+    this.navigation = "";
     this.state = {
       topic: "",
-      subject: props.route.params.subject,
+      subject: "",
       ISBN: "",
       bookname: "",
       description: "",
@@ -355,182 +361,212 @@ class newPost extends Component{
     }
 
     return(
-      <ScrollView>
-        <View style={{ backgroundColor: "#fff", flex: 1, padding: 10 }}>
-          {/* 1.0 Topic start */}
-          <View>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Topic</Text>
-            <Input
-              value={this.state.topic}
-              placeholder="Enter the topic"
-              onChangeText={(topic) => this.setState({ topic: topic })}
-            />
-          </View>
-          {/* 1.0 Topic end */}
+      <NativeBaseProvider>
+        <LinearGradient colors={['#33AFFF', '#3b5998', '#192f6a']} style={styles.linearGradient}>
+        <StatusBar backgroundColor='transparent' translucent={true} />
+        <ScrollView showsVerticalScrollIndicator = {false}>
+        <Text h3 style={styles.profile_title}>Create Post</Text>
 
-          <View>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Subject</Text>
-            <Input
-              value={this.state.subject}
-              disabled={true}
-            />
-          </View>
-
-          {/* 2.0 ISBN start */}
-          <View>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>ISBN (optinal)</Text>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ width: 150 }}>
-                <Input
-                  value={this.state.ISBN}
-                  placeholder="Enter ISBN"
-                  onChangeText={(ISBN) => this.setState({ISBN: ISBN })}
-                />
-              </View>
-              <View style={{ width: 100, height: 80 }}>
-                <Button colorScheme="teal" title={"ISBN Submit"} onPress={() => this.getBookInfoByISBN()} />
-              </View>
-            </View>
-          </View>
-          {/* 2.0 ISBN end */}
-          {/* 3.0 bookname start */}
-          <View>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Book Name (optinal)</Text>
-            <Input
-              value={this.state.bookname}
-              placeholder="Enter the book name"
-              onChangeText={(bookname) => this.setState({ bookname: bookname })}
-            />
-          </View>
-          {/* 3.0 bookname end */}
-          {/* 4.0 description start */}
-          <View>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Description</Text>
-            <TouchableOpacity>
-              <TextInput
-                value={this.state.description}
-                textAlignVertical="top"
-                placeholder="Description of the book (100 words limited)"
-                multiline
-                style={{ borderColor: 'grey', borderWidth: 1, height: 120 }}
-                onChangeText={(description) => this.setState({ description: description })}
-                maxLength={100}
-              />
-            </TouchableOpacity>
-          </View>
-          {/* 4.0 description end */}
-          {/* 5.0 audio start */}
-          <View style={styles.container}>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Audio (optional)</Text>
-            <Pressable
-              onLongPress={() => this.startRecording()}
-              onPressOut={() => this.stopRecording()}
-              onPress={() => this.playRecording()}
-              style={({ pressed }) => [
-                {
-                  backgroundColor: pressed
-                    ? 'rgb(210, 230, 255)'
-                    : '#FFED97'
-                },
-                styles.wrapperCustom
-              ]}>
-              {({ pressed }) => (
-                <Text style={styles.text}>
-                  <Icon name='microphone' size={20} color="#666" />
-                  {this.isPressed(pressed)}
-                </Text>
-              )}
-            </Pressable>
-            <View style={{ paddingTop: 5 }}>
-              <Button title='reset' onPress={() => { this.setState({ recorded: false }) }} />
-            </View>
-          </View>
-          {/* 5.0 audio end */}
-          {/* 6.0 pictures start */}
-          <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold", paddingTop: 20 }}>Pictures</Text>
-          <View style={{ flexDirection: "row" }}>
-            {/* <TouchableOpacity>
-              <Icon name='image' size={60} color="#4F8EF7" />
-            </TouchableOpacity> */}
-            {/* <ScrollView horizontal>
-              {this.state.imageList != null 
-              ? 
-              this.state.imageList.map((v, j) => 
-                <Image source={{uri:v.uri}}style={{width:60, height:60}} />
-              )
-              :
-                <Icon name='image' size={60} color="#4F8EF7" />
-              }
-            </ScrollView> */}
-            <ScrollView>
-              {/* {this.state.imageList.length != 0
-              {this.state.image != ''
-              ?
-              <View style={{ borderWidth: 1, marginTop: 5 }}>
-                <Image style={{ height: 200, resizeMode: "contain", marginTop: 5, marginBottom: 5 }} source={{ uri: this.state.image }} />
-              </View> */}
-              { picList }
-              {/* :
-              null
-              } */}
-              {/* {this.state.imageList != ''
-              ?
-                <View style={{ borderWidth: 1, marginTop: 5 }}>
-                  <Image style={{ height: 200, resizeMode: "contain", marginTop: 5, marginBottom: 5 }} source={{ uri: 'data:image/jpeg;base64,' + this.state.imageList[0] }} />
+          <View style={styles.profile_card_post}>
+            {/* 1.0 Topic start */}
+            <View style={styles.inputContainer}>
+                <View style={styles.txtBorder}>
+                    <Text style={styles.txtName}>Topic</Text>
+                    <TextInput
+                        value={this.state.topic}
+                        underlineColorAndroid = {'transparent'}
+                        style={styles.textInput}
+                        placeholder= "Enter the topic"
+                        onChangeText={(topic) => this.setState({ topic: topic })}
+                    />
                 </View>
-              :
-              null
-              } */}
-              {/* <View style={{ borderWidth: 1, marginTop: 5 }}>
-                <Icon name='upload' style={{ alignSelf: "center", marginTop: 5 }} size={100} color="#4F8EF7" onPress={() => this.test()} />
-              </View> */}
-              <View style={{ marginTop: 5 }}>
-                <Button title='Upload by Gallery' onPress={() => this.selectImage()} />
-              </View>
-              <View style={{ marginTop: 5 }}>
-                <Button title='Upload by Camera' onPress={() => this.uploadByCamera()} />
-              </View>
-            </ScrollView>
-            
-          </View>
-          {/* 6.0 pictures end */}
-          {/* 7.0 Location start */}
-          <View style={{ paddingTop: 20 }}>
-            <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Location</Text>
-            <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }}>
-              <Icon name='map-marker' size={20} color="#666" />
-              <Text> Where is the book?</Text>
-            </TouchableOpacity>
-          </View>
-          {/* 7.0 Location end */}
-          {/* 8.0 Submit start */}
-          <View style={{ paddingTop: 20 }}>
-            <Button title={"Submit"} color={'green'} 
-            // onPress={() => this.test()} 
-            onPress={() => this.addNewPost()} 
-            />
-          </View>
-          {/* 8.0 Submit end */}
+            </View>
+      
+            {/* 1.0 Topic end */}
 
-        </View>
-      </ScrollView>
+            {/* 1.5 Subject start */}
+            <View style={styles.inputContainer}>
+                <View style={styles.txtBorder}>
+                    <Text style={styles.txtName}>Subject</Text>
+                    <TextInput
+                        value={this.state.subject}
+                        disabled={true}
+                        underlineColorAndroid = {'transparent'}
+                        style={styles.textInput}
+                        placeholder= "Enter the subject"
+                        onChangeText={(topic) => this.setState({ topic: topic })}
+                    />
+                </View>
+            </View>
+
+            {/* 1.5 Subject end */}
+
+            {/* 2.0 ISBN start */}
+            <View style={styles.inputContainer}>
+                <View style={styles.txtBorder}>
+                    <Text style={styles.txtName}>ISBN(optinal)</Text>
+                    <TextInput
+                        value={this.state.ISBN}
+                        underlineColorAndroid = {'transparent'}
+                        style={styles.textInput}
+                        placeholder= "Enter ISBN"
+                        onChangeText={(ISBN) => this.setState({ISBN: ISBN })}
+                    />
+                </View>
+            </View>
+            <TouchableOpacity style={styles.clickContainer} onPress={() => this.getBookInfoByISBN()}>
+                <Icon name='search' size={20} color="#51A7F9" />
+                <Text> ISBN Search </Text>
+            </TouchableOpacity>
+            
+            {/* 2.0 ISBN end */}
+            {/* 3.0 bookname start */}
+            <View style={styles.inputContainer}>
+                <View style={styles.txtBorder}>
+                    <Text style={styles.txtName}>Book Name(optinal)</Text>
+                    <TextInput
+                        value={this.state.bookname}
+                        underlineColorAndroid = {'transparent'}
+                        style={styles.textInput}
+                        placeholder= "Book name"
+                        onChangeText={(bookname) => this.setState({ bookname: bookname })}
+                    />
+                </View>
+            </View>
+            
+            {/* 3.0 bookname end */}
+            {/* 4.0 description start */}
+            <View style={styles.inputBoxContainer}>
+                <View style={styles.txtBorder_inputBox}>
+                    <Text style={styles.txtName_Box}>Description</Text>
+                    <TextInput
+                        value={this.state.description}
+                        textAlignVertical="top"
+                        underlineColorAndroid = {'transparent'}
+                        multiline
+                        style={{ marginLeft: 16 }}
+                        placeholder= "Description of the book (100 words limited)"
+                        onChangeText={(description) => this.setState({ description: description })}
+                    />
+                </View>
+            </View>
+            
+            {/* 4.0 description end */}
+            {/* 5.0 audio start */}
+            <View style={styles.inputBoxContainer}>
+                <View style={styles.txtBorder_Box}>
+                    <Text style={styles.txtName_Box}>Audio(optional)</Text>
+                    <View style={{ flexDirection:'row', alignSelf: "center", marginTop: 10}}>
+                      <Pressable
+                        onLongPress={() => this.startRecording()}
+                        onPressOut={() => this.stopRecording()}
+                        onPress={() => this.playRecording()}
+                        style={({ pressed }) => [
+                          {
+                            backgroundColor: pressed
+                              ? 'rgb(210, 230, 255)'
+                              : '#FFED97'
+                          },
+                          styles.wrapperCustom
+                        ]}>
+                        {({ pressed }) => (
+                          <Text style={styles.text}>
+                            <Icon name='microphone' size={20} color="#666" />
+                            {this.isPressed(pressed)}
+                          </Text>
+                        )}
+                      </Pressable>
+                      <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center", marginLeft: 30 }} onPress={() => { this.setState({ recorded: false }) }}>
+                        <FontAwesome5 name='redo' size={20} color="#666" />
+                        <Text> Reset </Text>
+                      </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+            {/* 5.0 audio end */}
+            {/* 6.0 pictures start */}
+            <View style={styles.inputBoxContainer}>
+                <View style={styles.txtBorder_Box}>
+                    <Text style={styles.txtName_Box}>Pictures</Text>
+              {/* <TouchableOpacity>
+                <Icon name='image' size={60} color="#4F8EF7" />
+              </TouchableOpacity> */}
+              {/* <ScrollView horizontal>
+                {this.state.imageList != null 
+                ? 
+                this.state.imageList.map((v, j) => 
+                  <Image source={{uri:v.uri}}style={{width:60, height:60}} />
+                )
+                :
+                  <Icon name='image' size={60} color="#4F8EF7" />
+                }
+              </ScrollView> */}
+              <ScrollView>
+                {/* {this.state.imageList.length != 0
+                {this.state.image != ''
+                ?
+                <View style={{ borderWidth: 1, marginTop: 5 }}>
+                  <Image style={{ height: 200, resizeMode: "contain", marginTop: 5, marginBottom: 5 }} source={{ uri: this.state.image }} />
+                </View> */}
+                { picList }
+                {/* :
+                null
+                } */}
+                {/* {this.state.imageList != ''
+                ?
+                  <View style={{ borderWidth: 1, marginTop: 5 }}>
+                    <Image style={{ height: 200, resizeMode: "contain", marginTop: 5, marginBottom: 5 }} source={{ uri: 'data:image/jpeg;base64,' + this.state.imageList[0] }} />
+                  </View>
+                :
+                null
+                } */}
+                {/* <View style={{ borderWidth: 1, marginTop: 5 }}>
+                  <Icon name='upload' style={{ alignSelf: "center", marginTop: 5 }} size={100} color="#4F8EF7" onPress={() => this.test()} />
+                </View> */}
+                <View style={{ flexDirection: "row", marginTop: 10, alignSelf: "center"}} >
+                  <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center"}} onPress={() => this.selectImage()}>
+                    <Ionicons name='albums' size={20} color="#666" />
+                    <Text> Upload by Gallery </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center", marginLeft: 30}} onPress={() => this.uploadByCamera()}>
+                    <FontAwesome5 name='camera-retro' size={20} color="#666" />
+                    <Text> Upload by Camera </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+              </View>
+            </View>
+            {/* 6.0 pictures end */}
+            {/* 7.0 Location start */}
+            <View style={styles.inputBoxContainer}>
+                <View style={styles.txtBorder_Box}>
+                    <Text style={styles.txtName_Box}>Location</Text>
+                    <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }}>
+                      <Icon name='map-marker' size={20} color="#666" />
+                      <Text> Where is the book?</Text>
+                    </TouchableOpacity>
+              </View>
+            </View>
+            {/* 7.0 Location end */}
+            {/* 8.0 Submit start */}
+
+            <View>
+              <TouchableOpacity onPress={() => this.addNewPost()} >
+                <LinearGradient colors={['#3AA8FE','#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.post_submit_button_adjust} >
+                  <Text style={styles.login_button}>SUBMIT</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+            {/* 8.0 Submit end */}
+
+          </View>
+
+        </ScrollView>
+        </LinearGradient>
+      </NativeBaseProvider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20
-  },
-  text: {
-    textAlign: "center",
-  },
-  wrapperCustom: {
-    borderRadius: 8,
-    padding: 6,
-    borderColor: "grey",
-    borderWidth: 1
-  },
-});
 
 export default newPost;
