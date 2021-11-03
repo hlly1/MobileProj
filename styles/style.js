@@ -263,6 +263,16 @@ const styles = StyleSheet.create({
         borderColor: "grey",
         borderWidth: 1
     },
+
+
+    //----------------------------------------------------------------createpost
+    create_post_card:{
+        backgroundColor: "#ffffff",
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingVertical: 50,
+        paddingHorizontal: 30
+    },
 })
 
 export {styles}
