@@ -24,6 +24,7 @@ import { Input } from "react-native-elements/dist/input/Input";
 import { backgroundColor, left, position } from "styled-system";
 import { it } from "jest-circus";
 import {comps} from "../../styles/comp.js";
+import { LinearProgress } from 'react-native-elements';
 
 export default class CourseList extends Component {
     
@@ -34,7 +35,8 @@ export default class CourseList extends Component {
             new_categories: [],
             text: '',
             originList: [],
-            list: []
+            list: [],
+            loaded:0
         }
         this.handleGetListSucc = this.handleGetListSucc.bind(this)
     }
@@ -59,6 +61,7 @@ export default class CourseList extends Component {
             this.setState({
                 categories: res.data
             })
+            this.setState({ loaded: 1 });
         }
     }
 
@@ -100,9 +103,16 @@ export default class CourseList extends Component {
         const pictWidth = (width - 40) / columnNum - 10
         const textHeight = 30
         return (
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                  
+                    <ActivityIndicator color="blue" size={50} />
+                    <Text style={{textAlign:'center'}}>Loading</Text>
+                </View>
+            : 
             <View style={styles.container}>
                 <LinearGradient colors={['#9b63cd', '#e0708c']} style={styles.headerStyle}>
-                    
                     <View style={styles.headerSearchStyle}>
                         <Image source={require("../../assets/imgs/search.png")} style={styles.headerSearchIcon}/>
                         <TextInput 

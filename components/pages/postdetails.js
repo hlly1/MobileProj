@@ -26,6 +26,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from "../../styles/style";
 import {NativeBaseProvider} from 'native-base';
+import { FAB} from 'react-native-elements';
+import { Rating, AirbnbRating,LinearProgress  } from 'react-native-elements';
 
 
 class postDetails extends Component{
@@ -55,6 +57,10 @@ class postDetails extends Component{
         };
         this.errorMsg = "";
     }
+
+    ratingCompleted(rating) {
+        console.log("Rating is: " + rating)
+        }
 
     setParam = (path) => {
         const option = {
@@ -250,8 +256,10 @@ class postDetails extends Component{
             this.state.loaded == 0 
             ? 
                 <View style={{ marginTop: 400 }}>
+                    <Text style={{textAlign:'center', fontSize: 15}}>Processing</Text>
                     <ActivityIndicator color="blue" size={50} />
-                    <Text style={{textAlign:'center'}}>Loading</Text>
+                    <LinearProgress color="primary" variant='indeterminate' number='1'/>
+                    
                 </View>
             : 
             <NativeBaseProvider>
@@ -259,7 +267,7 @@ class postDetails extends Component{
                     <StatusBar backgroundColor='transparent' translucent={true} />
                     <ScrollView showsVerticalScrollIndicator = {false}>
                     <Text h3 style={styles.profile_title}>Post Details</Text>
-
+                        
                         <View style={styles.profile_card_post}>
                             <View>
                                 <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Topic</Text>
@@ -267,9 +275,14 @@ class postDetails extends Component{
                                     placeholder="Enter the topic"
                                     onChangeText={(topic) => this.setState({ topic: topic })}
                                 >
+                       
                                     {this.state.topic}
+                                
+                                
+                                
                                 </Text>
                             </View>
+                          
                             <View>
                                 <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Subject</Text>
                                 <Text>{this.state.subject}</Text>
@@ -284,7 +297,8 @@ class postDetails extends Component{
                                     <Icon size={20} name="star-o" color="orange" />
                                     <Text> {this.state.markcount}</Text>
                                 </View>
-                            </View>
+                            </View >
+                    
                             <View>
                                 <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>ISBN (optinal)</Text>
                                 <View style={{ flexDirection: 'row' }}>
@@ -379,16 +393,30 @@ class postDetails extends Component{
                                         onChangeText={(comment) => this.setState({ comment: comment })}
                                         maxLength={100}
                                     />
-                                    <View style={{ flex: 1, marginTop: 15 }}>
-                                        <Button title='submit' onPress={() => this.addNewComment()} />
+                                    <View style={{ flex: 2, marginTop: 15 }}>
+                                        <FAB 
+                                       icon={{ name: 'add', color: 'white' }}
+                                       color="blue" title='Add' onPress={() => this.addNewComment()} />
                                     </View>
                                 </View>
+                                {/* size= 'small'  color="blue" title='Submit' */}
                                 {commentsList}
                             </View>
+                            <View >
+                                <Text></Text>
+                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Rate Post</Text>
+                                <AirbnbRating/>
+                            </View>
                         </View>
-                        </ScrollView>
+
+                       
+                    </ScrollView>
                 </LinearGradient>
+
+           
         </NativeBaseProvider>
+
+                        
         )
     }
 }

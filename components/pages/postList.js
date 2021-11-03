@@ -11,7 +11,8 @@ import {
     ScrollView,
     Dimensions,
     UIManager,
-    findNodeHandle
+    findNodeHandle,
+    ActivityIndicator
 } from 'react-native';
 import { styles } from "../../styles/style";
 import {Avatar, Icon} from 'react-native-elements';
@@ -19,6 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { alignItems, marginTop } from "styled-system";
 import {comps} from "../../styles/comp.js";
 import ActionButton from 'react-native-action-button';
+import { LinearProgress } from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import Icon from 'react-native-vector-icons/Ionicons';
 const { height } = Dimensions.get("window");
@@ -34,6 +36,7 @@ class postList extends Component{
                 postlist: [],
                 subject_name: "",
                 screenHeight: height,
+                loaded:0
             };
         }
         catch(error){
@@ -42,6 +45,7 @@ class postList extends Component{
                 postlist: [],
                 subject_name: "",
                 screenHeight: height,
+                loaded:0
             };
         }
         this.postBody=React.createRef();
@@ -74,9 +78,13 @@ class postList extends Component{
                 if (responseJson["data"].length != 0) {
                     this.setState({ postlist: responseJson["data"] });
                     this.setState({ subject_name: responseJson["data"][0]["subject_name"] })
+                    this.setState({ loaded: 1 });
+                    
+                    
                 }
                 console.log(responseJson["data"].length * 180 + (responseJson["data"].length-1)*20);
                 this.setState({screenHeight: responseJson["data"].length * 180 + (responseJson["data"].length-1)*20});
+                
                 if(responseJson["data"].length * 180 + (responseJson["data"].length-1)*20 > height){
                     this.setPostHeight();
                 }
@@ -108,12 +116,14 @@ class postList extends Component{
     componentDidUpdate(nextProps){
         if(nextProps != this.props){
             this.getPostListNBySubjectCode();
+           
         }
     }
 
     setPostHeight (){
         _postBody.setNativeProps({height: this.state.screenHeight});
         console.log("screenHeight: "+this.state.screenHeight)
+        
     }
 
     render(){
@@ -145,6 +155,14 @@ class postList extends Component{
         }
 
         return(
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                      <LinearProgress color="primary" />
+                    <ActivityIndicator color="green" size={50} />
+                    <Text style={{textAlign:'center'}}>Loading</Text>
+                </View>
+            : 
             <LinearGradient colors={['#094183', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                 {/* <ScrollView showsVerticalScrollIndicator={false}  > */}
                     <Text h3 style={styles.profile_title}>{this.state.subject+"\n"+this.state.subject_name}</Text>
