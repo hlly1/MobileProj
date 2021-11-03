@@ -79,15 +79,6 @@ def get_list_str(a):
         return []
 
 
-class Blocks(db.Model):
-    # table name
-    __tablename__ = 'blocks'
-    __table_args__ = {'mysql_collate': 'utf8_general_ci'}
-
-    # fields
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(9999))
-    time = db.Column(db.String(6666))
 
 class User(db.Model):
     # table name
