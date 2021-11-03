@@ -72,7 +72,7 @@ export default class subjectList extends Component{
     }
 
     handleItemClick(majorId) {
-        this.props.navigation.navigate('CourseList', {id: majorId})
+        this.props.navigation.navigate('PostList', {id: majorId})
     }
 
     onChangeText = (text) => {

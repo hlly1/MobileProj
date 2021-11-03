@@ -62,7 +62,7 @@ export default class MajorList extends Component {
     }
 
     handleItemClick(majorName) {
-        this.props.navigation.navigate('Subject', {majorName: majorName})
+        this.props.navigation.navigate('SubjectList', {majorName: majorName})
     }
 
     onChangeText = (text) => {
