@@ -308,8 +308,8 @@ class newPost extends Component{
     .then(responseJson => {
       if(responseJson["status"] == 1){
         alert("Submit Successfully!");
-        this.navigation.navigate('TestPage', {});
-        // this.navigation.navigate('PostList', {});
+        // this.navigation.navigate('TestPage', {});
+        this.navigation.navigate('PostList', {});
       }else if(responseJson["status"] == -1){
         alert("Failed to submit. Please try later!");
       }else{
