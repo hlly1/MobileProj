@@ -27,13 +27,23 @@ class postList extends Component{
     constructor(props){
         super(props);
         this.navigation = props.navigation;
-        this.state = {
-            subject: props.route.params.subject,
-            // subject: "COMP90042",
-            postlist: [],
-            subject_name:"",
-            screenHeight: height,
-        };
+        try{
+            this.state = {
+                subject: props.route.params.subject,
+                // subject: "COMP90042",
+                postlist: [],
+                subject_name: "",
+                screenHeight: height,
+            };
+        }
+        catch(error){
+            this.state = {
+                subject: "",
+                postlist: [],
+                subject_name: "",
+                screenHeight: height,
+            };
+        }
         this.postBody=React.createRef();
         this.setPostHeight = this.setPostHeight.bind(this);
     }
@@ -61,8 +71,10 @@ class postList extends Component{
         .then(responseJson => {
             // console.log(responseJson);
             if(responseJson["status"] == 1){
-                this.setState({ postlist: responseJson["data"] });
-                this.setState({subject_name: responseJson["data"][0]["subject_name"]});
+                if (responseJson["data"].length != 0) {
+                    this.setState({ postlist: responseJson["data"] });
+                    this.setState({ subject_name: responseJson["data"][0]["subject_name"] })
+                }
                 console.log(responseJson["data"].length * 180 + (responseJson["data"].length-1)*20);
                 this.setState({screenHeight: responseJson["data"].length * 180 + (responseJson["data"].length-1)*20});
                 if(responseJson["data"].length * 180 + (responseJson["data"].length-1)*20 > height){
