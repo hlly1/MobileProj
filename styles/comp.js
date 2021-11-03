@@ -4,7 +4,7 @@ const comps = StyleSheet.create({
     card_container:{
         backgroundColor: 'white',
         width: 230,
-        height: 180,
+        height: 200,
         borderRadius: 30,
         marginTop: 20,
         marginRight: 25,
@@ -30,9 +30,9 @@ const comps = StyleSheet.create({
     },
     
     card_title:{
-        color:'white',
+        color:'black',
         padding: 20,
-        fontSize: 25,
+        fontSize: 14,
         fontWeight:'bold'
     },
 
@@ -42,18 +42,17 @@ const comps = StyleSheet.create({
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         overflow:'hidden'
-
     },  
 
     card_container_sm:{
         backgroundColor: 'white',
-        width: 150,
-        height: 110,
+        width: 170,
+        height: 120,
         borderRadius: 30,
         // marginTop: 10,
         marginRight: 25,
         marginLeft: 10,
-        marginBottom: 35,
+        marginBottom: 60,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -69,7 +68,7 @@ const comps = StyleSheet.create({
     },
 
     des_small:{
-        padding: 7, fontSize:15, alignContent:'center',fontWeight:'bold'
+        padding: 7, fontSize:12, alignContent:'center',fontWeight:'bold'
     },
     
     post_card:{

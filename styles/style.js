@@ -27,6 +27,13 @@ const styles = StyleSheet.create({
         overflow:'scroll',
         textAlign: 'center',
     },
+    postlist_empty:{
+        fontSize: 17,
+        fontWeight: "bold",
+        alignSelf:'center',
+        marginTop: height * 0.1,
+        color:"#8A8A8A"
+    },  
     //-----------------------------------------------------------------login
     welcome: {
         fontSize: 25,

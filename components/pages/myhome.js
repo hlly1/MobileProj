@@ -109,9 +109,9 @@ class MyHome extends Component{
         this.navigation.navigate('PostDetails', { id: postID, subject: subject_code});
     }
 
-    // openSubj = (subjID) =>{
-    //     this.navigation.navigate("Subjects", {subject_id: subjID});
-    // }
+    openSubj = (subjID, subject_name) =>{
+        this.props.navigation.navigate('PostList', {subject: subjID, subject_name:subject_name})
+    }
 
 
     render(){
@@ -120,7 +120,7 @@ class MyHome extends Component{
         for (let j = 0; j < this.state.subjects.length; j++) {
             let des = this.state.subjects[j]["subject_code"]+" "+this.state.subjects[j]["subject_name"];
             mySubjs.push(
-                <TouchableOpacity key = {j} onPress = {() => openSubj(this.state.subjects[i]["subject_code"])}>
+                <TouchableOpacity key = {j} onPress = {() => this.openSubj(this.state.subjects[j]["subject_code"], this.state.subjects[j]["subject_name"])}>
                     <View style={styles.margin_bottom20}>
                             <Card
                                 title={this.state.subjects["subject_major"]}

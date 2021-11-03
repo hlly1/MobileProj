@@ -30,9 +30,8 @@ class postList extends Component{
         try{
             this.state = {
                 subject: props.route.params.subject,
-                // subject: "COMP90042",
+                subject_name: props.route.params.subject_name,
                 postlist: [],
-                subject_name: "",
                 screenHeight: height,
             };
         }
@@ -73,7 +72,6 @@ class postList extends Component{
             if(responseJson["status"] == 1){
                 if (responseJson["data"].length != 0) {
                     this.setState({ postlist: responseJson["data"] });
-                    this.setState({ subject_name: responseJson["data"][0]["subject_name"] })
                 }
                 console.log(responseJson["data"].length * 180 + (responseJson["data"].length-1)*20);
                 this.setState({screenHeight: responseJson["data"].length * 180 + (responseJson["data"].length-1)*20});
@@ -119,17 +117,26 @@ class postList extends Component{
     render(){
         let listView = [];
         for(let i = 0; i < this.state.postlist.length; i++){
+            let avatar_data = "";
+            if (this.state.postlist[i].icon_data.length != 0) {
+                avatar_data = {uri: 'data:image/jpeg;base64,' + this.state.postlist[i].icon_data};
+            }else if(this.state.postlist[i].icon_data == ""){
+                avatar_data = require("../../assets/imgs/user-circle-1.png");
+            }
+
+
             listView.push(
                 <TouchableOpacity key={i} style={comps.post_card} onPress={() => this.toPostDetails(this.state.postlist[i].id)}>
                     <View style={styles.post_box_column}>
                         <View style={styles.post_box_row}>
                             <Avatar
                                 containerStyle={{ alignSelf: "center" }}
+                                rounded
                                 size="small"
-                                source={require("../../assets/imgs/user-circle-1.png")}
+                                source={avatar_data}
                             >
                             </Avatar>
-                            <Text style={{marginLeft:7,marginTop:6}}>Username</Text>
+                            <Text style={{marginLeft:7,marginTop:6}}>{this.state.postlist[i].username}</Text>
                         </View>
 
                         <View style={{marginTop:7,marginBottom:7}}>
@@ -160,7 +167,7 @@ class postList extends Component{
                                 >
                                 </Avatar>
                                         
-                                {listView}
+                                {listView.length != 0 ? listView:<Text style={styles.postlist_empty}>Feel free to start your first discussion</Text>}
                                 </View>
                         </ScrollView>
                     </View>   

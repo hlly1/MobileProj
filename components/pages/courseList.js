@@ -62,10 +62,10 @@ export default class CourseList extends Component {
         }
     }
 
-    handleItemClick(subject_code) {
+    handleItemClick(subject_code, subject_name) {
         // const {navigate} = this.props.navigation;
         // navigate('MajorList', {courseId: courseId})
-        this.props.navigation.navigate('PostList', {subject: subject_code})
+        this.props.navigation.navigate('PostList', {subject: subject_code, subject_name:subject_name})
     }
 
     onChangeText = (text) => {
@@ -130,13 +130,14 @@ export default class CourseList extends Component {
                     }/>
                 </LinearGradient>
 
-                <ScrollView style={styles.content} >
+                <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 
                     <View style={styles.list}>
                         {
+                            this.state.categories.length != 0 ?
                             this.state.categories.map((item) => {
                                 return (
-                                    <TouchableWithoutFeedback key={item.subject_code} onPress={this.handleItemClick.bind(this, item["subject_code"])}>
+                                    <TouchableWithoutFeedback key={item.subject_code} onPress={this.handleItemClick.bind(this, item["subject_code"], item["subject_name"])}>
                                         <View style={[styles.cardStyle, {width: pictWidth}]}> 
                                         {/* source={{uri: item.imgUrl}} */}
                                             <Image source={{uri: item.imgUrl}} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
@@ -145,9 +146,12 @@ export default class CourseList extends Component {
                                             <Text style={styles.itemName}>{item["subject_name"]}</Text>
                                         </View>
                                     </TouchableWithoutFeedback>
-                                    
                                 )
-                            })
+                            }):
+                            <View>
+                                <Text style={styles.postlist_empty}>This major has not been added any courses!</Text>
+                            </View>
+                            
                         }
                     </View>
 

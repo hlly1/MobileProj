@@ -71,8 +71,8 @@ export default class subjectList extends Component{
 
     }
 
-    handleItemClick(majorId) {
-        this.props.navigation.navigate('PostList', {id: majorId})
+    handleItemClick(majorId, subject_name) {
+        this.props.navigation.navigate('PostList', {id: majorId, subject_name:subject_name});
     }
 
     onChangeText = (text) => {
@@ -113,7 +113,7 @@ export default class subjectList extends Component{
                 {
                     this.state.categories.map((item, value) => {
                         return (
-                            <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.id)}>
+                            <TouchableWithoutFeedback key={item.id} onPress={this.handleItemClick.bind(this, item.id, this.item.subject_name)}>
                                 <View key={item.id} style={[styles.item, {width: pictWidth}]}>
                                     <View style={styles.info}> 
                                         <Text style={styles.title}>Post ID: {item.id}</Text>
