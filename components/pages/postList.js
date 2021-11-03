@@ -11,8 +11,7 @@ import {
     ScrollView,
     Dimensions,
     UIManager,
-    findNodeHandle,
-    ActivityIndicator,
+    findNodeHandle
 } from 'react-native';
 import { styles } from "../../styles/style";
 import {Avatar, Icon} from 'react-native-elements';
@@ -34,7 +33,6 @@ class postList extends Component{
             postlist: [],
             subject_name:"",
             screenHeight: height,
-            loaded: 0,
         };
         this.postBody=React.createRef();
         this.setPostHeight = this.setPostHeight.bind(this);
@@ -135,32 +133,26 @@ class postList extends Component{
         }
 
         return(
-            this.state.postlist.length===0
-            ?
-            <View style={{ marginTop: 400 }}>
-                    <ActivityIndicator color="green" size={50} />
-                    <Text style={{textAlign:'center'}}>Loading</Text>
-            </View>
-            :
-         
             <LinearGradient colors={['#094183', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                 {/* <ScrollView showsVerticalScrollIndicator={false}  > */}
                     <Text h3 style={styles.profile_title}>{this.state.subject+"\n"+this.state.subject_name}</Text>
-                    <ScrollView style={{overflow:'scroll'}} showsVerticalScrollIndicator={false}>
-                    <View ref={compoent => _postBody = compoent} style={styles.postlist_card}>
-                        
-                            <Avatar
-                                containerStyle={{ alignSelf: "center" }}
-                                rounded
-                                size="large"
-                                source={require("../../assets/imgs/unimelb-logo.png")}
-                            >
-                            </Avatar>
-                                    
-                            {listView}
-                        
+                    
+                    <View style={styles.postlist_card}>
+                        <ScrollView style={{overflow:'scroll'}} showsVerticalScrollIndicator={false}>
+                            <View ref={compoent => _postBody = compoent}>
+                                <Avatar
+                                    containerStyle={{ alignSelf: "center" }}
+                                    rounded
+                                    size="large"
+                                    source={require("../../assets/imgs/unimelb-logo.png")}
+                                >
+                                </Avatar>
+                                        
+                                {listView}
+                                </View>
+                        </ScrollView>
                     </View>   
-                </ScrollView>
+                
                 
                 <View style={styles.add_post}>
                 <Icon
