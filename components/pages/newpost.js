@@ -29,10 +29,12 @@ import Geolocation from 'react-native-geolocation-service';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const API_KEY = "AIzaSyA3E-GOaYiksOZjDcbNQe-l-ZC_yviS-Rg";
+
 class newPost extends Component{
   constructor(props) {
     super(props);
-    this.navigation = "";
+    this.navigation = props.navigation;
     try{
       this.state = {
         topic: "",
@@ -43,6 +45,7 @@ class newPost extends Component{
         imageList: [],
         // image: "",
         location: "",
+        location_name: "", 
 
         hasPermission: undefined,
         audioPath: AudioUtils.DocumentDirectoryPath + '/AudioDescription.acc',
@@ -302,9 +305,9 @@ class newPost extends Component{
     // if(this.state.image == ''){
     //   return alert("Please upload pictures!");
     // }
-    // if(this.state.location == ''){
-    //   return alert("Please provide the location!");
-    // }
+    if(this.state.location == ''){
+      return alert("Please provide the location!");
+    }
 
     if(this.state.recorded == false){
       this.setState({ audio_base64: "" });
@@ -320,6 +323,7 @@ class newPost extends Component{
       "picture_base64": this.state.imageList,
       // "picture_base64": this.state.image,
       "subject_code": this.state.subject,
+      "location": this.state.location,
     });
     console.log(postInfoData);
     const res = await fetch(addNewPostURL, {
@@ -355,7 +359,37 @@ class newPost extends Component{
   getCurrentLocation(){
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log(position);
+        // console.log(position);
+        this.setState({ location: position["coords"]["latitude"] + ',' + position["coords"]["longitude"] });
+        // console.log(this.state.location);
+        var t = this.state.location.split(",");
+        var latitude = t[0];
+        var longitude = t[1];
+        console.log(parseFloat(latitude) + "," + parseFloat(longitude));
+        
+        var reverseGeocodingURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&location_type=ROOFTOP&result_type=street_address&key=" + API_KEY;
+        fetch(reverseGeocodingURL, {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        })
+        .then(response => response.json())
+        .then(responseJson => { 
+          // console.log(responseJson);
+          // console.log(responseJson["results"][0]["formatted_address"]);
+          var location_name = responseJson["results"][0]["formatted_address"];
+          if(location_name != ''){
+            this.setState({ location_name: location_name });
+          }
+          else{
+            this.setState({ location_name: "Sorry, we can not get your location, please try later!" });
+          }
+        })
+        .catch(error => { 
+          console.log(error) 
+        });
       },
       (error) => {
         // See error code charts below.
@@ -576,7 +610,12 @@ class newPost extends Component{
                     <Text style={styles.txtName_Box}>Location</Text>
                     <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }} onPress={() => this.getCurrentLocation()}>
                       <Icon name='map-marker' size={20} color="#666" />
-                      <Text> Where is the book?</Text>
+                      {this.state.location_name != '' 
+                      ? 
+                        <Text> {this.state.location_name}</Text>
+                      : 
+                        <Text> Where is the book?</Text>
+                      }
                     </TouchableOpacity>
               </View>
             </View>

@@ -44,6 +44,7 @@ class postDetails extends Component{
             imageList: [],
             // image: "",
             location: "",
+            location_name: "",
             postdate: "",
             markcount: "",
             commentList: [],
@@ -146,10 +147,44 @@ class postDetails extends Component{
                     this.setState({ commentList: responseJson["data"].comments_id });
                     this.setState({ postdate: responseJson["data"].post_date });
                     this.setState({ markcount: responseJson["data"].mark_count });
+                    this.setState({ location: responseJson["data"].location });
+
+                    if(responseJson["data"].location){
+                        var t = responseJson["data"].location.split(",");
+                        var latitude = t[0];
+                        var longitude = t[1];
+
+                        var reverseGeocodingURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&location_type=ROOFTOP&result_type=street_address&key=" + API_KEY;
+                        fetch(reverseGeocodingURL, {
+                            method: "GET",
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(responseJson => {
+                            // console.log(responseJson);
+                            // console.log(responseJson["results"][0]["formatted_address"]);
+                            var location_name = responseJson["results"][0]["formatted_address"];
+                            if (location_name != '') {
+                                this.setState({ location_name: location_name });
+                            }
+                            else {
+                                this.setState({ location_name: "Location Error." });
+                            }
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        });
+                    }
+                    else{
+                        this.setState({ location_name: "No location provided." });
+                    }
                     this.setState({ loaded: 1 });
                 }
                 else if(responseJson["status"] == -1){
-                    alert("Failed to submit. Please try later!");
+                    alert("Failed to get details. Please try later!");
                 }else{
                     alert("Issue-[xxx]: Please contact admin!");
                 }
@@ -378,7 +413,7 @@ class postDetails extends Component{
                                         :
                                         <Icon name='map-marker' size={20} color="#FF0000" />
                                     }
-                                    <Text> {this.state.location == '' ? "not provided" : this.state.location}</Text>
+                                    <Text> {this.state.location == '' ? "not provided" : this.state.location_name}</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={{ paddingTop: 20 }}>
