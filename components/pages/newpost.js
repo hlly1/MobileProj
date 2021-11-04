@@ -25,27 +25,47 @@ import RNFS from "react-native-fs";
 
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
+import Geolocation from 'react-native-geolocation-service';
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 class newPost extends Component{
   constructor(props) {
     super(props);
     this.navigation = "";
-    this.state = {
-      topic: "",
-      subject: "",
-      ISBN: "",
-      bookname: "",
-      description: "",
-      imageList: [],
-      // image: "",
-      location: "",
+    try{
+      this.state = {
+        topic: "",
+        subject: props.route.params.subject,
+        ISBN: "",
+        bookname: "",
+        description: "",
+        imageList: [],
+        // image: "",
+        location: "",
 
-      hasPermission: undefined,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/AudioDescription.acc',
-      recorded: false,
-      audio_base64: "",
-    };
+        hasPermission: undefined,
+        audioPath: AudioUtils.DocumentDirectoryPath + '/AudioDescription.acc',
+        recorded: false,
+        audio_base64: "",
+      };
+    }
+    catch(error){
+      this.state = {
+        topic: "",
+        subject: "",
+        ISBN: "",
+        bookname: "",
+        description: "",
+        imageList: [],
+        location: "",
+
+        hasPermission: undefined,
+        audioPath: AudioUtils.DocumentDirectoryPath + '/AudioDescription.acc',
+        recorded: false,
+        audio_base64: "",
+      };
+    }
     this.errorMsg = "";
   }
 
@@ -332,6 +352,19 @@ class newPost extends Component{
     this.setState({ imageList: this.state.imageList });
   }
 
+  getCurrentLocation(){
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position);
+      },
+      (error) => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+  }
+
   test(){
     console.log(1);
     this.navigation.navigate('TestPage', {});
@@ -393,7 +426,7 @@ class newPost extends Component{
                         disabled={true}
                         underlineColorAndroid = {'transparent'}
                         style={styles.textInput}
-                        placeholder= "Enter the subject"
+                        placeholder= "Enter the subject code"
                         onChangeText={(topic) => this.setState({ topic: topic })}
                     />
                 </View>
@@ -541,7 +574,7 @@ class newPost extends Component{
             <View style={styles.inputBoxContainer}>
                 <View style={styles.txtBorder_Box}>
                     <Text style={styles.txtName_Box}>Location</Text>
-                    <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }}>
+                    <TouchableOpacity style={{ flexDirection: "row", alignSelf: "center" }} onPress={() => this.getCurrentLocation()}>
                       <Icon name='map-marker' size={20} color="#666" />
                       <Text> Where is the book?</Text>
                     </TouchableOpacity>
