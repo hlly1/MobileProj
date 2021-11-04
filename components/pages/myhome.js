@@ -161,7 +161,12 @@ class MyHome extends Component{
 
         let myPosts = [];
         for (let i = 0; i < this.state.posts.length; i++) {
-            
+                let avatar_data = "";
+                if (this.state.posts[i].icon_data.length != 0) {
+                    avatar_data = {uri: 'data:image/jpeg;base64,' + this.state.posts[i]["icon_data"]};
+                }else if(this.state.posts[i].icon_data == ""){
+                    avatar_data = require("../../assets/imgs/user-circle-1.png");
+                }
                     myPosts.push(
                     <TouchableOpacity key={i} style={comps.post_card} onPress = {() => this.openPost(this.state.posts[i]["book_id"], this.state.posts[i]["subject_code"])}>
                     <View style={styles.post_box_column}>
@@ -169,27 +174,14 @@ class MyHome extends Component{
                             <Text style={styles.post_title}>{this.state.posts[i]["subject_code"]+"\n"+this.state.posts[i]["subject_name"]}</Text>
                         </View>
                         <View style={styles.post_box_row}>
-                            {this.state.icondata == '' 
-                                ?
-                                <Avatar
-                                    containerStyle={{ alignSelf: "center" }}
-                                    rounded
-                                    size="small"
-                                    source={require("../../assets/imgs/user-circle-1.png")}
-                                >
-                                </Avatar>
-                                :
-                                <Avatar
-                                    containerStyle={{ alignSelf: "center" }}
-                                    rounded
-                                    size="small"
-                                    source={{
-                                        uri: this.state.icondata,
-                                    }}
-                                >
-                                </Avatar>
-                            }
-                            <Text style={{marginLeft:7,marginTop:6}}>{this.state.username}</Text>
+                            <Avatar
+                                containerStyle={{ alignSelf: "center" }}
+                                rounded
+                                size="small"
+                                source={avatar_data}
+                            >
+                            </Avatar>
+                            <Text style={{marginLeft:7,marginTop:6}}>{this.state.posts[i]["username"]}</Text>
                         </View>
 
                         <View style={{marginTop:7}}>
