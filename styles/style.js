@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 20,
         paddingHorizontal: 30,
-        height: height*0.9,
+        height: height,
     },
     add_post:{ 
         position: "absolute", 

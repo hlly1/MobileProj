@@ -2,15 +2,16 @@ import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
     ScrollView,
+    TouchableOpacity
 } from "react-native";
 import {styles} from "../../styles/style";
 import {comps} from "../../styles/comp";
-import { Text } from 'react-native-elements';
+import { Text, Avatar } from 'react-native-elements';
 import Utils from '../tools/utils.js';
 import Card from '../card';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeBaseProvider, Box, Center, Avatar} from 'native-base';
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { NativeBaseProvider, Box, Center} from 'native-base';
+// import {  } from "react-native-gesture-handler";
 class Home extends Component{
     constructor(props) {
         super(props);
@@ -36,7 +37,7 @@ class Home extends Component{
     }
 
     async getHotPosts(){
-        await fetch("http://81.68.76.219:80/xxx", 
+        await fetch("http://81.68.76.219:80/recent/postlist", 
             {method: 'GET', 
             headers:{'Accept': 'application/json', 'Content-Type': 'application/json'}}
             )
@@ -47,17 +48,23 @@ class Home extends Component{
                     posts: resJson.data
                 })
             }
+            console.log(this.state.posts);
         })
         .catch((err) => {alert('Home Posts: '+err)});
     }
 
     toThisMajor(majorName){
-        this.navigation.navigate('SubjectList', {majorName: majorName})
+        this.navigation.navigate('SubjectList', {majorName: majorName});
+    }
+
+    toPostDetails(id, code){
+        console.log(id+"|"+code);
+        this.navigation.navigate('PostDetails', {id: id, subject: code});
     }
 
     componentDidMount(){
         this.getHotMajors();
-        // this.getHotPosts();
+        this.getHotPosts();
     }
 
     componentDidUpdate(){
@@ -66,34 +73,6 @@ class Home extends Component{
     }
 
     render(){
-
-        // let posts = [];
-        // for (let i = 0; i < 10; i++) {
-        //     posts.push(
-        //         <TouchableOpacity key={i} style={comps.post_card} onPress={() => this.toPostDetails(this.state.postlist[i].id)}>
-        //             <View style={styles.post_box_column}>
-        //                 <View style={styles.post_box_row}>
-        //                     <Avatar
-        //                         containerStyle={{ alignSelf: "center" }}
-        //                         rounded
-        //                         size="small"
-        //                         source={avatar_data}
-        //                     >
-        //                     </Avatar>
-        //                     <Text style={{marginLeft:7,marginTop:6}}>{this.state.postlist[i].username}</Text>
-        //                 </View>
-
-        //                 <View style={{marginTop:7,marginBottom:7}}>
-        //                     <Text style={styles.post_title}>{this.state.postlist[i].topic}</Text>
-        //                 </View>
-                        
-        //                 <View>
-        //                     <Text style={{marginLeft:7,marginTop:6, textAlign:'right', color:'#7B7B7B', fontSize:12}}>{this.state.postlist[i].post_date}</Text>
-        //                 </View>
-        //             </View>
-        //         </TouchableOpacity>
-        //     )
-        // }
 
         return(
             
@@ -123,9 +102,42 @@ class Home extends Component{
                         })
                     }
                     </ScrollView>
-                    <Text h5 style={{color:'grey', fontWeight:'bold', marginBottom:20}}>RECENT POSTS(2 MONTHS):</Text>
+                    <Text h5 style={{color:'grey', fontWeight:'bold'}}>RECENT POSTS(1 MONTHS):</Text>
                     <View>
-                        {/* {posts} */}
+                        {
+                            this.state.posts.map((item, value) => {
+                                let home_post_avatar = '';
+                                if (item.icon_data == '') {
+                                    home_post_avatar = require("../../assets/imgs/user-circle-1.png");
+                                }else{
+                                    home_post_avatar = {uri: 'data:image/jpeg;base64,' + item.icon_data};
+                                }
+                                return (
+                                    <TouchableOpacity key={item.id} style={comps.post_card} onPress={this.toPostDetails.bind(this, item.id, item.subject_code)}>
+                                        <View style={styles.post_box_column}>
+                                            <View style={styles.post_box_row}>
+                                                <Avatar
+                                                    containerStyle={{ alignSelf: "center" }}
+                                                    rounded
+                                                    size="small"
+                                                    source={home_post_avatar}
+                                                >
+                                                </Avatar>
+                                                <Text style={{marginLeft:7,marginTop:6}}>{item.username}</Text>
+                                            </View>
+
+                                            <View style={{marginTop:7,marginBottom:7}}>
+                                                <Text style={styles.post_title}>{item.topic}</Text>
+                                            </View>
+                                            
+                                            <View>
+                                                <Text style={{marginLeft:7,marginTop:6, textAlign:'right', color:'#7B7B7B', fontSize:12}}>{item.post_date}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }) 
+                        }
                     </View>
                 </ScrollView>
                 </NativeBaseProvider>
