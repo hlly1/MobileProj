@@ -25,6 +25,9 @@ import { backgroundColor, left, position } from "styled-system";
 import { it } from "jest-circus";
 import {comps} from "../../styles/comp.js";
 import { LinearProgress } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class CourseList extends Component {
     
@@ -36,24 +39,108 @@ export default class CourseList extends Component {
             text: '',
             originList: [],
             list: [],
+            major_name: this.props.route.params.majorName,
             loaded:0
         }
         this.handleGetListSucc = this.handleGetListSucc.bind(this)
     }
 
+    getSession = async (element) => {
+        try {
+            return await AsyncStorage.getItem(element);
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
+    async getSubjectList(){
+        let sessionEmail = await this.getSession('sessionEmail');
+        try {
+            // to solve an unknown format bug in different developing environment
+            sessionEmail = JSON.parse(sessionEmail);
+        }
+        catch (err) {
+
+        }
+
+        var majorData = JSON.stringify({
+            "email": sessionEmail,
+            "major_name": this.state.major_name,
+        })
+        fetch("http://81.68.76.219:80/subjectlist",
+            {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: majorData
+            }
+        )
+            .then(res => res.json())
+            .then(this.handleGetListSucc)
+            // .then(this.handleGetListSucc)
+            .catch(() => { alert('请求异常') })
+    }
+
+    async subjectSubscribeUpdate(item) {
+        var subject_code = item["subject_code"];
+        var subjectSubscribeUpdateURL = 'http://81.68.76.219:80/unsubscribe';
+        if (item["is_subscribed"] == -1) {
+            subjectSubscribeUpdateURL = 'http://81.68.76.219:80/subscribe';
+        }
+
+        let sessionEmail = await this.getSession('sessionEmail');
+        try {
+            // to solve an unknown format bug in different developing environment
+            sessionEmail = JSON.parse(sessionEmail);
+        }
+        catch (err) {
+
+        }
+
+        var subjectSubscribeUpdateData = JSON.stringify({
+            "email": sessionEmail,
+            "subject_code": subject_code,
+        });
+        console.log(subjectSubscribeUpdateData);
+        const res = await fetch(subjectSubscribeUpdateURL, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: subjectSubscribeUpdateData
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson["status"] == 1) {
+                    if (item["is_subscribed"] == -1) {
+                        alert("Subject Subscribe Successfully!");
+                    }
+                    else {
+                        alert("Subject Unsubscribe Successfully!");
+                    }
+                    this.props.navigation.navigate('SubjectList', {});
+                } else if (responseJson["status"] == -1) {
+                    alert("Failed to update subject subscribe. Please try later!");
+                } else {
+                    alert("Issue-[xxx]: Please contact admin!");
+                }
+            })
+            .catch((error) => {
+                alert("Issue-[xxx]:" + error);
+            });
+
+    }
+
     componentDidMount() {
         // alert("提取有关 major:" + this.props.route.params.subject + "的相关帖子")
-        
-        var majorData = JSON.stringify({"major_name": this.props.route.params.majorName})
-        fetch("http://81.68.76.219:80/subjectlist", 
-            {method: 'POST', 
-            headers:{'Accept': 'application/json', 'Content-Type': 'application/json'},
-            body: majorData}
-            )
-        .then(res => res.json())
-        .then(this.handleGetListSucc)
-        // .then(this.handleGetListSucc)
-        .catch(() => {alert('请求异常')})
+        this.getSubjectList();
+    }
+
+    componentDidUpdate(nextProps){
+        if(nextProps != this.props){
+            this.getSubjectList();
+        }
     }
 
     handleGetListSucc(res) {
@@ -151,9 +238,22 @@ export default class CourseList extends Component {
                                         <View style={[styles.cardStyle, {width: pictWidth}]}> 
                                         {/* source={{uri: item.imgUrl}} */}
                                             <Image source={{uri: item.imgUrl}} style={[{width: pictWidth, height: pictWidth-2*textHeight}, styles.cardImage]}/>
-                            
-                                            <Text style={styles.itemCode}>{item["subject_code"]}</Text>
-                                            <Text style={styles.itemName}>{item["subject_name"]}</Text>
+                                            <View style={{ flexDirection: "row" }}>
+                                                <View style={{ flex: 5 }}>
+                                                    <Text style={styles.itemCode}>{item["subject_code"]}</Text>
+                                                    <Text style={styles.itemName}>{item["subject_name"]}</Text>
+                                                </View>
+                                                {item["is_subscribed"] == '1'
+                                                    ?
+                                                    <View style={{ flex: 1, marginTop: 8 }}>
+                                                        <Icon size={30} name="star" color="orange" onPress={() => { this.subjectSubscribeUpdate(item) }} />
+                                                    </View>
+                                                    :
+                                                    <View style={{ flex: 1, marginTop: 8 }}>
+                                                        <Icon size={30} name="star" color="grey" onPress={() => { this.subjectSubscribeUpdate(item) }} />
+                                                    </View>
+                                                }
+                                            </View>
                                         </View>
                                     </TouchableWithoutFeedback>
                                 )
