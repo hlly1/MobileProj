@@ -321,13 +321,13 @@ class postList extends Component{
                         </ScrollView>
                     </View>
                 <View style={styles.add_post}>
-                <Icon
-                        reverse
-                        name='plus'
+                    <Icon
+                        size={60}
+                        name='plus-circle'
                         type='font-awesome'
                         color='#2AA5FF'
                         onPress={() => { this.navigation.navigate('NewPost', { subject: this.state.subject })}}
-                />
+                    />
                 </View>
             </LinearGradient>
         );

@@ -3,13 +3,13 @@ const comps = StyleSheet.create({
 
     card_container:{
         backgroundColor: 'white',
-        width: 230,
+        width: 200,
         height: 200,
         borderRadius: 30,
         marginTop: 20,
         marginRight: 25,
         marginLeft: 10,
-        marginBottom:35,
+        marginBottom:5,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -18,6 +18,7 @@ const comps = StyleSheet.create({
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
         elevation: 10,
+        zIndex: -1,
     },
 
     backpict:{
@@ -45,14 +46,15 @@ const comps = StyleSheet.create({
     },  
 
     card_container_sm:{
+        // borderWidth: 1,
         backgroundColor: 'white',
         width: 170,
-        height: 120,
+        height: 170,
         borderRadius: 30,
         // marginTop: 10,
         marginRight: 25,
         marginLeft: 10,
-        marginBottom: 60,
+        marginBottom: 15,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -60,7 +62,6 @@ const comps = StyleSheet.create({
         },
         shadowOpacity: 0.34,
         shadowRadius: 6.27,
-        
         elevation: 10,
     },
 

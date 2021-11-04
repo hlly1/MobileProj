@@ -14,12 +14,16 @@ const Card = props => {
     return (
         <View style={card_size}>
             <View style={comps.card_content}>
-                <Text h1 style={comps.card_title}>{props.title}</Text>
-                <Image style={comps.backpict}
-                source={props.image}
-                />
+                <View style={{ height: "70%" }}>
+                    <Text h1 style={comps.card_title}>{props.title}</Text>
+                    <Image style={comps.backpict}
+                        source={props.image}
+                    />
+                </View>
+                <View style={{ marginLeft: 10, marginTop: -5 }}>
+                    <Text h4 style={des_size}>{props.content}</Text>
+                </View>
             </View>
-            <Text h4 style={des_size}>{props.content}</Text>
         </View>
 
     );
