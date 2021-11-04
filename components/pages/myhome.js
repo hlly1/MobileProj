@@ -16,7 +16,22 @@ class MyHome extends Component{
     constructor(props) {
         super(props);
         this.navigation = props.navigation;
-        this.state = {username: "", icondata: "", posts:[], subjects:[]};
+        this.state = {
+            username: "", 
+            icondata: "", 
+            posts:[], 
+            subjects:[], 
+            favorite_posts:[], 
+            saved_posts:[],
+            post_btn:(<Text style={{marginTop: 20, fontSize:15, fontWeight:'bold'}} onPress={()=>this.getMyFavoritePosts("favorite")}>
+            <Icon
+                type="font-awesome"
+                name="star"
+                iconStyle={{fontSize: 15}}
+            />
+            Show Favorite Posts
+        </Text>)
+        };
     }
 
     
@@ -63,6 +78,8 @@ class MyHome extends Component{
                         // console.log(this.state.icondata);
                     }
                     this.setState({ posts: responseJson["post_info"] });
+                    this.setState({ saved_posts: responseJson["post_info"] });
+                    this.setState({ favorite_posts: responseJson["mark_info"] });
                     console.log("MyHome.js Num of Posts: "+responseJson["post_info"].length)
                     this.setState({ subjects: responseJson["subscribe_info"] });
                     // return responseJson;
@@ -77,8 +94,29 @@ class MyHome extends Component{
             });
     }
 
-    toEditProfile(){
-        this.navigation.navigate('ProfileTab', {});
+    getMyFavoritePosts(option){
+        if(option == "favorite"){
+            this.setState({posts: this.state.favorite_posts});
+            this.setState({post_btn:(<Text style={{marginTop: 20, fontSize:15, fontWeight:'bold'}} onPress={()=>this.getMyFavoritePosts("mypost")}>
+            <Icon
+                type="font-awesome"
+                name="user"
+                iconStyle={{fontSize: 15}}
+            />
+            Show My Own Posts
+        </Text>)})
+        }else if (option == "mypost") {
+            this.setState({posts: this.state.saved_posts});
+            this.setState({post_btn:(<Text style={{marginTop: 20, fontSize:15, fontWeight:'bold'}} onPress={()=>this.getMyFavoritePosts("favorite")}>
+            <Icon
+                type="font-awesome"
+                name="star"
+                iconStyle={{fontSize: 15}}
+            />
+            Show Favorite Posts
+        </Text>)})
+        }
+        
     }
 
     componentDidMount(){
@@ -92,13 +130,6 @@ class MyHome extends Component{
         }
     }
 
-    async logout(){
-        await AsyncStorage.getAllKeys().then(
-            keys => AsyncStorage.multiRemove(keys)
-        ).then(
-            () => this.navigation.navigate("Login", {})
-        );
-    }
 
     openPost = (postID, subject_code) =>{
         this.navigation.navigate('PostDetails', { id: postID, subject: subject_code});
@@ -210,14 +241,7 @@ class MyHome extends Component{
                     </ScrollView>
                     <View style={styles.options}>
                         <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20}}>MY POSTS</Text>
-                        <Text style={{marginTop: 20, fontSize:15, fontWeight:'bold'}} onPress={()=>this.getMyFavoritePosts()}>
-                            <Icon
-                                type="font-awesome"
-                                name="star"
-                                iconStyle={{fontSize: 15}}
-                            />
-                            Show Favorite Posts
-                        </Text>
+                        {this.state.post_btn}
                     </View>
                     {myPosts}
                 </ScrollView>
