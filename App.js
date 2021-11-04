@@ -16,6 +16,7 @@ import CourseList from './components/pages/courseList.js';
 import PostList from './components/pages/postList.js'
 import NewPost from './components/pages/newpost.js';
 import PostDetails from './components/pages/postdetails.js';
+import Settings from './components/pages/settings.js';
 import {Image, NativeBaseProvider } from 'native-base';
 
 import Testpage from './components/pages/postList.js';
@@ -77,6 +78,7 @@ export default class App extends Component {
           <Stack.Screen name="PostList" component={PostList} />
           <Stack.Screen name="NewPost" component={NewPost} />
           <Stack.Screen name="PostDetails" component={PostDetails} />
+          <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>
       </NavigationContainer>
     );

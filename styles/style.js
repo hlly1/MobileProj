@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         paddingVertical: 50,
         paddingHorizontal: 30,
-        height: "auto"
+        height: height
     },
 
     profile_title: {

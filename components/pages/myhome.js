@@ -1,20 +1,15 @@
 import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
-    TextInput, 
-    DeviceEventEmitter, 
     ScrollView,
-    StatusBar,
     TouchableOpacity} from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
-import { Text, Avatar } from 'react-native-elements';
+import { Text, Avatar, Icon} from 'react-native-elements';
 import Utils from '../tools/utils.js';
 import Card from '../card';
-import Tabbar from '../tabbar.js';
-import { Overlay } from "react-native-elements/dist/overlay/Overlay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeBaseProvider, Button, Icon, Box } from 'native-base';
+import { NativeBaseProvider} from 'native-base';
 import {comps} from "../../styles/comp.js";
 
 class MyHome extends Component{
@@ -163,7 +158,7 @@ class MyHome extends Component{
                                 >
                                 </Avatar>
                             }
-                            <Text style={{marginLeft:7,marginTop:6}}>Me</Text>
+                            <Text style={{marginLeft:7,marginTop:6}}>{this.state.username}</Text>
                         </View>
 
                         <View style={{marginTop:7}}>
@@ -213,25 +208,28 @@ class MyHome extends Component{
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                         {mySubjs}
                     </ScrollView>
-                    <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20, marginBottom: 20}}>MY POSTS</Text>
-
-
+                    <View style={styles.options}>
+                        <Text h5 style={{color:'grey', fontWeight:'bold', marginTop: 20}}>MY POSTS</Text>
+                        <Text style={{marginTop: 20, fontSize:15, fontWeight:'bold'}} onPress={()=>this.getMyFavoritePosts()}>
+                            <Icon
+                                type="font-awesome"
+                                name="star"
+                                iconStyle={{fontSize: 15}}
+                            />
+                            Show Favorite Posts
+                        </Text>
+                    </View>
                     {myPosts}
-                    
-
-                    <TouchableOpacity onPress={() => this.toEditProfile()} style={{ zIndex: 3 }}>
-                        <LinearGradient colors={['#3AA8FE', '#72DD00']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
-                            <Text style={styles.login_button}>Edit Profile</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => this.logout()} style={{ zIndex: 3 }}>
-                        <LinearGradient colors={['#FF2222', '#FF9122']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 0 }} style={styles.login_button_adjust} >
-                            <Text style={styles.login_button}>Logout</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-
                 </ScrollView>
+                <View style={styles.add_post}>
+                        <Icon
+                                reverse
+                                name='cog'
+                                type='font-awesome'
+                                color='#2AA5FF'
+                                onPress={() => { this.navigation.navigate('Settings', {})}}
+                        />
+                </View>
                 </NativeBaseProvider>
             </View>
             
