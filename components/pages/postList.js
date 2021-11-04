@@ -15,7 +15,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { styles } from "../../styles/style";
-import {Avatar, Icon} from 'react-native-elements';
+import {Avatar} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import { alignItems, marginTop } from "styled-system";
 import {comps} from "../../styles/comp.js";
@@ -24,6 +24,9 @@ import { LinearProgress } from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import Icon from 'react-native-vector-icons/Ionicons';
 import { Picker } from "@react-native-picker/picker";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { height } = Dimensions.get("window");
 
@@ -40,7 +43,8 @@ class postList extends Component{
                 filtered: [],
                 selected: "",
                 screenHeight: height,
-                loaded:0
+                servertime: "",
+                loaded:0,
             };
         }
         catch(error){
@@ -51,11 +55,21 @@ class postList extends Component{
                 selected: "",
                 subject_name: "",
                 screenHeight: height,
-                loaded:0
+                servertime: "",
+                loaded:0,
             };
         }
         this.postBody=React.createRef();
         this.setPostHeight = this.setPostHeight.bind(this);
+    }
+
+    getSession = async (element) => {
+        try {
+            return await AsyncStorage.getItem(element);
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
     }
 
     async getPostListNBySubjectCode(){
@@ -64,7 +78,19 @@ class postList extends Component{
             return alert("Subject Code Error!");
         }
 
+        let sessionEmail = await this.getSession('sessionEmail');
+        try {
+            // to solve an unknown format bug in different developing environment
+            sessionEmail = JSON.parse(sessionEmail);
+        }
+        catch (err) {
+
+        }
+
+        console.log(sessionEmail);
+
         var subjectCodeData = JSON.stringify({
+            "email": sessionEmail,
             "subject_code": this.state.subject,
         });
         console.log(this.state.subject);
@@ -79,9 +105,11 @@ class postList extends Component{
         })
         .then(response => response.json())
         .then(responseJson => {
-            // console.log(responseJson);
+            console.log(responseJson);
             if(responseJson["status"] == 1){
+                this.setState({ servertime: responseJson["server_time"] });
                 if (responseJson["data"].length != 0) {
+                    // console.log(responseJson["data"]);
                     this.setState({ postlist: responseJson["data"] });
                     this.timeIntervalFilter(this.state.postlist, 60, 1000 * 60 * 60 * 24);
                 }
@@ -108,7 +136,12 @@ class postList extends Component{
         // console.log(timeInterval);
         this.setState({ filtered: [] });
         var _filtered = [];
-        var currentDate = new Date();
+
+        // var currentDate = new Date();
+
+        var currentdataformat = this.state.servertime.replace(/-/g, "/");
+        var currentDate = new Date(currentdataformat);
+        
         for (let i = posts.length - 1; i >= 0; i--) {
             var dateformat = posts[i].post_date.replace(/-/g, "/");
             // console.log(dateformat);
@@ -123,6 +156,57 @@ class postList extends Component{
         }
         // console.log(this.state.postlist.length);
         this.setState({ filtered: _filtered });
+    }
+
+    async postMarkUpdate(i){
+        var id = this.state.filtered[i].id;
+        var postMarkUpdateURL = 'http://81.68.76.219:80/unmark';
+        if (this.state.filtered[i].is_marked == -1){
+            postMarkUpdateURL = 'http://81.68.76.219:80/mark';
+        }
+
+        let sessionEmail = await this.getSession('sessionEmail');
+        try {
+            // to solve an unknown format bug in different developing environment
+            sessionEmail = JSON.parse(sessionEmail);
+        }
+        catch (err) {
+
+        }
+
+        var postMarkUpdateData = JSON.stringify({
+            "email": sessionEmail,
+            "book_id": id,
+        });
+        console.log(postMarkUpdateData);
+        const res = await fetch(postMarkUpdateURL, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: postMarkUpdateData
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                if (responseJson["status"] == 1) {
+                    if(this.state.filtered[i].is_marked == -1){
+                        alert("Post Mark Successfully!");
+                    }
+                    else{
+                        alert("Post Unmark Successfully!");
+                    }
+                    this.navigation.navigate('PostList', {});
+                } else if (responseJson["status"] == -1) {
+                    alert("Failed to update post mark. Please try later!");
+                } else {
+                    alert("Issue-[xxx]: Please contact admin!");
+                }
+            })
+            .catch((error) => {
+                alert("Issue-[xxx]:" + error);
+            });
+        
     }
 
     toPostDetails(id){
@@ -171,13 +255,21 @@ class postList extends Component{
                                 source={avatar_data}
                             >
                             </Avatar>
-                            <Text style={{marginLeft:7,marginTop:6}}>{this.state.filtered[i].username}</Text>
+                            <Text style={{ flex: 10, marginLeft:7,marginTop:6}}>{this.state.filtered[i].username}</Text>
+                            {this.state.filtered[i].is_marked == '1'
+                            ?
+                                <View style={{ flex: 1 }}>
+                                    <Icon size={30} name="star" color="orange" onPress={() => { this.postMarkUpdate(i) }} />
+                                </View>
+                            : 
+                                <View style={{ flex: 1 }}>
+                                    <Icon size={30} name="star" color="grey" onPress={() => { this.postMarkUpdate(i) }} />
+                                </View>
+                            }
                         </View>
-
                         <View style={{marginTop:7,marginBottom:7}}>
                             <Text style={styles.post_title}>{this.state.filtered[i].topic}</Text>
                         </View>
-                        
                         <View>
                             <Text style={{marginLeft:7,marginTop:6, textAlign:'right', color:'#7B7B7B', fontSize:12}}>{this.state.filtered[i].post_date}</Text>
                         </View>
