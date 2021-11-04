@@ -29,6 +29,7 @@ import {NativeBaseProvider} from 'native-base';
 import { FAB} from 'react-native-elements';
 import { Rating, AirbnbRating,LinearProgress  } from 'react-native-elements';
 
+const API_KEY = "AIzaSyA3E-GOaYiksOZjDcbNQe-l-ZC_yviS-Rg";
 
 class postDetails extends Component{
     constructor(props) {
