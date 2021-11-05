@@ -9,9 +9,8 @@ import {comps} from "../../styles/comp";
 import { Text, Avatar } from 'react-native-elements';
 import Utils from '../tools/utils.js';
 import Card from '../card';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeBaseProvider, Box, Center} from 'native-base';
-// import {  } from "react-native-gesture-handler";
+
 class Home extends Component{
     constructor(props) {
         super(props);

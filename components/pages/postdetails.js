@@ -12,15 +12,11 @@ import {
     ActivityIndicator,
     StatusBar,
 } from 'react-native';
-import { Input } from "react-native-elements";
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import {NativeBaseProvider, Icon, Button, AddIcon} from 'native-base';
 
 import { AudioRecorder, AudioUtils } from 'react-native-audio'
 import Sound from "react-native-sound";
 import RNFS from "react-native-fs";
-
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LinearGradient from 'react-native-linear-gradient';

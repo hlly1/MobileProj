@@ -2,27 +2,16 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
-    Pressable,
-    Button,
-    Image,
-    StyleSheet,
     ScrollView,
     Dimensions,
-    UIManager,
-    findNodeHandle,
     ActivityIndicator
 } from 'react-native';
 import { styles } from "../../styles/style";
 import {Avatar} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import { alignItems, marginTop } from "styled-system";
 import {comps} from "../../styles/comp.js";
-import ActionButton from 'react-native-action-button';
 import { LinearProgress } from 'react-native-elements';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import Icon from 'react-native-vector-icons/Ionicons';
 import { Picker } from "@react-native-picker/picker";
 import Icon from 'react-native-vector-icons/FontAwesome';
 

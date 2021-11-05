@@ -5,26 +5,14 @@ import {
     TextInput,
     ActivityIndicator,
     ScrollView,
-    StatusBar,
-    TouchableOpacity,
     FlatList,
-    TouchableHighlight,
     Image,
     StyleSheet,
     Dimensions,
     TouchableWithoutFeedback
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
-import { Text, Avatar } from 'react-native-elements';
-import Utils from '../tools/utils.js';
-import Card from '../card';
-import Tabbar from '../tabbar.js';
-import { Overlay } from "react-native-elements/dist/overlay/Overlay";
-import { Input } from "react-native-elements/dist/input/Input";
-import { backgroundColor, left, position } from "styled-system";
-import { it } from "jest-circus";
-import {comps} from "../../styles/comp.js";
-import { LinearProgress } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import AsyncStorage from "@react-native-async-storage/async-storage";

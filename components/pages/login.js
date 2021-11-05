@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
-    TextInput, 
     ActivityIndicator, 
     ScrollView,
     StatusBar,
@@ -9,10 +8,9 @@ import {View,
 } from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
-import { SocialIcon, Image, Text, Input } from 'react-native-elements';
+import { Image, Text, Input } from 'react-native-elements';
 import Validator from '../tools/validator.js';
 import FlashMessage from "react-native-flash-message";
-import Utils from '../tools/utils.js';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Login, Signup picture Reference URL:

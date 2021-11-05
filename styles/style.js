@@ -1,5 +1,4 @@
 import {Dimensions, StyleSheet} from "react-native"
-import { marginLeft } from "styled-system"
 
 const {width, height}=Dimensions.get("window");
 // const {win_width, win_height}=Dimensions.get("window");

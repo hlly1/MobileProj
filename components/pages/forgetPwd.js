@@ -1,24 +1,15 @@
 import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
-    TextInput, 
-    ActivityIndicator, 
     ScrollView,
     StatusBar,
     TouchableOpacity,
-    ActionSheetIOS,
-    LayoutAnimation
 } from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
-import { SocialIcon, Image, Text, Input, Avatar } from 'react-native-elements';
+import { Text, Input, } from 'react-native-elements';
 import Validator from '../tools/validator.js';
-import FlashMessage from "react-native-flash-message";
-import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ImagePicker from 'react-native-image-picker';
-import { resolvePlugin } from "@babel/core";
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {NativeBaseProvider, Icon, Button, AddIcon, //Avatar
 } from 'native-base';
 

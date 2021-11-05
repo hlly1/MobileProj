@@ -2,30 +2,13 @@ import React, { Component } from "react";
 import 'react-native-gesture-handler';
 import {
     View,
-    TextInput,
-    ActivityIndicator,
     ScrollView,
-    StatusBar,
-    TouchableOpacity,
-    FlatList,
-    TouchableHighlight,
     Image,
     StyleSheet,
     Dimensions,
     TouchableWithoutFeedback
 } from "react-native";
-import LinearGradient from 'react-native-linear-gradient';
-import { Text, Avatar } from 'react-native-elements';
-import Utils from '../tools/utils.js';
-import Card from '../card';
-import Tabbar from '../tabbar.js';
-import { Overlay } from "react-native-elements/dist/overlay/Overlay";
-import { Input } from "react-native-elements/dist/input/Input";
-import { backgroundColor, borderWidth, flex, fontSize, height, justifyContent, left, marginBottom } from "styled-system";
-import { it } from "jest-circus";
-
-
-
+import { Text, } from 'react-native-elements';
 
 export default class subjectList extends Component{ 
     constructor(props) {

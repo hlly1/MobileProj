@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import 'react-native-gesture-handler';
 import { View, Image, Text } from 'react-native';
 import {comps} from "../styles/comp.js";

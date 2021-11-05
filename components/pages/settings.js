@@ -1,24 +1,13 @@
 import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
-    TextInput, 
-    ActivityIndicator, 
-    ScrollView,
     StatusBar,
-    TouchableOpacity,
-    ActionSheetIOS,
-    LayoutAnimation
 } from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
 import { Button, Text} from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-
-// Login, Signup picture Reference URL:
-// https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.dc64b3430&cid=24099
-// Default user avatar: https://www.iconfont.cn/search/index?searchType=icon&q=user
 class Settings extends Component{
 
     constructor(props){

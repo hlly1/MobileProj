@@ -4,7 +4,6 @@ import {View,
     ScrollView,
     TouchableOpacity} from "react-native";
 import {styles} from "../../styles/style";
-import LinearGradient from 'react-native-linear-gradient';
 import { Text, Avatar, Icon} from 'react-native-elements';
 import Utils from '../tools/utils.js';
 import Card from '../card';
