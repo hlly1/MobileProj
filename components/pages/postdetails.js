@@ -434,11 +434,6 @@ class postDetails extends Component{
                                 {/* size= 'small'  color="blue" title='Submit' */}
                                 {commentsList}
                             </View>
-                            <View >
-                                <Text></Text>
-                                <Text style={{ fontSize: 20, color: "#666", fontWeight: "bold" }}>Rate Post</Text>
-                                <AirbnbRating/>
-                            </View>
                         </View>
 
                        
