@@ -471,26 +471,26 @@ def ISBN_query():
     try:
         ISBN = request.json["ISBN"]
         print(type(ISBN))
-        # data = {}
-        # data["appkey"] = "2438c9d38e381792"
+        data = {}
+        data["appkey"] = "2438c9d38e381792"
         # # data["isbn"] = "1451648537"
         # data["isbn"] = "1402894627"
         #
-        # data = urllib.parse.urlencode(data).encode('utf-8')
-        # url = "https://api.jisuapi.com/isbn/query"
-        # result = urllib.request.urlopen(url, data)
-        # jsonarr = json.loads(result.read())
-        #
-        # if jsonarr["status"] != 0:
-        #     print(jsonarr["msg"])
-        #     exit()
-        # result = jsonarr["result"]
-        # print(result["title"], result["pic"])
+        data = urllib.parse.urlencode(data).encode('utf-8')
+        url = "https://api.jisuapi.com/isbn/query"
+        result = urllib.request.urlopen(url, data)
+        jsonarr = json.loads(result.read())
+        
+        if jsonarr["status"] != 0:
+             print(jsonarr["msg"])
+             exit()
+        result = jsonarr["result"]
+        print(result["title"], result["pic"])
         with open(os.path.join("./static/", "stevenjobs.jpg"), 'rb') as f:
             base64_data = base64.b64encode(f.read())
 
-        return jsonify(title="Steven Jobs",
-                       pic=[base64_data.decode('utf-8')],
+        return jsonify(title=result["title"],
+                       pic=result["pic"],
                        status=1,
                        ISBN=ISBN,
                        msg="success")
