@@ -49,6 +49,8 @@ export default class MajorList extends Component {
     }
 
     handleItemClick(majorName) {
+        this.setState({ text: "" });
+        this.setState({ list: [] });
         this.props.navigation.navigate('SubjectList', {majorName: majorName})
     }
 

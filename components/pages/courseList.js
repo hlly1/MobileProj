@@ -143,6 +143,8 @@ export default class CourseList extends Component {
     handleItemClick(subject_code, subject_name) {
         // const {navigate} = this.props.navigation;
         // navigate('MajorList', {courseId: courseId})
+        this.setState({ text: "" });
+        this.setState({ list: [] });
         this.props.navigation.navigate('PostList', {subject: subject_code, subject_name:subject_name})
     }
 
@@ -204,7 +206,7 @@ export default class CourseList extends Component {
                         keyExtractor={(item) => item["subject_code"]}
                         renderItem={({item}) => {
                             return (
-                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item["subject_code"])}>
+                                <TouchableWithoutFeedback onPress={this.handleItemClick.bind(this, item["subject_code"], item["subject_name"])}>
                                     <View style={{paddingTop:8}}>
                                         <Text>{item["subject_name"]}</Text>
                                     </View>
