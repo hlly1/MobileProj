@@ -3,6 +3,7 @@ import 'react-native-gesture-handler';
 import {View,  
     ScrollView,
     StatusBar,
+    ActivityIndicator
 } from "react-native";
 import {styles} from "../../styles/style";
 import LinearGradient from 'react-native-linear-gradient';
@@ -11,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {NativeBaseProvider, Icon, Button, AddIcon, //Avatar
 } from 'native-base';
+import { LinearProgress } from 'react-native-elements';
 
 // Login, Signup picture Reference URL:
 // https://www.iconfont.cn/illustrations/detail?spm=a313x.7781069.1998910419.dc64b3430&cid=24099
@@ -19,10 +21,11 @@ class Profile extends Component{
 
     constructor(props){
         super(props)
-        this.state = { email: "", passwd: "", nickname: "", avatar: ""};
+        this.state = { email: "", passwd: "", nickname: "", avatar: "", loaded:0};
         this.validate = false;
         this.errorMsg = "";
         this.navigation = props.navigation;
+        
     }
 
     selectImage = () => {
@@ -139,6 +142,7 @@ class Profile extends Component{
             .then(responseJson => {
                 if (responseJson["status"] == 1) {
                     this.setState({ username: responseJson["username"] });
+                    this.setState({ loaded: 1 });
                     if (responseJson["icon_data"]) {
                         this.setState({ avatar:responseJson["icon_data"]});
                         // this.setState({ avatar: require("../../assets/imgs/user-circle-1.png") });
@@ -163,6 +167,15 @@ class Profile extends Component{
 
     render(){
         return(
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                    <Text style={{textAlign:'center', fontSize: 15}}>Processing</Text>
+                    <ActivityIndicator color="blue" size={50} />
+                    <LinearProgress color="primary" variant='indeterminate' number='1'/>
+                    
+                </View>
+            : 
             <NativeBaseProvider>
                 <LinearGradient colors={['#094183', '#3b5998', '#192f6a']} style={styles.linearGradient}>
                     <StatusBar backgroundColor='transparent' translucent={true} />

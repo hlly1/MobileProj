@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
     ScrollView,
-    TouchableOpacity} from "react-native";
+    TouchableOpacity,
+    ActivityIndicator} from "react-native";
 import {styles} from "../../styles/style";
 import { Text, Avatar, Icon} from 'react-native-elements';
 import Utils from '../tools/utils.js';
@@ -10,6 +11,7 @@ import Card from '../card';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NativeBaseProvider} from 'native-base';
 import {comps} from "../../styles/comp.js";
+import { LinearProgress } from 'react-native-elements';
 
 class MyHome extends Component{
     constructor(props) {
@@ -22,6 +24,7 @@ class MyHome extends Component{
             subjects:[], 
             favorite_posts:[], 
             saved_posts:[],
+            loaded:0,
             post_btn:(<Text style={{marginTop: 20, fontSize:15, fontWeight:'bold'}} onPress={()=>this.getMyFavoritePosts("favorite")}>
             <Icon
                 type="font-awesome"
@@ -69,7 +72,9 @@ class MyHome extends Component{
             .then(responseJson => {
                 if (responseJson["status"] == 1) {
                     // console.log(responseJson);
+                    this.setState({ loaded: 1 });
                     this.setState({ username: responseJson["username"] });
+                    this.setState({ loaded: 1 });
                     if (responseJson["icon_data"]) {
                         // console.log(this.state.icondata);
                         this.setState({ icondata: 'data:image/jpeg;base64,' + responseJson["icon_data"]});
@@ -193,6 +198,15 @@ class MyHome extends Component{
         }
 
         return(
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                    <Text style={{textAlign:'center', fontSize: 15}}>Processing</Text>
+                    <ActivityIndicator color="green" size={50} />
+                    <LinearProgress color="primary" variant='indeterminate' number='1'/>
+                    
+                </View>
+            : 
             <View style={styles.home_container}>
                 <NativeBaseProvider>
                 <ScrollView showsVerticalScrollIndicator={false}>

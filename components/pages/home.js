@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import 'react-native-gesture-handler';
 import {View, 
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from "react-native";
 import {styles} from "../../styles/style";
 import {comps} from "../../styles/comp";
@@ -10,12 +11,14 @@ import { Text, Avatar } from 'react-native-elements';
 import Utils from '../tools/utils.js';
 import Card from '../card';
 import { NativeBaseProvider, Box, Center} from 'native-base';
+import { LinearProgress } from 'react-native-elements';
 
 class Home extends Component{
     constructor(props) {
         super(props);
         this.navigation = props.navigation;
-        this.state = {majors:[], posts:[]};
+        this.state = {majors:[], posts:[], loaded:0};
+       
     }
 
 
@@ -30,6 +33,7 @@ class Home extends Component{
                 this.setState({
                     majors: resJson.data
                 })
+                this.setState({ loaded: 1 });
             }
         })
         .catch((err) => {alert('Home Majors: '+err)});
@@ -74,6 +78,15 @@ class Home extends Component{
     render(){
 
         return(
+            this.state.loaded == 0 
+            ? 
+                <View style={{ marginTop: 400 }}>
+                    <Text style={{textAlign:'center', fontSize: 15}}>Processing</Text>
+                    <ActivityIndicator color="green" size={50} />
+                    <LinearProgress color="primary" variant='indeterminate' number='1'/>
+                    
+                </View>
+            : 
             
             <View style={styles.home_container}>
                 <NativeBaseProvider>
