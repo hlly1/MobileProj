@@ -9,7 +9,6 @@ import Signup from './components/pages/signup.js';
 import MyHome from './components/pages/myhome';
 import Profile from './components/pages/profile.js';
 import Home from './components/pages/home.js';
-import Subjects from './components/pages/majorList.js';
 import ForgetPWD from './components/pages/forgetPwd.js';
 import MajorList from './components/pages/majorList.js';
 import CourseList from './components/pages/courseList.js';
@@ -18,8 +17,6 @@ import NewPost from './components/pages/newpost.js';
 import PostDetails from './components/pages/postdetails.js';
 import Settings from './components/pages/settings.js';
 import {Image, NativeBaseProvider } from 'native-base';
-
-import Testpage from './components/pages/postList.js';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

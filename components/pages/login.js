@@ -45,9 +45,9 @@ class Login extends Component{
         const pwd = this.state.passwd;
         
         if(useremail.length == 0 || pwd.length == 0){
-            this.errorMsg = "Email and Password cannot be empty!";
+            alert("Email and Password cannot be empty!");
         }else if(!Validator.email_validate(useremail)){
-            this.errorMsg = "Invalid Email format!";
+            alert("Invalid Email format!");
         }
         
         if (Validator.email_validate(useremail) && !pwd.length == 0){

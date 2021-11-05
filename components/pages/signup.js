@@ -37,9 +37,9 @@ class Signup extends Component{
 
     async sendRegister(){
         if(this.state.email.length == 0 || this.state.passwd.length == 0){
-            this.errorMsg = "Email and Password cannot be empty!";
+            alert("Email and Password cannot be empty!");
         }else if(!Validator.email_validate(this.state.email)){
-            this.errorMsg = "Invalid Email format!";
+            alert("Invalid Email format!");
         }
 
         if (Validator.email_validate(this.state.email) && this.state.passwd.length != 0 && this.state.nickname.length != 0){
@@ -147,8 +147,7 @@ class Signup extends Component{
                         <View style={styles.login_card}>
                             <Input placeholder='Email' 
                             onChangeText={email => this.setState({email: email})} 
-                            errorStyle={{ color: 'red' }} 
-                            errorMessage={Validator.email_validate(this.state.email)?'':'Invalid Email'}/>
+                            errorStyle={{ color: 'red' }} />
 
                             <Input placeholder='User Name' 
                             onChangeText={name => this.setState({nickname: name})} 

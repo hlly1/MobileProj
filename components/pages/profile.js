@@ -96,7 +96,7 @@ class Profile extends Component{
         .then(responseJson => {
             if (responseJson["status"] == 1) {
                 alert("Profile Edited Successfully!");
-                this.navigation.navigate("Profile", {});
+                this.navigation.navigate("Home", {});
             } else if (responseJson["status"] == -1) {
                 alert("Issue-[xxx]: "+responseJson["message"]+"Please check it again!");
             }else{
